@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>関節チェックリスト</title>
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style2.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h2>痛みや腫れがある関節の場所をうかがいます。</h2>
+    <p>下の図で、あなたが痛みや腫れがあると感じる関節をタップして印をつけてください。</p>
+    <div id="imageContainer">
+        <form id="jointForm" action="{{ url_for('data_blueprint.joints_fig') }}" method="post">
+        <!-- 関節のチェックボックスをここに配置 -->
+        <!-- 左手のDIP関節のチェックボックス -->
+        <!--<label for="dip_joint_left_2" class="checkbox" data-x="40%" data-y="40%">左手指DIP関節2</label>-->
+        <input type="checkbox" id="dip_joint_left_2" name="dip_joint_left_2" class="checkbox" data-x="60.8%" data-y="23.8%">
+        <!--<label for="dip_joint_left_3" class="checkbox" data-x="43%" data-y="40%">左手指DIP関節3</label>-->
+        <input type="checkbox" id="dip_joint_left_3" name="dip_joint_left_3" class="checkbox" data-x="64.15%" data-y="26%">
+        <!--<label for="dip_joint_left_4" class="checkbox" data-x="46%" data-y="40%">左手指DIP関節4</label>-->
+        <input type="checkbox" id="dip_joint_left_4" name="dip_joint_left_4" class="checkbox" data-x="66.3%" data-y="25.2%">
+        <!--<label for="dip_joint_left_5" class="checkbox" data-x="49%" data-y="40%">左手指DIP関節5</label>-->
+        <input type="checkbox" id="dip_joint_left_5" name="dip_joint_left_5" class="checkbox" data-x="68.7%" data-y="24%">
+
+        <!-- 右手のDIP関節のチェックボックス -->
+        <!--<label for="dip_joint_right_2" class="checkbox" data-x="20%" data-y="40%">右手指DIP関節2</label>-->
+        <input type="checkbox" id="dip_joint_right_2" name="dip_joint_right_2" class="checkbox" data-x="39%" data-y="24%">
+        <!--<label for="dip_joint_right_3" class="checkbox" data-x="17%" data-y="40%">右手指DIP関節3</label>-->
+        <input type="checkbox" id="dip_joint_right_3" name="dip_joint_right_3" class="checkbox" data-x="35.7%" data-y="26.1%">
+        <!--<label for="dip_joint_right_4" class="checkbox" data-x="14%" data-y="40%">右手指DIP関節4</label>-->
+        <input type="checkbox" id="dip_joint_right_4" name="dip_joint_right_4" class="checkbox" data-x="33.5%" data-y="25.6%">
+        <!--<label for="dip_joint_right_5" class="checkbox" data-x="11%" data-y="40%">右手指DIP関節5</label>-->
+        <input type="checkbox" id="dip_joint_right_5" name="dip_joint_right_5" class="checkbox" data-x="31.2%" data-y="24.5%">
+
+        <!-- 母指IP関節のチェックボックス -->
+        <!-- <label for="thumb_ip_joint_left" class="checkbox" data-x="37%" data-y="40%">左母指IP関節</label>-->
+        <input type="checkbox" id="thumb_ip_joint_left" name="thumb_ip_joint_left" class="checkbox" data-x="59.1%" data-y="14.8%">
+        <!--<label for="thumb_ip_joint_right" class="checkbox" data-x="23%" data-y="40%">右母指IP関節</label>-->
+        <input type="checkbox" id="thumb_ip_joint_right" name="thumb_ip_joint_right" class="checkbox" data-x="40.7%" data-y="15.0%">
+
+        <!-- 左手のPIP関節のチェックボックス -->
+        <!--<label for="pip_joint_left_2" class="checkbox" data-x="34%" data-y="18%">左手指PIP関節2</label>-->
+        <input type="checkbox" id="pip_joint_left_2" name="pip_joint_left_2" class="checkbox" data-x="61.6%" data-y="18.8%">
+        <!--<label for="pip_joint_left_3" class="checkbox" data-x="36%" data-y="18%">左手指PIP関節3</label>-->
+        <input type="checkbox" id="pip_joint_left_3" name="pip_joint_left_3" class="checkbox" data-x="64.2%" data-y="20%">
+        <!--<label for="pip_joint_left_4" class="checkbox" data-x="38%" data-y="18%">左手指PIP関節4</label>-->
+        <input type="checkbox" id="pip_joint_left_4" name="pip_joint_left_4" class="checkbox" data-x="66.25%" data-y="20%">
+        <!--<label for="pip_joint_left_5" class="checkbox" data-x="40%" data-y="18%">左手指PIP関節5</label>-->
+        <input type="checkbox" id="pip_joint_left_5" name="pip_joint_left_5" class="checkbox" data-x="68.5%" data-y="19.9%">
+
+        <!-- 右手のPIP関節のチェックボックス -->
+        <!--<label for="pip_joint_right_2" class="checkbox" data-x="12%" data-y="18%">右手指PIP関節2</label>-->
+        <input type="checkbox" id="pip_joint_right_2" name="pip_joint_right_2" class="checkbox" data-x="38.3%" data-y="19%">
+        <!--<label for="pip_joint_right_3" class="checkbox" data-x="10%" data-y="18%">右手指PIP関節3</label>-->
+        <input type="checkbox" id="pip_joint_right_3" name="pip_joint_right_3" class="checkbox" data-x="35.7%" data-y="20.4%">
+        <!--<label for="pip_joint_right_4" class="checkbox" data-x="8%" data-y="18%">右手指PIP関節4</label>-->
+        <input type="checkbox" id="pip_joint_right_4" name="pip_joint_right_4" class="checkbox" data-x="33.6%" data-y="20.2%">
+        <!--<label for="pip_joint_right_5" class="checkbox" data-x="6%" data-y="18%">右手指PIP関節5</label>-->
+        <input type="checkbox" id="pip_joint_right_5" name="pip_joint_right_5" class="checkbox" data-x="31.5%" data-y="20%">
+
+        <!-- 左手のMP関節のチェックボックス -->
+        <!--<label for="mp_joint_left_1" class="checkbox" data-x="34%" data-y="10%">左手指MP関節1</label>-->
+        <input type="checkbox" id="mp_joint_left_1" name="mp_joint_left_1" class="checkbox" data-x="60.25%" data-y="10%">
+        <!--<label for="mp_joint_left_2" class="checkbox" data-x="36%" data-y="15%">左手指MP関節2</label>-->
+        <input type="checkbox" id="mp_joint_left_2" name="mp_joint_left_2" class="checkbox" data-x="62.27%" data-y="13.8%">
+        <!--<label for="mp_joint_left_3" class="checkbox" data-x="38%" data-y="15%">左手指MP関節3</label>-->
+        <input type="checkbox" id="mp_joint_left_3" name="mp_joint_left_3" class="checkbox" data-x="64.18%" data-y="15%">
+        <!--<label for="mp_joint_left_4" class="checkbox" data-x="40%" data-y="15%">左手指MP関節4</label>-->
+        <input type="checkbox" id="mp_joint_left_4" name="mp_joint_left_4" class="checkbox" data-x="66.15%" data-y="15%">
+        <!--<label for="mp_joint_left_5" class="checkbox" data-x="42%" data-y="15%">左手指MP関節5</label>-->
+        <input type="checkbox" id="mp_joint_left_5" name="mp_joint_left_5" class="checkbox" data-x="68.06%" data-y="14%">
+
+        <!-- 右手のMP関節のチェックボックス -->
+        <!--<label for="mp_joint_right_1" class="checkbox" data-x="12%" data-y="10%">右手指MP関節1</label>-->
+        <input type="checkbox" id="mp_joint_right_1" name="mp_joint_right_1" class="checkbox" data-x="39.6%" data-y="10.2%">
+        <!--<label for="mp_joint_right_2" class="checkbox" data-x="9%" data-y="15%">右手指MP関節2</label>-->
+        <input type="checkbox" id="mp_joint_right_2" name="mp_joint_right_2" class="checkbox" data-x="37.65%" data-y="14%">
+        <!--<label for="mp_joint_right_3" class="checkbox" data-x="7%" data-y="15%">右手指MP関節3</label>-->
+        <input type="checkbox" id="mp_joint_right_3" name="mp_joint_right_3" class="checkbox" data-x="35.75%" data-y="15.2%">
+        <!--<label for="mp_joint_right_4" class="checkbox" data-x="5%" data-y="15%">右手指PIP関節4</label>-->
+        <input type="checkbox" id="mp_joint_right_4" name="mp_joint_right_4" class="checkbox" data-x="33.8%" data-y="15.1%">
+        <!--<label for="mp_joint_right_5" class="checkbox" data-x="3%" data-y="15%">右手指PIP関節5</label>-->
+        <input type="checkbox" id="mp_joint_right_5" name="mp_joint_right_5" class="checkbox" data-x="31.85%" data-y="14.7%">
+
+        <!-- 手関節のチェックボックス -->
+        <!--<label for="wrist_joint_hand_left" class="checkbox" data-x="32%" data-y="48%">左手関節</label>-->
+        <input type="checkbox" id="wrist_joint_hand_left" name="wrist_joint_hand_left" class="checkbox" data-x="58%" data-y="48%">
+        <!--<label for="wrist_joint_hand_right" class="checkbox" data-x="14%" data-y="48%">右手関節</label>-->
+        <input type="checkbox" id="wrist_joint_hand_right" name="wrist_joint_hand_right" class="checkbox" data-x="41.6%" data-y="48%">
+
+        <!-- 肘関節のチェックボックス --> 
+        <!--<label for="elbow_joint_left" class="checkbox" data-x="29%" data-y="37%">左肘関節</label>-->
+        <input type="checkbox" id="elbow_joint_left" name="elbow_joint_left" class="checkbox" data-x="56%" data-y="36.8%">
+        <!--<label for="elbow_joint_right" class="checkbox" data-x="16%" data-y="37%">右肘関節</label>-->
+        <input type="checkbox" id="elbow_joint_right" name="elbow_joint_right" class="checkbox" data-x="43.5%" data-y="36.8%">
+
+        <!-- 肩関節のチェックボックス -->
+        <!--<label for="shoulder_joint_left" class="checkbox" data-x="28%" data-y="22%">左肩関節</label>-->
+        <input type="checkbox" id="shoulder_joint_left" name="shoulder_joint_left" class="checkbox" data-x="54.5%" data-y="22%">
+        <!--<label for="shoulder_joint_right" class="checkbox" data-x="18%" data-y="22%">右肩関節</label>-->
+        <input type="checkbox" id="shoulder_joint_right" name="shoulder_joint_right" class="checkbox" data-x="45.3%" data-y="22%">
+
+        <!-- 股関節のチェックボックス -->
+        <!--<label for="hip_joint_left" class="checkbox" data-x="25%" data-y="52%">左股関節</label>-->
+        <input type="checkbox" id="hip_joint_left" name="hip_joint_left" class="checkbox" data-x="52.2%" data-y="52%">
+        <!--<label for="hip_joint_right" class="checkbox" data-x="20%" data-y="52%">右股関節</label>-->
+        <input type="checkbox" id="hip_joint_right" name="hip_joint_right" class="checkbox" data-x="47.3%" data-y="52%">
+
+        <!-- 膝関節のチェックボックス -->
+        <!--<label for="knee_joint_left" class="checkbox" data-x="25%" data-y="72%">左膝関節</label>-->
+        <input type="checkbox" id="knee_joint_left" name="knee_joint_left" class="checkbox" data-x="52%" data-y="72%">
+        <!--<label for="knee_joint_right" class="checkbox" data-x="20%" data-y="72%">右膝関節</label>-->
+        <input type="checkbox" id="knee_joint_right" name="knee_joint_right" class="checkbox" data-x="47.6%" data-y="72%">
+
+        <!-- 足関節のチェックボックス -->
+        <!--<label for="ankle_joint_left" class="checkbox" data-x="25%" data-y="85%">左足関節</label>-->
+        <input type="checkbox" id="ankle_joint_left" name="ankle_joint_left" class="checkbox" data-x="52%" data-y="87.8%">
+        <!--<label for="ankle_joint_right" class="checkbox" data-x="20%" data-y="85%">右足関節</label>-->
+        <input type="checkbox" id="ankle_joint_right" name="ankle_joint_right" class="checkbox" data-x="47.7%" data-y="87.8%">
+
+        <!-- 左足指のMTP関節のチェックボックス -->
+        <!--<label for="mtp_joint_left_1" class="checkbox" data-x="42%" data-y="91%">左足指MP関節1</label>-->
+        <input type="checkbox" id="mtp_joint_left_1" name="mtp_joint_left_1" class="checkbox" data-x="68.5%" data-y="95%">
+        <!--<label for="mtp_joint_left_2" class="checkbox" data-x="42%" data-y="88%">左足指MP関節2</label>-->
+        <input type="checkbox" id="mtp_joint_left_2" name="mtp_joint_left_2" class="checkbox" data-x="68.5%" data-y="90.5%">
+        <!--<label for="mtp_joint_left_3" class="checkbox" data-x="42%" data-y="85%">左足指MP関節3</label>-->
+        <input type="checkbox" id="mtp_joint_left_3" name="mtp_joint_left_3" class="checkbox" data-x="68.5%" data-y="86%">
+        <!--<label for="mtp_joint_left_4" class="checkbox" data-x="42%" data-y="82%">左足指MP関節4</label>-->
+        <input type="checkbox" id="mtp_joint_left_4" name="mtp_joint_left_4" class="checkbox" data-x="68.5%" data-y="81.5%">
+        <!--<label for="mtp_joint_left_5" class="checkbox" data-x="42%" data-y="79%">左足指MP関節5</label>-->
+        <input type="checkbox" id="mtp_joint_left_5" name="mtp_joint_left_5" class="checkbox" data-x="68.5%" data-y="77%">
+
+        <!-- 右足指のMTP関節のチェックボックス -->
+        <!--<label for="mtp_joint_right_1" class="checkbox" data-x="3%" data-y="91%">右足指MP関節1</label>-->
+        <input type="checkbox" id="mtp_joint_right_1" name="mtp_joint_right_1" class="checkbox" data-x="30.5%" data-y="95%">
+        <!--<label for="mtp_joint_right_2" class="checkbox" data-x="3%" data-y="88%">右足指MP関節2</label>-->
+        <input type="checkbox" id="mtp_joint_right_2" name="mtp_joint_right_2" class="checkbox" data-x="30.5%" data-y="90.5%">
+        <!--<label for="mtp_joint_right_3" class="checkbox" data-x="3%" data-y="85%">右足指MP関節3</label>-->
+        <input type="checkbox" id="mtp_joint_right_3" name="mtp_joint_right_3" class="checkbox" data-x="30.5%" data-y="86%">
+        <!--<label for="mtp_joint_right_4" class="checkbox" data-x="3%" data-y="82%">右足指PIP関節4</label>-->
+        <input type="checkbox" id="mtp_joint_right_4" name="mtp_joint_right_4" class="checkbox" data-x="30.5%" data-y="81.5%">
+        <!--<label for="mtp_joint_right_5" class="checkbox" data-x="3%" data-y="79%">右足指PIP関節5</label>-->
+        <input type="checkbox" id="mtp_joint_right_5" name="mtp_joint_right_5" class="checkbox" data-x="30.5%" data-y="77%">
+        </form> <!-- フォームの終了タグ -->
+    </div> <!-- imageContainerの終了タグ -->
+        <div class="button-container">
+                <a href="{{ url_for('data_blueprint.handpicture') }}" class="button">写真入力画面に進む</a>
+                <br>
+                <a href="{{ url_for('data_blueprint.symptom') }}" class="button">症状入力画面に戻る</a>
+            </div>
+            <p>次は手の写真を入力します。</p>
+        <script src="{{ url_for('data_blueprint.static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+

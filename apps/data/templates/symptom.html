@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style_form.css') }}">
+    <title>フォーム画面</title>
+</head>
+<body>
+    <h1>以下の質問にお答えください</h1>
+    <form id="healthsurveyform" action="{{ url_for('data_blueprint.symptom') }}" method="post">
+        <div class="form-section">
+            <div class="form-group">
+                <label>性別を教えてください。</label>
+                <input type="radio" id="male" name="gender" value="male">
+                <label for="male">男性</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">女性</label>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="age">生年月日を教えてください。</label>
+                <input type="date" id="birthdate" name="birthdate">
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="painstart">関節に初めて痛みや腫れが生じた時期はいつですか？</label>
+                <input type="date" id="painstart" name="painstart">
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label>関節の症状を感じ始めてから、6週間以上たっていますか？</label>
+                <input type="radio" id="yes" name="six_weeks_duration" value="yes">
+                <label for="yes">はい</label>
+                <input type="radio" id="no" name="six_weeks_duration" value="no">
+                <label for="no">いいえ</label>
+            </div>
+        </div>
+        <div class="form-section">
+            <p>朝起きてからしばらくの間、痛みのある関節が思うように動かせないことを「朝のこわばり」といいます。</p>
+            <div class="form-group">
+                <label>朝のこわばりはありますか？</label>
+                <input type="radio" id="yes" name="morningstiffness" value="yes">
+                <label for="yes">はい</label>
+                <input type="radio" id="no" name="morningstiffness" value="no">
+                <label for="no">いいえ</label>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="morningstiffnessduration">朝のこわばりは何分くらい続きますか？</label>
+                <select id="morningstiffnessduration" name="morningstiffnessduration">
+                    {% for duration in stiffness_durations %}
+                    <option value="{{ duration }}">{{ duration }}分</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="painlevel">痛みがない状態を0、最も痛い状態を100とすると、今の痛みはどのくらいですか？</label>
+                <select id="painlevel" name="painlevel">
+                    {% for level in range(0, 101, 10) %}
+                    <option value="{{ level }}">{{ level }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <p>出来上がったら、「次へすすむ」を押してください。</p>
+        <div class="button-container">
+            <a href="{{ url_for('data_blueprint.notice') }}" class="button">前に戻る</a>
+            <a href="{{ url_for('data_blueprint.righthand') }}" class="button">次に進む</a>
+        </div>
+        <p>前の画面にもどるときは、「前へもどる」を押してください。</p>
+    </form>
+</body>
+</html>

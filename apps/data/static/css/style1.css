@@ -1,0 +1,100 @@
+/* ベースとなるスタイリング */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: white; 
+    margin: 20px;
+    padding: 0;
+    padding-top: 0px;
+}
+.header {
+    background-color: white;
+    color: black;
+    margin: left 15vw;
+    margin: right 15vw;
+    padding: 10px 0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.footer
+{
+    background-color: white;
+    color: black;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+.inline_box {
+    height: 60vh; /* または必要に応じて調整 */
+    width: 60vw; /* または必要に応じて調整 */
+    overflow-y: auto; /* 垂直方向にコンテンツがオーバーフローした場合にスクロールバーを表示 */
+    padding: 5vw; /* コンテンツとボックスの境界の間に余白を設ける */
+    border: 1px solid #ccc; /* ボックスの周囲に境界線を追加 */
+    margin:auto; /* 左右のマージンを自動で設定し、中央揃えに */
+    margin-bottom: 20px; /* 下部の余白 */
+    background-color: #f9f9f9; /* 背景色 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 影の追加（オプション） */
+}
+h2 {
+    color: #005a9c;
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 0.1em;
+    margin-top: 1em;
+    margin-left:1em;
+}
+
+p {
+    line-height: 1.6;
+    text-align: left;
+    margin-left:0vw;
+    margin-right:0vw;
+    margin-bottom: 0.5em;
+}
+
+form {
+    margin-left:10em;
+    margin-right:10em;
+    margin-bottom: 0.5em;
+}
+
+@media (max-width: 700px) {
+    .main-nav ul {
+        flex-direction: column; /* 縦並びに */
+        gap: 20px; /* アイテム間のスペース */
+    }
+}
+
+/* 基本のボタンスタイル */
+.button {
+    
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border: none;
+    border-radius: 5px;
+    text-decoration: solid;
+    text-shadow: rgba(0,0,0,0.5) 2px 2px 2px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left:20px;
+    margin-right:20px;
+    width: 140px;
+}
+
+/* ホバー時の効果 */
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* ボタンをFlexboxで配置するための親要素 */
+.button-container {
+    display: flex;
+    justify-content: center; /* 中央揃え */
+    align-items: center;     /* 縦方向の中央揃え */
+    margin-top: 20px;
+}

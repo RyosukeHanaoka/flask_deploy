@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>関節チェックリスト</title>
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/foot.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h2>痛みや腫れがある関節の場所をうかがいます。</h2>
+    <p>下の図で、あなたが痛みや腫れがあると感じる関節をタップして印をつけてください。</p>
+    <div id="imageContainer">
+        <form id="jointForm" action="{{ url_for('data_blueprint.foot') }}" method="post">
+        <!-- 関節のチェックボックスをここに配置 -->
+        <!-- 左足指のMTP関節のチェックボックス -->
+        <!--<label for="mtp_joint_left_1" class="checkbox" data-x="42%" data-y="91%">左足指MP関節1</label>-->
+        <input type="checkbox" id="mtp_joint_left_1" name="mtp_joint_left_1" class="checkbox" data-x="58.5%" data-y="43.7%">
+        <!--<label for="mtp_joint_left_2" class="checkbox" data-x="42%" data-y="88%">左足指MP関節2</label>-->
+        <input type="checkbox" id="mtp_joint_left_2" name="mtp_joint_left_2" class="checkbox" data-x="69.6%" data-y="43.7%">
+        <!--<label for="mtp_joint_left_3" class="checkbox" data-x="42%" data-y="85%">左足指MP関節3</label>-->
+        <input type="checkbox" id="mtp_joint_left_3" name="mtp_joint_left_3" class="checkbox" data-x="77.2%" data-y="45.5%">
+        <!--<label for="mtp_joint_left_4" class="checkbox" data-x="42%" data-y="82%">左足指MP関節4</label>-->
+        <input type="checkbox" id="mtp_joint_left_4" name="mtp_joint_left_4" class="checkbox" data-x="83.3%" data-y="50.2%">
+        <!--<label for="mtp_joint_left_5" class="checkbox" data-x="42%" data-y="79%">左足指MP関節5</label>-->
+        <input type="checkbox" id="mtp_joint_left_5" name="mtp_joint_left_5" class="checkbox" data-x="89.9%" data-y="56.5%">
+
+        <!-- 右足指のMTP関節のチェックボックス -->
+        <!--<label for="mtp_joint_right_1" class="checkbox" data-x="3%" data-y="91%">右足指MP関節1</label>-->
+        <input type="checkbox" id="mtp_joint_right_1" name="mtp_joint_right_1" class="checkbox" data-x="40.0%" data-y="43.7%">
+        <!--<label for="mtp_joint_right_2" class="checkbox" data-x="3%" data-y="88%">右足指MP関節2</label>-->
+        <input type="checkbox" id="mtp_joint_right_2" name="mtp_joint_right_2" class="checkbox" data-x="28.8%" data-y="43.7%">
+        <!--<label for="mtp_joint_right_3" class="checkbox" data-x="3%" data-y="85%">右足指MP関節3</label>-->
+        <input type="checkbox" id="mtp_joint_right_3" name="mtp_joint_right_3" class="checkbox" data-x="21.3%" data-y="45.5%">
+        <!--<label for="mtp_joint_right_4" class="checkbox" data-x="3%" data-y="82%">右足指PIP関節4</label>-->
+        <input type="checkbox" id="mtp_joint_right_4" name="mtp_joint_right_4" class="checkbox" data-x="15.1%" data-y="50.2%">
+        <!--<label for="mtp_joint_right_5" class="checkbox" data-x="3%" data-y="79%">右足指PIP関節5</label>-->
+        <input type="checkbox" id="mtp_joint_right_5" name="mtp_joint_right_5" class="checkbox" data-x="8.6%" data-y="56.5%">
+        </form> <!-- フォームの終了タグ -->
+    </div> <!-- imageContainerの終了タグ -->
+        <div class="button-container">
+                <a href="{{ url_for('data_blueprint.body') }}" class="button">大関節入力に戻る</a>
+                <br>
+                <a href="{{ url_for('data_blueprint.handpicture') }}" class="button">写真入力画面に進む</a>
+            </div>
+            <p>次は手の写真を入力します。</p>
+        <script src="{{ url_for('data_blueprint.static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style_form.css') }}">
+    <title>検査所見</title>
+</head>
+<body>
+    <h2>血液検査の結果をうかがいます。</h2>
+    <h3>以下の項目の検査結果が判明している場合に入力してください。</h3>
+    <form action="{{ url_for('data_blueprint.labo_exam') }}" method="post">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="crp">血清CRP値 (mg/dl)</label>
+                <input type="number" id="crp" name="crp" min="0.01" step="0.01" required>mg/dl
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="esr">赤血球沈降速度 (mm)</label>
+                <input type="number" id="esr" name="esr" min="1" step="1" required>mm
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="rf">リウマトイド因子 (IU/ml)</label>
+                <input type="number" id="rf" name="rf" min="1" step="1" required>IU/ml
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="anti-ccp">抗環状シトルリン化ペプチド抗体 (U/ml)</label>
+                <input type="number" id="anti-ccp" name="anti-ccp" min="0.01" step="0.01" required>U/ml
+            </div>
+        </div>
+        <div class="button-container">
+        <a href="{{ url_for('data_blueprint.handpicture') }}" class="button">前に戻る</a>
+        <a href="{{ url_for('data_blueprint.x_ray') }}" class="button">先に進む</a>
+        </div>
+    </form>
+</body>
+</html>

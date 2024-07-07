@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>関節チェックリスト</title>
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/body.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h2>痛みや腫れがある関節の場所をうかがいます。</h2>
+    <p>下の図で、あなたが痛みや腫れがあると感じる関節をタップして印をつけてください。</p>
+    <div id="imageContainer">
+        <form id="jointForm" action="{{ url_for('data_blueprint.body') }}" method="post">
+        <!-- 関節のチェックボックスをここに配置 -->
+        <!-- 手関節のチェックボックス -->
+        <!--<label for="wrist_joint_hand_left" class="checkbox" data-x="32%" data-y="48%">左手関節</label>-->
+        <input type="checkbox" id="wrist_joint_hand_left" name="wrist_joint_hand_left" class="checkbox" data-x="63.1" data-y="47.7%">
+        <!--<label for="wrist_joint_hand_right" class="checkbox" data-x="14%" data-y="48%">右手関節</label>-->
+        <input type="checkbox" id="wrist_joint_hand_right" name="wrist_joint_hand_right" class="checkbox" data-x="35.9%" data-y="47.9%">
+
+        <!-- 肘関節のチェックボックス --> 
+        <!--<label for="elbow_joint_left" class="checkbox" data-x="29%" data-y="37%">左肘関節</label>-->
+        <input type="checkbox" id="elbow_joint_left" name="elbow_joint_left" class="checkbox" data-x="59.6%" data-y="36.7%">
+        <!--<label for="elbow_joint_right" class="checkbox" data-x="16%" data-y="37%">右肘関節</label>-->
+        <input type="checkbox" id="elbow_joint_right" name="elbow_joint_right" class="checkbox" data-x="39.2%" data-y="36.7%">
+
+        <!-- 肩関節のチェックボックス -->
+        <!--<label for="shoulder_joint_left" class="checkbox" data-x="28%" data-y="22%">左肩関節</label>-->
+        <input type="checkbox" id="shoulder_joint_left" name="shoulder_joint_left" class="checkbox" data-x="57.2%" data-y="23%">
+        <!--<label for="shoulder_joint_right" class="checkbox" data-x="18%" data-y="22%">右肩関節</label>-->
+        <input type="checkbox" id="shoulder_joint_right" name="shoulder_joint_right" class="checkbox" data-x="41.7%" data-y="23%">
+
+        <!-- 股関節のチェックボックス -->
+        <!--<label for="hip_joint_left" class="checkbox" data-x="25%" data-y="52%">左股関節</label>-->
+        <input type="checkbox" id="hip_joint_left" name="hip_joint_left" class="checkbox" data-x="53.5%" data-y="50.8%">
+        <!--<label for="hip_joint_right" class="checkbox" data-x="20%" data-y="52%">右股関節</label>-->
+        <input type="checkbox" id="hip_joint_right" name="hip_joint_right" class="checkbox" data-x="45.3%" data-y="50.8%">
+
+        <!-- 膝関節のチェックボックス -->
+        <!--<label for="knee_joint_left" class="checkbox" data-x="25%" data-y="72%">左膝関節</label>-->
+        <input type="checkbox" id="knee_joint_left" name="knee_joint_left" class="checkbox" data-x="52.8%" data-y="72%">
+        <!--<label for="knee_joint_right" class="checkbox" data-x="20%" data-y="72%">右膝関節</label>-->
+        <input type="checkbox" id="knee_joint_right" name="knee_joint_right" class="checkbox" data-x="45.7%" data-y="72%">
+
+        <!-- 足関節のチェックボックス -->
+        <!--<label for="ankle_joint_left" class="checkbox" data-x="25%" data-y="85%">左足関節</label>-->
+        <input type="checkbox" id="ankle_joint_left" name="ankle_joint_left" class="checkbox" data-x="53.2%" data-y="87.4%">
+        <!--<label for="ankle_joint_right" class="checkbox" data-x="20%" data-y="85%">右足関節</label>-->
+        <input type="checkbox" id="ankle_joint_right" name="ankle_joint_right" class="checkbox" data-x="45.6%" data-y="87.5%">
+        </form> <!-- フォームの終了タグ -->
+    </div> <!-- imageContainerの終了タグ -->
+        <div class="button-container">
+                <a href="{{ url_for('data_blueprint.lefthand') }}" class="button">左手入力画面に戻る</a>
+                <br>
+                <a href="{{ url_for('data_blueprint.foot') }}" class="button">足指入力画面に進む</a>
+            </div>
+        <script src="{{ url_for('data_blueprint.static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+

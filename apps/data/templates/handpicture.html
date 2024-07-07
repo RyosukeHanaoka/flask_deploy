@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style3.css') }}">
+    <title>写真撮影</title>
+</head>
+<body>
+    <h1>手の甲の写真を撮影します。</h1>
+    <h2>撮影方法</h2>
+    <p>ご使用のスマートフォンのカメラを起動し、あなたの手の甲をご自分で撮影してください。<br>
+        図のように、カメラを手の甲に向けて撮影してください。</p><br>
+        <h2>写真撮影</h2>
+            <p>以下のボタンをクリックして、写真撮影を開始してください。</p>
+            <div class="form-group1">
+                <form action="{{ url_for('data_blueprint.handpicture') }}" method="post" enctype="multipart/form-data">
+                    <!--<input type="file" name="right_hand" accept="image/*" class="file-input">-->
+                    <div>右手の写真：</div><input type="submit" value="写真を撮影する" class="photo-button">
+                </form>
+
+                <form action="{{ url_for('data_blueprint.handpicture') }}" method="post" entype="mutipart/form-data">
+                    <!--<input type="file" name="left_hand" accept="image/*" class="file-input">-->
+                    <div>左手の写真：</div><input type="submit" value="写真を撮影する" class="photo-button">
+                </form>
+            </div>
+    <h2>撮影例</h2>
+    <img src="{{ url_for('data_blueprint.static', filename='images/hand.jpg') }}" alt="手の甲の写真撮影方法">
+    <h2>撮影のポイント</h2>
+        <p>フラッシュを使用しないで、自然光で撮影してください。<br>
+            逆光にならないように撮影してください。<br>
+            できるだけ手の甲を大きく、正面に捉えて撮影してください。</p><br>
+            <h2>すでに撮影済みの写真をアップロードする場合</h2>
+            <p>以下のボタンをクリックして、撮影した写真をアップロードしてください。</p>
+            <div class="form-group2">
+                <form action="{{ url_for('data_blueprint.handpicture') }}" method="post" enctype="multipart/form-data">
+                    <label for="right_hand">右手の写真：</label>
+                    <input type="file" name="right_hand" accept="image/*" class="file-input">
+                    <input type="submit" value="送信" class="upload-button">
+                </form>
+                <form action="{{ url_for('data_blueprint.handpicture') }}" method="post" enctype="multipart/form-data">
+                    <label for="left_hand">左手の写真：</label>
+                    <input type="file" name="left_hand" accept="image/*" class="file-input">
+                    <input type="submit" value="送信" class="upload-button">
+                </form>
+            </div>
+        </div>
+
+    <h2>注意事項</h2>
+    <p>撮影した写真は、手の甲の状態を確認するために使用します。<br>
+        撮影した写真は、個人情報保護法に基づき、厳重に管理いたします。<br>
+        撮影した写真を、第三者に提供することはありません。</p><br>
+
+    <h2>患者さんによる入力はこれで終了です。お疲れ様でした。</h2>
+    <div class="button-container">
+    <a href="{{ url_for('data_blueprint.index') }}" class="button">ホームに戻る</a>
+    <br>
+    <a href="{{ url_for('data_blueprint.labo_exam') }}" class="button">関節入力画面に戻る</a>
+    </div>
+</body>
+</html>

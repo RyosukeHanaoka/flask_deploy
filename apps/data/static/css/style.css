@@ -1,0 +1,153 @@
+/* リセットCSSの補足スタイル */
+ul, ol, li, h1, h2, h3, h4, h5, h6, p, img {
+    margin: 0;
+    padding: 0;
+}
+
+/* ベースとなるスタイリング */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* ヘッダー画像のスタイリング */
+.header-container {
+    background: url('pixta_57668553_XL.jpg') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.header-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+h1 {
+    color: white;
+    font-size: 7.0em;
+    text-align: center;
+    font-family: 'Times', 'Courier', monospace;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+h3 {
+    color: white;
+    font-size: 2.0em;
+    text-align: center;
+    font-family: 'Times', 'Courier', monospace;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* コンテンツスタイル */
+.content {
+    background-color: #ffffff;
+    box-shadow: 0 0 0px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin: -50px auto 20px auto;
+    padding: 40px;
+    max-width: 80%;
+}
+
+h2 {
+    color: #012b57;
+    margin-bottom: 0.0em;
+    margin-top: 1em;
+}
+
+p {
+    line-height: 1.6;
+}
+
+.cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.cta-button {
+    display: inline-block;
+    background-image: linear-gradient(to top, #1212f3, #022758);
+    color: white;
+    text-align: center;
+    padding: 20px 60px;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.cta-button:hover {
+    background-image: linear-gradient(to top, #00b3b0, #004095);
+}
+
+/* お問い合わせ情報のスタイル */
+address {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    display: block;
+    margin-top: 20px;
+}
+
+/* ナビゲーションバーのスタイリング */
+.main-nav {
+    display: flex;
+    justify-content: center;
+    background-color: #ffffff;
+    padding: 2rem 0;
+}
+
+.main-nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 90px;
+}
+
+.main-nav ul li a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: larger;
+    font-family: 'Verdana', 'Geneva', 'Tahoma', sans-serif;
+    color: rgb(0, 0, 0);
+    padding: 0.5rem 1rem;
+}
+
+.main-nav ul li a:hover {
+    background-color: white;
+}
+
+@media (max-width: 700px) {
+    .main-nav ul {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+/* 横棒スタイル */
+.horizontal-line {
+    height: 4px;
+    background-color: rgb(29, 129, 218);
+    width: 100%;
+    margin: 5px -10px 10px -10px;
+}
+
+/* h2とpの間に赤の横棒を配置 */
+h2 + .horizontal-line {
+    display: block;
+}

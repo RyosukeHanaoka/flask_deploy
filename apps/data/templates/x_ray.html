@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style3.css') }}">
+    <title>Tutorial</title>
+</head>
+<body>
+    <h1>手のX線写真を取り込みます。</h1>
+    <h2>スマートフォンで撮影する方法</h2>
+    <p>ご使用のスマートフォンのカメラを起動し、あなたの手のX線写真を撮影してください。<br>
+        図のように、カメラを画面に向けて撮影してください。</p><br>
+    <h2>撮影のポイント</h2>
+    <p>フラッシュを使用しないで、自然光で撮影してください。<br>
+        画面に反射した光が入らないように撮影してください。<br>
+        できるだけ大きく、X線写真を正面に捉えて撮影してください。</p><br>
+    <h2>撮影例</h2>
+    <img src="{{ url_for('static', filename='css/hand_xray.jpg') }}" alt="手のX線写真撮影方法">
+    <p>これから写真を撮影する場合、以下のボタンをクリックして、写真撮影を開始してください。</p>
+    <form action="{{ url_for('data_blueprint.x_ray') }}" method="post">
+        <p>右手の写真：</p><input type="submit" value="写真撮影を開始する">
+    </form>
+    <form action="{{ url_for('data_blueprint.x_ray') }}" method="post">
+        <p>左手の写真：</p><input type="submit" value="写真撮影を開始する">
+    </form>
+    <h2>撮影された写真をアップロードする方法</h2>
+    <p>すでに撮影した写真がある場合、以下のボタンをクリックして、撮影した写真をアップロードしてください。</p>
+    <p>使用可能なファイル形式はjpeg, heic, heif, png, dcm, dicomです。<br>
+        スマートフォンだけでなく、pc, Macなどからのアップロードも可能です。</p>
+    <form action="{{ url_for('data_blueprint.x_ray') }}" method="post" enctype="multipart/form-data">
+        <p>右手の写真：<input type="file" name="right_hand" accept="image/*,.dcm,.dicom"></p>
+        <input type="submit" value="送信">
+    </form>
+    <form action="{{ url_for('data_blueprint.x_ray') }}" method="post" enctype="multipart/form-data">
+        <p>左手の写真：<input type="file" name="left_hand" accept="image/*,.dcm,.dicom"></p>
+        <input type="submit" value="送信">
+    </form>
+    <h2>注意事項</h2>
+    <p>撮影した写真は、関節リウマチによる関節破壊を評価するために使用します。<br>
+        撮影した写真は、個人情報保護法に基づき、厳重に管理いたします。<br>
+        撮影した写真を、第三者に提供することはありません。</p><br>
+    <h2>これで入力は終了です。お疲れ様でした。</h2>
+    <div class="button-container">
+        <a href="{{ url_for('data_blueprint.index') }}" class="button">ホームに戻る</a>
+        <a href="{{ url_for('data_blueprint.labo_exam') }}" class="button">検査入力画面に戻る</a>
+        <a href="{{ url_for('data_blueprint.joints_fig') }}" class="button">判定結果画面に戻る</a>
+    </div>
+</body>
+</html>

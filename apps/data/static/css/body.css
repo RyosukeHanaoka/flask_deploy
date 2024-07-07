@@ -1,0 +1,77 @@
+body {    font-family: Arial, sans-serif;    background-color: #f5f5f5;
+    display: grid; /* グリッドレイアウトを使う */
+    grid-template-rows: auto auto 1fr auto; /* 行の構造を定義 */    grid-template-columns: 1fr; /* 列は1列 */
+    justify-items: center; /* 列の中央に配置 */
+    align-items: start; /* 行の開始位置に配置 */
+    padding: 20px;
+}
+
+/* テキストのスタイリング */
+h2, p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 基本のボタンスタイル */
+.button {    
+    display: inline-block;
+    width: 180px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border: none;
+    border-radius: 5px;
+    text-decoration: solid;
+    text-shadow: rgba(0,0,0,0.5) 2px 2px 2px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+/* ホバー時の効果 */
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* ボタンをFlexboxで配置するための親要素 */
+.button-container {
+    display: flex;
+    justify-content: center; /* 中央揃え */
+    align-items: center;     /* 縦方向の中央揃え */
+    margin-top: 20px;
+}
+
+/* 画像コンテナのスタイリング */
+#imageContainer {
+    width: 90vh; /* 幅を調整 */
+    height: 90vh; /* アスペクト比を維持 */
+    max-height: 80vh;
+    max-width: 142.22vh;
+    position: relative;
+    background-image: url('body.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: auto;
+}
+
+/* チェックボックスのスタイリング */
+.checkbox {
+    position: absolute; /* 絶対位置 */
+    transform: translate(-50%, -50%); /* オフセットの修正 */
+    z-index: 1; /* チェックボックスが前面に来るように */
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 700px) {
+    #imageContainer {
+        width: 100vw; /* モバイルでは幅を最大に */
+        max-height:100vw;
+    }
+}
+
+
+

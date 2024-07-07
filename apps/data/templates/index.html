@@ -1,0 +1,78 @@
+<!-- apps/templates/index.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. AI Arthritis Detector</title>
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style.css') }}" media="(min-width:701px)">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/mobileindex.css') }}" media="(max-width: 700px)">
+</head>
+<body>
+    <div class="header-container">
+        <div class="header-image">
+            <h3>その痛み、専門家に受診すべきかお答えします！<br></h3>
+            <h1>Dr. AI<br>Arthritis Detector</h1>
+        </div>
+    </div>
+    <div class="content">
+        <header>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('data_blueprint.index') }}">ホーム</a></li>
+                    <li><a href="{{ url_for('data_blueprint.notice') }}">はじめての方</a></li>
+                    <li><a href="{{ url_for('auth_blueprint.login') }}">ログイン画面</a></li>
+                    <li><a href="{{ url_for('data_blueprint.index', lang='en') }}">English</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section>
+                <h2>関節リウマチってなに？</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>関節リウマチは、自己免疫と呼ばれる体内から異物を排除する免疫系システムの不適切な働きによって、全身の関節に慢性的な炎症を引き起こす原因不明の疾患です。冒された関節に強い痛みを生じるだけでなく、発症してからわずかな期間で関節周囲の骨、軟骨、靭帯を傷つけ、その本来の機能を損なってしまいます。その損傷は一度完成すると元通りに治ることはありません。<br>関節リウマチは、適切な治療を行わない場合、患者さんの人生を大きく変えてしまう深刻な病気ですが、その治療はここ数十年で大きく進歩しました。専門家が早期に診断し、強力な治療を開始すれば、関節の損傷を未然に防ぐことはじゅうぶんに可能です。そのためには、できるだけ早く専門家に受診してもらうことが大切です。
+                    </p>
+            </section>
+            <section>
+                <h2>どんな症状がでるの？</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>関節リウマチに罹患すると、多くの場合、手の指、足の指、手首、足首など、体の中心から離れた末梢の関節に痛みと腫れが生じます。病変は左右対称に多発することが多いです。痛みは特に朝がひどく、朝起きてから体を動かせるようになるまでに長い時間が必要になります。これを「朝のこわばり」と呼びます。炎症がひどくなると、疲れやすくなったり、食欲がなくなったりすることもあります。</p>
+            </section>
+            <section>
+                <h2>どうやって診断するの？</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>関節リウマチを診断するには、炎症を起こしている関節がたくさんあるか、慢性的に症状が続いているか、血液検査で炎症や免疫の異常が証明されるかを検討し、それらを総合的に判断する必要があります。患者さんの症状を正確に評価することが重要なので、専門家と非専門家の診断能力は大きく異なります。血液検査だけで関節リウマチを診断することはできません。</p>
+            </section>
+            <section>
+                <h2>このサイトは…</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>わたしたちは、人工知能の技術を応用し、関節リウマチをはじめとする炎症性関節疾患の診断を支援するソフトウェアを開発しています。<br>
+                    このサイトでは、スマートフォンから得られた患者さんの症状や手の写真、検査結果や手のX線写真を手掛かりにして、あなたが炎症性関節疾患に罹患しているか否かをアセスメントし、情報を提供します。<br>
+                    あちこちの関節が痛いけど、何科に行けばいいのかわからない、と悩んでいませんか？<br>
+                    このソフトウェアを利用して、早期に関節疾患を発見し治療のタイミングを逃さないようにしましょう。<br>
+                    </p>
+            </section>
+            <section>
+                <h2>使い方</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>ケースの重複を避けるために、メールアドレスを使用して使用登録をお願いします。<br>
+                    メールアドレスを悪用することはありません。ダイレクトメールなどを送付することもありません。<br>
+                    使用登録ののち、次のページから始まる簡単な質問に答えてください。<br>
+                    </p>
+            </section>
+            <section>
+                <h2>利用上の注意</h2>
+                <div class="horizontal-line"></div> <!-- 横棒 -->
+                <p>このソフトウェアは、診断を補助するものであり、医師の診断を代替するものではありません。<br>
+                    診断結果については、医師の診断を受けてください。</p>
+            </section>
+            <div class="cta">
+                <a href="{{ url_for('auth_blueprint.signin') }}" class="cta-button">使⽤登録にすすむ</a>
+            </div>
+        </main>
+        <footer>
+            <p>Dr. AI Arthritis Detector</p>
+        </footer>
+    </div>
+</body>
+</html>

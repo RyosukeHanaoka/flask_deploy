@@ -1,0 +1,75 @@
+<!-- apps/data/templates/index_en.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. AI Arthritis Detector</title>
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="header-container">
+    <div class="header-image">
+        <h3>We'll let you know if you should see a specialist for your joint pain!</h3>
+        <h1>Dr. AI<br>Arthritis Detector</h1>
+    </div>
+</div>
+<div class="content">
+    <header>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('data_blueprint.index') }}">Home</a></li>
+                <li><a href="{{ url_for('data_blueprint.notice') }}">First-time Users</a></li>
+                <li><a href="{{ url_for('auth_blueprint.login') }}">Login</a></li>
+                <li><a href="{{ url_for('data_blueprint.index', lang='ja') }}">日本語</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>What is Rheumatoid Arthritis?</h2>
+            <div class="horizontal-line"></div>
+            <p>Rheumatoid arthritis is a disease of unknown cause that leads to chronic inflammation of the joints throughout the body due to an inappropriate response of the immune system, which is supposed to eliminate foreign substances from the body. It not only causes severe joint pain in the affected joints but also damages the bones, cartilage, and ligaments around the joints within a short period of onset, impairing their normal function. Once this damage is complete, it cannot be reversed.</p>
+            <p>Rheumatoid arthritis is a serious condition that can significantly alter a patient's life if left untreated, but its treatment has made significant progress in recent decades. If diagnosed early by a specialist and treated aggressively, joint damage can be effectively prevented. For this reason, it is crucial to see a specialist as soon as possible.</p>
+        </section>
+        <section>
+            <h2>What are the Symptoms?</h2>
+            <div class="horizontal-line"></div>
+            <p>In most cases of rheumatoid arthritis, pain and swelling occur in the peripheral joints, such as the fingers, toes, wrists, and ankles, which are located away from the center of the body. The lesions often appear symmetrically on both sides of the body. The pain is particularly severe in the morning, and it takes a long time to be able to move the body after waking up, a condition known as "morning stiffness." As the inflammation worsens, fatigue and loss of appetite may also occur.</p>
+        </section>
+        <section>
+            <h2>How is it Diagnosed?</h2>
+            <div class="horizontal-line"></div>
+            <p>To diagnose rheumatoid arthritis, it is necessary to consider whether there are multiple inflamed joints, whether the symptoms are chronic, and whether blood tests show evidence of inflammation or immune abnormalities, and then make a comprehensive assessment. Accurately evaluating the patient's symptoms is crucial, and the diagnostic abilities of specialists and non-specialists differ significantly. Rheumatoid arthritis cannot be diagnosed by blood tests alone.</p>
+        </section>
+        <section>
+            <h2>About This Site</h2>
+            <div class="horizontal-line"></div>
+            <p>We are developing software that utilizes artificial intelligence technology to assist in the diagnosis of inflammatory joint diseases, including rheumatoid arthritis.<br>
+                This site will assess whether you have an inflammatory joint disease based on your symptoms, hand photos, test results, and hand X-rays obtained from your smartphone, and provide you with information.<br>
+                Are you struggling with joint pain but unsure which specialist to see?<br>
+                Use this software to detect joint disorders early and avoid missing the optimal treatment window.</p>
+        </section>
+        <section>
+            <h2>How to Use</h2>
+            <div class="horizontal-line"></div>
+            <p>To avoid duplicating cases, please register using your email address.<br>
+                We will not misuse your email address or send you direct mail.<br>
+                After registration, please answer the simple questionnaire on the following pages.</p>
+        </section>
+        <section>
+            <h2>Important Notice</h2>
+            <div class="horizontal-line"></div>
+            <p>This software is intended to assist in diagnosis and does not replace a physician's diagnosis.<br>
+                Please consult a doctor for the final diagnosis.</p>
+        </section>
+        <div class="cta">
+            <a href="{{ url_for('auth_blueprint.signin') }}" class="cta-button">Proceed to Registration</a>
+        </div>
+    </main>
+    <footer>
+        <p>Dr. AI Arthritis Detector</p>
+    </footer>
+</div>
+</body>
+</html>
