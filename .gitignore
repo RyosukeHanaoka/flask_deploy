@@ -1,0 +1,8 @@
+.png
+.jpeg
+.jpg
+.gif
+venv/
+__pycache__/
+*.pth
+*.db
