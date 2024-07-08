@@ -6,3 +6,8 @@ venv/
 __pycache__/
 *.pth
 *.db
+*.sqlite3
+*.log
+*.pyc
+requirements.txt/
+```

@@ -114,9 +114,9 @@ class RheumatoidArthritisDetector:
         return {"right_hand": right_hand_avg_prob, "left_hand": left_hand_avg_prob}
 
 # 使用例
-detector = RheumatoidArthritisDetector(model_checkpoint="/Users/hanaokaryousuke/flaskbook/apps/data/model.pth")
+detector = RheumatoidArthritisDetector(model_checkpoint="/Users/hanaokaryousuke/flask/apps/data/model.pth")
 result = detector.detect_rheumatoid_arthritis(
-    right_hand_dir="/Users/hanaokaryousuke/flaskbook/apps/data/pictures/image_righthand",
-    left_hand_dir="/Users/hanaokaryousuke/flaskbook/apps/data/pictures/image_lefthand"
+    right_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_righthand",
+    left_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_lefthand"
 )
 print(result)

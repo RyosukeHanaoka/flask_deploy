@@ -11,19 +11,17 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 class Detr:
     def __init__(self):
         # 必要なパスを設定
-        self.input_right_pre_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpright'
-        self.input_left_pre_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpleft'
-        self.output_right_pre_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpright_post'
-        self.output_left_pre_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpleft_post'
-        self.input_right_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpright_post'
-        self.input_left_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpleft_post'
-        #self.output_right_path = '/content/drive/MyDrive/xpright_post/'
-        #self.output_left_path = '/content/drive/MyDrive/xpleft_post/'
-        self.output_right_cropped_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpright_cropped'
-        self.output_left_cropped_path = '/Users/hanaokaryousuke/flaskbook/apps/data/pictures/xpleft_cropped'
+        self.input_right_pre_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpright'
+        self.input_left_pre_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpleft'
+        self.output_right_pre_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpright_post'
+        self.output_left_pre_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpleft_post'
+        self.input_right_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpright_post'
+        self.input_left_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpleft_post'
+        self.output_right_cropped_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpright_cropped'
+        self.output_left_cropped_path = '/Users/hanaokaryousuke/flask/apps/data/pictures/xpleft_cropped'
 
         # チェックポイントのクラス数を確認
-        self.checkpoint_path ='/Users/hanaokaryousuke/flaskbook/apps/data/checkpoint.pth'
+        self.checkpoint_path ='/Users/hanaokaryousuke/flask/apps/data/checkpoint.pth'
         checkpoint = torch.load(self.checkpoint_path, map_location='cpu')
         num_classes = checkpoint['model']['class_embed.weight'].shape[0]
 

@@ -1,0 +1,15 @@
+flask-migrate
+flask-mail
+flask-sqlalchemy
+flask-dotenv
+flask-login
+torch
+matplotlib
+torchvision
+numpy
+pandas
+scikit-learn
+pyheif
+pillow
+timm
+fitz
