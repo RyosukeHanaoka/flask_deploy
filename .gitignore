@@ -1,7 +1,7 @@
-.png
-.jpeg
-.jpg
-.gif
+*.png
+*.jpeg
+*.jpg
+*.gif
 venv/
 __pycache__/
 *.pth
