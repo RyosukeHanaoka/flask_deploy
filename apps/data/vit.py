@@ -8,6 +8,7 @@ from rembg import remove
 from torchvision import transforms
 import timm
 import torch.nn.functional as F
+import pillow_heif
 
 class RheumatoidArthritisDetector:
     def __init__(self, model_checkpoint, device=None):
@@ -27,7 +28,7 @@ class RheumatoidArthritisDetector:
         model.eval()
         return model
 
-    def convert_heic_to_image(self, heic_path):
+    """def convert_heic_to_image(self, heic_path):
         heif_file = pyheif.read(heic_path)
         return Image.frombytes(
             heif_file.mode, 
@@ -36,7 +37,13 @@ class RheumatoidArthritisDetector:
             "raw",
             heif_file.mode,
             heif_file.stride,
-        )
+        )"""
+    def convert_heic_to_image(self, heic_path):
+        # pillow_heifを使ってHEICファイルを読み込む
+        heif_file = pillow_heif.read(heic_path)
+    
+        # pillow_heifのreadメソッドはPillowのImageオブジェクトを直接返す
+        return heif_file
 
     def convert_to_jpg(self, input_directory, output_directory):
         os.makedirs(output_directory, exist_ok=True)

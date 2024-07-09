@@ -6,6 +6,7 @@ import torch
 from torchvision import transforms as T
 import matplotlib.pyplot as plt
 import sys
+import pillow_heif
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 class Detr:
@@ -66,6 +67,13 @@ class Detr:
                     img.save(page_output_path)
 
             elif ext == '.heic':
+            # pillow_heifを使ってHEICファイルを直接読み込む
+                img = pillow_heif.read_heif(img_path)
+                img.save(output_file_path)
+            else:
+                print(f"Unsupported file format: {ext}")
+
+            """elif ext == '.heic':
                 heif_file = pyheif.read(img_path)
                 img = Image.frombytes(
                     heif_file.mode, 
@@ -76,9 +84,8 @@ class Detr:
                     heif_file.stride,
                 )
                 img.save(output_file_path)
-
             else:
-                print(f"Unsupported file format: {ext}")
+                print(f"Unsupported file format: {ext}")"""
 
     def box_cxcywh_to_xyxy(self, x):
         x_c, y_c, w, h = x.unbind(1)
