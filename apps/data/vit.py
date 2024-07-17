@@ -8,9 +8,10 @@ from rembg import remove
 from torchvision import transforms
 import timm
 import torch.nn.functional as F
-import pillow_heif
+from pillow_heif import register_heif_opener
+register_heif_opener()
 
-class RheumatoidArthritisDetector:
+class Vit:
     def __init__(self, model_checkpoint, device=None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.model = self.load_model(model_checkpoint)
@@ -28,22 +29,10 @@ class RheumatoidArthritisDetector:
         model.eval()
         return model
 
-    """def convert_heic_to_image(self, heic_path):
-        heif_file = pyheif.read(heic_path)
-        return Image.frombytes(
-            heif_file.mode, 
-            heif_file.size, 
-            heif_file.data,
-            "raw",
-            heif_file.mode,
-            heif_file.stride,
-        )"""
     def convert_heic_to_image(self, heic_path):
         # pillow_heifを使ってHEICファイルを読み込む
-        heif_file = pillow_heif.read(heic_path)
-    
-        # pillow_heifのreadメソッドはPillowのImageオブジェクトを直接返す
-        return heif_file
+        image = Image.open('image.heic')
+        return image
 
     def convert_to_jpg(self, input_directory, output_directory):
         os.makedirs(output_directory, exist_ok=True)
@@ -121,9 +110,9 @@ class RheumatoidArthritisDetector:
         return {"right_hand": right_hand_avg_prob, "left_hand": left_hand_avg_prob}
 
 # 使用例
-detector = RheumatoidArthritisDetector(model_checkpoint="/Users/hanaokaryousuke/flask/apps/data/model.pth")
+"""detector = RheumatoidArthritisDetector(model_checkpoint="/Users/hanaokaryousuke/flask/apps/data/model.pth")
 result = detector.detect_rheumatoid_arthritis(
     right_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_righthand",
     left_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_lefthand"
 )
-print(result)
+print(result)"""

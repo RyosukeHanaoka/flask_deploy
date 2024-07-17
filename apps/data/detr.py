@@ -6,7 +6,8 @@ import torch
 from torchvision import transforms as T
 import matplotlib.pyplot as plt
 import sys
-import pillow_heif
+from pillow_heif import register_heif_opener
+register_heif_opener()
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 class Detr:
@@ -68,11 +69,11 @@ class Detr:
 
             elif ext == '.heic':
             # pillow_heifを使ってHEICファイルを直接読み込む
-                img = pillow_heif.read_heif(img_path)
+                img=Image.open(img_path)
+                #img = pillow_heif.read_heif(img_path)
                 img.save(output_file_path)
             else:
                 print(f"Unsupported file format: {ext}")
-
             """elif ext == '.heic':
                 heif_file = pyheif.read(img_path)
                 img = Image.frombytes(
@@ -99,7 +100,7 @@ class Detr:
         b = b * torch.tensor([img_w, img_h, img_w, img_h], dtype=torch.float32)
         return b
 
-    def plot_results(self, pil_img, prob=None, boxes=None):
+    """def plot_results(self, pil_img, prob=None, boxes=None):
         plt.figure(figsize=(16,10))
         plt.imshow(pil_img)
         ax = plt.gca()
@@ -113,7 +114,7 @@ class Detr:
                 ax.text(xmin, ymin, text, fontsize=15,
                         bbox=dict(facecolor='yellow', alpha=0.5))
         plt.axis('off')
-        plt.show()
+        plt.show()"""
 
     def crop_and_save(self, img, boxes, classes, output_base_path, img_name):
         for idx, (box, cls) in enumerate(zip(boxes.tolist(), classes)):
@@ -140,7 +141,7 @@ class Detr:
         outputs = self.model(img)
         for threshold in [0.9, 0.7]:
             probas_to_keep, bboxes_scaled = self.filter_bboxes_from_outputs(outputs, my_image.size, threshold=threshold)
-            self.plot_results(my_image, probas_to_keep, bboxes_scaled)
+            #self.plot_results(my_image, probas_to_keep, bboxes_scaled)
             self.crop_and_save(my_image, bboxes_scaled, probas_to_keep, output_base_path, img_name)
 
     def filter_bboxes_from_outputs(self, outputs, image_size, threshold=0.7):

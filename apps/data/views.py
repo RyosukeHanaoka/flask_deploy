@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, request, redirect, url_for, flash
+from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_required, current_user
 from .joint_models import JointData
 from .extensions import db
@@ -184,48 +184,76 @@ def labo_exam():
         db.session.add(labo_data)
         db.session.commit()
 
-        return redirect(url_for('data_blueprint.x_ray'))
+        return redirect(url_for('data_blueprint.handpicture'))
 
     return render_template('labo_exam.html') 
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
-#@login_required
 def handpicture():
-    if request.method == 'POST':# アップロードされたファイルを処理する
-        if 'right_hand' not in request.files:
-            abort(400, description="Missing 'right_hand' file in request")
-        if 'left_hand' not in request.files:
-            abort(400, description="Missing 'left_hand' file in request")
+    return render_template('handpicture.html')
 
-        # 右手の写真をアップロードから取得
-        right_hand = request.files['right_hand']
-        # 左手の写真をアップロードから取得
-        left_hand = request.files['left_hand']
+@data_blueprint.route('/select')
+def select():
+    return render_template('select.html')
 
-        # 現在の日時を取得
+@data_blueprint.route('/take_right_photo')
+def take_right_photo():
+    return render_template('take_right_photo.html')
+
+@data_blueprint.route('/take_left_photo')
+def take_left_photo():
+    return render_template('take_left_photo.html')
+
+@data_blueprint.route('/confirm_photos')
+def confirm_photos():
+    return render_template('confirm_photos.html')
+
+@data_blueprint.route('/complete')
+def complete():
+    return render_template('complete.html')
+
+@data_blueprint.route('/upload_existing', methods=['POST'])
+def upload_right():
+    if 'right_hand' not in request.files:
+        return redirect(request.url)
+    file = request.files['right_hand']
+    if file.filename == '':
+        return redirect(request.url)
+    if file:
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'right_hand.jpg'))
+        return redirect(url_for('data_blueprint.take_left_photo'))
+
+@data_blueprint.route('/upload_existing', methods=['POST'])
+def upload_left():
+    if 'left_hand' not in request.files:
+        return redirect(request.url)
+    file = request.files['left_hand']
+    if file.filename == '':
+        return redirect(request.url)
+    if file:
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'left_hand.jpg'))
+        return redirect(url_for('data_blueprint.confirm_photos'))
+
+@data_blueprint.route('/complete', methods=['POST'])
+def submit_photos():
+    if request.method == 'POST':
+        right_hand = request.files.get('right_hand')
+        left_hand = request.files.get('left_hand')
+
+        if not right_hand or not left_hand:
+            abort(400, description="Missing 'right_hand' or 'left_hand' file in request")
+
         now = datetime.now()
-        # 日時をファイル名に使用する形式に変換
         dt_string = now.strftime("%Y%m%d_%H%M%S")
 
-        # 右手の写真のファイル名を変更
         right_filename = f"{current_user.email}_{dt_string}_right.jpg"
-        # 右手の写真を保存するパス
-        right_path = os.path.join("apps/data/right_hand", right_filename)
-        # 右手の写真を保存
+        right_path = os.path.join("apps/data/image_righthand", right_filename)
         right_hand.save(right_path)
 
-        # 左手の写真を左右反転
-        left_img = Image.open(left_hand)
-        left_img_flipped = left_img.transpose(Image.FLIP_LEFT_RIGHT)
-
-        # 左手の写真のファイル名を変更
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
-        # 左手の写真を保存するパス
-        left_path = os.path.join("apps/data/left_hand", left_filename)
-        # 左手の写真を保存
-        left_img_flipped.save(left_path)
+        left_path = os.path.join("apps/data/image_lefthand", left_filename)
+        left_hand.save(left_path)
 
-        # データベースに保存
         hand_data = HandData(
             user_id=current_user.id,
             datetime=now,
@@ -237,7 +265,7 @@ def handpicture():
 
         return redirect(url_for('data_blueprint.x_ray'))
 
-    return render_template('handpicture.html')        
+    return redirect(url_for('data_blueprint.complete'))
 
 @data_blueprint.route('/x_ray', methods=['GET', 'POST'])
 #@login_required

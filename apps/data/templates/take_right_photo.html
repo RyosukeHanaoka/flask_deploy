@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>右手の写真撮影</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function previewPhoto(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(previewId).src = e.target.result;
+                    document.getElementById(previewId).style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>右手の写真撮影</h1>
+    </header>
+    <main>
+        <form action="{{ url_for('data_blueprint.upload_right') }}" method="post" enctype="multipart/form-data">
+            <section>
+                <input type="file" id="right_hand_camera" name="right_hand" accept="image/*" capture="camera" required onchange="previewPhoto(this, 'right_hand_preview')"><br>
+                <img id="right_hand_preview" src="" alt="右手の写真プレビュー" style="display: none; max-width: 100%;"><br>
+                <button type="submit">次へ</button>
+                <button type="button" onclick="document.getElementById('right_hand_camera').value = ''; document.getElementById('right_hand_preview').style.display = 'none';">やり直し</button>
+            </section>
+        </form>
+    </main>
+</body>
+</html>
