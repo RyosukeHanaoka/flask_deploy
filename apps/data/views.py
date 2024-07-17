@@ -336,5 +336,3 @@ def result():
     symptoms = Symptom.query.filter_by(user_id=user_id).first()
     # 結果を表示する
     return render_template('drresult.html', symptoms=symptoms)
-
-model=Detr()

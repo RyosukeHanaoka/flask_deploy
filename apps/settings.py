@@ -15,3 +15,4 @@ class Config:
     # 管理者のユーザー名とパスワードを設定
     USERNAME = os.environ.get('ADMIN_USERNAME') 
     PASSWORD = os.environ.get('ADMIN_PASSWORD') 
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
