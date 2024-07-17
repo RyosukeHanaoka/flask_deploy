@@ -212,7 +212,7 @@ def confirm_photos():
 def complete():
     return render_template('complete.html')
 
-@data_blueprint.route('/upload_existing', methods=['POST'])
+@data_blueprint.route('/upload_right', methods=['POST'])
 def upload_right():
     if 'right_hand' not in request.files:
         return redirect(request.url)
@@ -223,7 +223,7 @@ def upload_right():
         file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'right_hand.jpg'))
         return redirect(url_for('data_blueprint.take_left_photo'))
 
-@data_blueprint.route('/upload_existing', methods=['POST'])
+@data_blueprint.route('/upload_left', methods=['POST'])
 def upload_left():
     if 'left_hand' not in request.files:
         return redirect(request.url)
