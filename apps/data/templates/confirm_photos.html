@@ -12,11 +12,11 @@
     <main>
         <section>
             <h2>右手の手背の写真</h2>
-            <img id="right_hand_preview" src="{{ url_for('static', filename='uploads/right_hand.jpg') }}" alt="右手の写真プレビュー" style="max-width: 100%;"><br>
+            <img id="right_hand_preview" src="{{ url_for('static', filename='data/pictures/right_hand.jpg') }}" alt="右手の写真プレビュー" style="max-width: 100%;"><br>
         </section>
         <section>
             <h2>左手の手背の写真</h2>
-            <img id="left_hand_preview" src="{{ url_for('static', filename='uploads/left_hand.jpg') }}" alt="左手の写真プレビュー" style="max-width: 100%;"><br>
+            <img id="left_hand_preview" src="{{ url_for('static', filename='data/pictures/left_hand.jpg') }}" alt="左手の写真プレビュー" style="max-width: 100%;"><br>
         </section>
         <section>
             <form action="{{ url_for('data_blueprint.submit_photos') }}" method="post">
