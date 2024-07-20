@@ -1,17 +1,37 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>手背の写真アップロード</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
+    <title>Handpics</title>
 </head>
 <body>
-    <header>
-        <h1>手背の写真アップロード</h1>
-    </header>
-    <main>
-        <p>このアプリケーションを使用して、右手と左手の手背の写真をアップロードしてください。</p>
-        <button onclick="location.href='{{ url_for('data_blueprint.select') }}'">スタート</button>
-    </main>
+    <h1>手の甲の写真を撮影します。</h1>
+    <h2>撮影方法</h2>
+    <p>ご使用のスマートフォンのカメラを起動し、あなたの手の甲をご自分で撮影してください。<br>
+        図のように、カメラを手の甲に向けて撮影してください。</p><br>
+    <h2>撮影のポイント</h2>
+    <p>フラッシュを使用しないで、自然光で撮影してください。<br>
+        逆光にならないように撮影してください。<br>
+        できるだけ手の甲を大きく、正面に捉えて撮影してください。</p><br>
+    <h2>撮影例</h2>
+    <img src="{{ url_for('static', filename='images/hand.jpg') }}" alt="手の甲の写真撮影方法">
+    <h2>写真撮影とアップロード</h2>
+    <p>これから写真を撮影する場合、以下のボタンをクリックして、写真撮影を開始してください。</p>
+    <p>右手の写真：</p>
+    <form action="/pictures/image_righthand" method="post" enctype="multipart/form-data">
+        <input type="file" name="photo" accept="image/*" capture="enviroment">
+        <input type="submit" value="アップロード">
+    </form>
+    <p>左手の写真：</p>
+    <form action="/pictures/image_lefthand" method="post" enctype="multipart/form-data">
+        <input type="file" name="photo" accept="image/*" capture="enviroment">
+        <input type="submit" value="アップロード">
+    </form>
+    <h2>注意事項</h2>
+    <p>撮影した写真は、手の甲の状態を確認するために使用します。<br>
+        撮影した写真は、個人情報保護法に基づき、厳重に管理いたします。<br>
+        撮影した写真を、第三者に提供することはありません。</p><br>
 </body>
 </html>

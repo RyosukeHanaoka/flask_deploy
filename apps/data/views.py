@@ -190,52 +190,6 @@ def labo_exam():
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
 def handpicture():
-    return render_template('handpicture.html')
-
-@data_blueprint.route('/select')
-def select():
-    return render_template('select.html')
-
-@data_blueprint.route('/take_right_photo')
-def take_right_photo():
-    return render_template('take_right_photo.html')
-
-@data_blueprint.route('/take_left_photo')
-def take_left_photo():
-    return render_template('take_left_photo.html')
-
-@data_blueprint.route('/confirm_photos')
-def confirm_photos():
-    return render_template('confirm_photos.html')
-
-@data_blueprint.route('/complete')
-def complete():
-    return render_template('complete.html')
-
-@data_blueprint.route('/upload_right', methods=['POST'])
-def upload_right():
-    if 'right_hand' not in request.files:
-        return redirect(request.url)
-    file = request.files['right_hand']
-    if file.filename == '':
-        return redirect(request.url)
-    if file:
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'right_hand.jpg'))
-        return redirect(url_for('data_blueprint.take_left_photo'))
-
-@data_blueprint.route('/upload_left', methods=['POST'])
-def upload_left():
-    if 'left_hand' not in request.files:
-        return redirect(request.url)
-    file = request.files['left_hand']
-    if file.filename == '':
-        return redirect(request.url)
-    if file:
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'left_hand.jpg'))
-        return redirect(url_for('data_blueprint.confirm_photos'))
-
-@data_blueprint.route('/complete', methods=['POST'])
-def submit_photos():
     if request.method == 'POST':
         right_hand = request.files.get('right_hand')
         left_hand = request.files.get('left_hand')
@@ -264,8 +218,7 @@ def submit_photos():
         db.session.commit()
 
         return redirect(url_for('data_blueprint.x_ray'))
-
-    return redirect(url_for('data_blueprint.complete'))
+    return render_template('handpicture.html')
 
 @data_blueprint.route('/x_ray', methods=['GET', 'POST'])
 #@login_required
