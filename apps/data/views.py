@@ -1,12 +1,12 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_required, current_user
-from .joint_models import JointData
+from .models import JointData
 from .extensions import db
 import datetime
 import os
-from .hand_models import HandData
-from .data_models import Labo
-from .models import Symptom
+from .models import HandData
+from .models import Criteria
+from .models import Symptom, Labo
 from PIL import Image
 from .detr import Detr
 from .vit import Vit
