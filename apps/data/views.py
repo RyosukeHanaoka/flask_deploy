@@ -6,7 +6,7 @@ import datetime
 import os
 from .models import HandData
 from .models import Criteria
-from .models import Symptom, Labo
+from .models import Symptom, Criteria
 from PIL import Image
 from .detr import Detr
 from .vit import Vit
@@ -173,7 +173,7 @@ def labo_exam():
         acpa = float(request.form['acpa'])
     
         # データベースに保存
-        labo_data = Labo(
+        labo_data = Criteria(
             user_id=current_user.id,
             email=current_user.email,
             crp=crp,
