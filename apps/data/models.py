@@ -1,5 +1,5 @@
 from datetime import datetime
-from .extensions import db
+from extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -97,18 +97,13 @@ class Criteria(db.Model):
     total_score = db.Column(db.Integer, nullable=False)
     duration_score = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, user_id, email, crp, esr, rf, acpa, immunology_score, inflammation_score, joint_score, total_score, duration_score):
+    def __init__(self, user_id, email, crp, esr, rf, acpa):
         self.user_id = user_id
         self.email = email
         self.crp = crp
         self.esr = esr
         self.rf = rf
         self.acpa = acpa
-        self.immunology_score = immunology_score
-        self.inflammation_score = inflammation_score
-        self.joint_score = joint_score
-        self.total_score = total_score
-        self.duration_score = duration_score
     
     def distal_joints(self, joint_entry):
         distal_joints = sum(
@@ -156,11 +151,11 @@ class Criteria(db.Model):
             return 1
         return 0
         
-    def calculate_duration_score(self):
-        return 1 if self.six_weeks_duration == 1 else 0
+    def calculate_duration_score(self, six_weeks_duration):
+        return 1 if six_weeks_duration == 1 else 0
         
-    def calculate_total_score(self, inflammation_score, joint_score):
-        return self.calculate_immunology_score() + inflammation_score + joint_score + self.calculate_duration_score()
+    def calculate_total_score(self, inflammation_score, joint_score, six_weeks_duration):
+        return self.calculate_immunology_score() + inflammation_score + joint_score + self.calculate_duration_score(six_weeks_duration)
 
 class HandData(db.Model):
     __tablename__ = 'hand_data'
