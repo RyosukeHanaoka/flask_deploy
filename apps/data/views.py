@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify
+from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify, session
 from flask_login import login_required, current_user
 from .models import JointData
 from .extensions import db
@@ -10,7 +10,7 @@ from .models import Symptom, Criteria
 from PIL import Image
 from .detr import Detr
 from .vit import Vit
-
+vit=Vit()
 data_blueprint = Blueprint('data_blueprint', __name__, template_folder='templates', static_folder='static')
 
 @data_blueprint.route('/index', methods=['GET', 'POST'])
@@ -28,7 +28,7 @@ def notice():
     return render_template('notice.html')
 
 @data_blueprint.route('/symptom', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def symptom():
     if request.method == 'POST':
         user = Symptom(
@@ -59,7 +59,7 @@ def symptom():
     return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations)
 
 @data_blueprint.route('/righthand', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def righthand():
     if request.method == 'POST':
         data=request.form
@@ -86,7 +86,7 @@ def righthand():
     return render_template('righthand.html')
 
 @data_blueprint.route('/lefthand', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def lefthand():
     if request.method == 'POST':
         data=request.form
@@ -113,7 +113,7 @@ def lefthand():
     return render_template('lefthand.html')
 
 @data_blueprint.route('/body', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def body():
     if request.method == 'POST':
         data=request.form
@@ -138,7 +138,7 @@ def body():
     return render_template('body.html')
 
 @data_blueprint.route('/foot', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def foot():
     if request.method == 'POST':
         data=request.form
@@ -163,7 +163,7 @@ def foot():
     return render_template('foot.html')
 
 @data_blueprint.route('/labo_exam', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def labo_exam():
     if request.method == 'POST':
         # フォームからデータを取得
@@ -189,37 +189,69 @@ def labo_exam():
     return render_template('labo_exam.html') 
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
+@login_required
 def handpicture():
     if request.method == 'POST':
+        #フォームから送信されたファイルのうち、right_handという名前のファイルを取得
         right_hand = request.files.get('right_hand')
+        #フォームから送信されたファイルのうち、left_handという名前のファイルを取得
         left_hand = request.files.get('left_hand')
-
+        #右手または左手のファイルが送信されていない場合にTrueとなる条件式
         if not right_hand or not left_hand:
+            #HTTP 400エラーを返し、エラーメッセージを提供
             abort(400, description="Missing 'right_hand' or 'left_hand' file in request")
-
+        #現在の日時を取得
         now = datetime.now()
+        #日時を文字列に変換
         dt_string = now.strftime("%Y%m%d_%H%M%S")
-
+        #ユーザーのメールアドレスと日時を組み合わせてファイル名を生成
         right_filename = f"{current_user.email}_{dt_string}_right.jpg"
+        #画像を保存するディレクトリへのパスを生成
         right_path = os.path.join("apps/data/image_righthand", right_filename)
+        #右手の画像を指定したパスに保存
         right_hand.save(right_path)
-
+        #ユーザーのメールアドレスと日時を組み合わせてファイル名を生成
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
+        #画像を保存するディレクトリへのパスを生成
         left_path = os.path.join("apps/data/image_lefthand", left_filename)
+        #左手の画像を指定したパスに保存
         left_hand.save(left_path)
 
+        #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
         hand_data = HandData(
             user_id=current_user.id,
             datetime=now,
             right_hand_path=right_path,
             left_hand_path=left_path
         )
+        #データベースセッションに新しいHandDataオブジェクトを追加
         db.session.add(hand_data)
+        #データベースに変更をコミット（保存）
         db.session.commit()
-
-        return redirect(url_for('data_blueprint.x_ray'))
+        #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
+        result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+        #検出結果をセッションに保存
+        session['result'] = result
+        #/ptresultエンドポイントにリダイレクト
+        return redirect(url_for('data_blueprint.ptresult'))
+    #GETリクエストが送信された場合、handpicture.htmlテンプレートをレンダリングして返す
     return render_template('handpicture.html')
 
+
+@data_blueprint.route('/ptresult', methods=['GET', 'POST'])
+@login_required
+def result():
+    # セッションから検出結果を取得
+    result = session.get('result')
+    #セッションに結果が保存されていない場合、HTTP 400エラーを返す
+    if result is None:
+        abort(400, description="結果が見つかりません")
+    
+    # 結果を表示する
+    return render_template('ptresult.html', result=result)
+
+
+"""
 @data_blueprint.route('/x_ray', methods=['GET', 'POST'])
 #@login_required
 def x_ray():
@@ -280,12 +312,6 @@ def x_ray():
 
         return redirect(url_for('data_blueprint.drresult'))
 
-    return render_template('x_ray.html')
+    return render_template('x_ray.html')"""
 
-@data_blueprint.route('/drresult', methods=['GET', 'POST'])
-#@login_required
-def result():
-    user_id = current_user.id
-    symptoms = Symptom.query.filter_by(user_id=user_id).first()
-    # 結果を表示する
-    return render_template('drresult.html', symptoms=symptoms)
+

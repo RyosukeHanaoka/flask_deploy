@@ -20,6 +20,8 @@ class Vit:
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
+        self.jpeg_righthand_dir = "/Users/hanaokaryousuke/flask/apps/data/pictures/jpeg_righthand"
+        self.jpeg_lefthand_dir = "/Users/hanaokaryousuke/flask/apps/data/pictures/jpeg_lefthand"
 
     def load_model(self, model_checkpoint):
         model = timm.create_model('vit_base_patch16_224.augreg_in21k', pretrained=False, num_classes=2)
@@ -34,45 +36,41 @@ class Vit:
         image = Image.open('image.heic')
         return image
 
-    def convert_to_jpg(self, input_directory, output_directory):
+    def convert_to_jpg(self, file_path, output_directory):
         os.makedirs(output_directory, exist_ok=True)
-        for filename in os.listdir(input_directory):
-            file_path = os.path.join(input_directory, filename)
-            output_file_path = os.path.join(output_directory, os.path.splitext(filename)[0] + ".jpg")
-            
-            if filename.lower().endswith(".heic"):
-                img = self.convert_heic_to_image(file_path)
-            elif filename.lower().endswith(".pdf"):
-                images = Image.open(file_path).convert("RGB")
-                images.save(output_file_path, "JPEG")
-                continue
-            else:
-                img = Image.open(file_path)
-            
-            img = img.convert("RGB")  # Convert RGBA to RGB
-            img.save(output_file_path, "JPEG")
-            img.close()
+        filename=os.path.basename(file_path)
+        output_file_path = os.path.join(output_directory, os.path.splitext(filename)[0] + ".jpg")
+        
+        if filename.lower().endswith(".heic"):
+            img = self.convert_heic_to_image(file_path)
+        elif filename.lower().endswith(".pdf"):
+            images = Image.open(file_path).convert("RGB")
+            images.save(output_file_path, "JPEG")
+        else:
+            img = Image.open(file_path)
+        
+        img = img.convert("RGB")  # Convert RGBA to RGB
+        img.save(output_file_path, "JPEG")
+        img.close()
+        return output_file_path
 
-    def remove_background(self, input_directory):
-        for filename in os.listdir(input_directory):
-            if filename.lower().endswith(".jpg"):
-                file_path = os.path.join(input_directory, filename)
-                output_file_path = file_path  # Overwrite the same file
-                
-                input_image = Image.open(file_path)
-                output_image = remove(input_image)
-                output_image = output_image.convert("RGB")  # Ensure image is in RGB mode
-                output_image.save(output_file_path)
-                input_image.close()
+    def remove_background(self, file_path):
+        output_file_path = file_path  # Output file path is the same as input file path       
+        input_image = Image.open(file_path)
+        output_image = remove(input_image)
+        output_image = output_image.convert("RGB")  # Ensure image is in RGB mode
+        output_image.save(output_file_path)
+        input_image.close()
+        return output_file_path
 
-    def flip_images(self, input_directory):
-        for filename in os.listdir(input_directory):
-            if filename.lower().endswith(".jpg"):
-                file_path = os.path.join(input_directory, filename)
-                img = Image.open(file_path)
-                flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
-                flipped_img.save(file_path)
-                img.close()
+    def flip_images(self, file_path, output_directory):
+        filename_base = os.path.splitext(os.path.basename(file_path))[0]
+        output_file_path = os.path.join(output_directory, filename_base + "_flipped.jpg")
+        img = Image.open(file_path)
+        flipped_img = img.transpose(Image.FLIP_LEFT_RIGHT)
+        flipped_img.save(output_file_path)
+        img.close()
+        return output_file_path
 
     def preprocess_image(self, image_path):
         image = Image.open(image_path)
@@ -84,35 +82,16 @@ class Vit:
             probabilities = F.softmax(output, dim=1)
         return probabilities[0][1].item()  # Rheumatoid arthritis class probability
 
-    def detect_rheumatoid_arthritis(self, right_hand_dir, left_hand_dir):
-        self.convert_to_jpg(right_hand_dir, right_hand_dir)
-        self.convert_to_jpg(left_hand_dir, left_hand_dir)
+    def detect_rheumatoid_arthritis(self, right_hand_file, left_hand_file):
+        jpeg_righthand=self.convert_to_jpg(right_hand_file, self.jpeg_righthand_dir)
+        jpeg_lefthand=self.convert_to_jpg(left_hand_file, self.jpeg_lefthand_dir)
         
-        self.remove_background(right_hand_dir)
-        self.remove_background(left_hand_dir)
+        removed_righthand=self.remove_background(jpeg_righthand)
+        removed_lefthand=self.remove_background(jpeg_lefthand)
         
-        self.flip_images(left_hand_dir)
-        
-        right_hand_images = [img for img in os.listdir(right_hand_dir) if img.lower().endswith(".jpg")]
-        left_hand_images = [img for img in os.listdir(left_hand_dir) if img.lower().endswith(".jpg")]
+        flipped_lefthand=self.flip_images(removed_lefthand, os.path.dirname(removed_righthand))
 
-        if not right_hand_images:
-            raise ValueError("右手の画像が存在しません。")
-        if not left_hand_images:
-            raise ValueError("左手の画像が存在しません。")
+        right_hand_result = self.predict(self.preprocess_image(removed_righthand))
+        left_hand_result = self.predict(self.preprocess_image(flipped_lefthand))
 
-        right_hand_results = [self.predict(self.preprocess_image(os.path.join(right_hand_dir, img))) for img in right_hand_images]
-        left_hand_results = [self.predict(self.preprocess_image(os.path.join(left_hand_dir, img))) for img in left_hand_images]
-
-        right_hand_avg_prob = sum(right_hand_results) / len(right_hand_results)
-        left_hand_avg_prob = sum(left_hand_results) / len(left_hand_results)
-
-        return {"right_hand": right_hand_avg_prob, "left_hand": left_hand_avg_prob}
-
-# 使用例
-"""detector = RheumatoidArthritisDetector(model_checkpoint="/Users/hanaokaryousuke/flask/apps/data/model.pth")
-result = detector.detect_rheumatoid_arthritis(
-    right_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_righthand",
-    left_hand_dir="/Users/hanaokaryousuke/flask/apps/data/pictures/image_lefthand"
-)
-print(result)"""
+        return {"right_hand": right_hand_result, "left_hand": left_hand_result}
