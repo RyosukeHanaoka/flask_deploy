@@ -10,7 +10,7 @@ from .models import Symptom, Criteria
 from PIL import Image
 from .detr import Detr
 from .vit import Vit
-vit=Vit()
+vit=Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 data_blueprint = Blueprint('data_blueprint', __name__, template_folder='templates', static_folder='static')
 
 @data_blueprint.route('/index', methods=['GET', 'POST'])
@@ -28,7 +28,7 @@ def notice():
     return render_template('notice.html')
 
 @data_blueprint.route('/symptom', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def symptom():
     if request.method == 'POST':
         user = Symptom(
@@ -59,7 +59,7 @@ def symptom():
     return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations)
 
 @data_blueprint.route('/righthand', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def righthand():
     if request.method == 'POST':
         data=request.form
@@ -86,7 +86,7 @@ def righthand():
     return render_template('righthand.html')
 
 @data_blueprint.route('/lefthand', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def lefthand():
     if request.method == 'POST':
         data=request.form
@@ -113,7 +113,7 @@ def lefthand():
     return render_template('lefthand.html')
 
 @data_blueprint.route('/body', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def body():
     if request.method == 'POST':
         data=request.form
@@ -138,7 +138,7 @@ def body():
     return render_template('body.html')
 
 @data_blueprint.route('/foot', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def foot():
     if request.method == 'POST':
         data=request.form
@@ -163,7 +163,7 @@ def foot():
     return render_template('foot.html')
 
 @data_blueprint.route('/labo_exam', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def labo_exam():
     if request.method == 'POST':
         # フォームからデータを取得
@@ -189,7 +189,7 @@ def labo_exam():
     return render_template('labo_exam.html') 
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def handpicture():
     if request.method == 'POST':
         #フォームから送信されたファイルのうち、right_handという名前のファイルを取得
@@ -239,7 +239,7 @@ def handpicture():
 
 
 @data_blueprint.route('/ptresult', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def result():
     # セッションから検出結果を取得
     result = session.get('result')
