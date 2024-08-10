@@ -14,14 +14,21 @@
     <h2>写真撮影とアップロード</h2>
     <p>これから写真を撮影する場合、以下のボタンをクリックして、写真撮影を開始してください。</p>
     <p>右手の写真：</p>
-    <form action="/pictures/image_righthand" method="post" enctype="multipart/form-data">
+    <form action="/handpicture" method="post" enctype="multipart/form-data">
+        <p>右手の写真：</p>
+        <input type="file" name="right_hand" accept="image/*" capture="environment">
+        <p>左手の写真：</p>
+        <input type="file" name="left_hand" accept="image/*" capture="environment">
+        <input type="submit" value="アップロード">
+    </form>
+    <!--<form action="/pictures/image_righthand" method="post" enctype="multipart/form-data">
         <input type="file" name="photo" accept="image/*" capture="enviroment">
         <input type="submit" value="アップロード">
     </form>
     <p>左手の写真：</p>
     <form action="/pictures/image_lefthand" method="post" enctype="multipart/form-data">
         <input type="file" name="photo" accept="image/*" capture="enviroment">
-        <input type="submit" value="アップロード">
+        <input type="submit" value="アップロード">-->
     </form>
     <h2>撮影のポイント</h2>
     <p>フラッシュを使用しないで、自然光で撮影してください。<br>

@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('auth_blueprint.static', filename='style.css') }}">
 </head>
 <body>
+    <h2>サインイン画面</h2>
+    <p>ご理解ご同意いただき誠にありがとうございます。</p>
+    <p>以下のフォームに必要事項を入力してください。</p>
     <div class="signin-container">
         <form action="{{ url_for('auth_blueprint.signin') }}" method="post">
             <label for="email">メールアドレス:</label>
@@ -21,6 +24,15 @@
             <input type="submit" value="サインイン">
         </form>
         <p class="message">サインイン後、認証用のメールが送付されます。</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     </div>
 </body>
 </html>

@@ -20,7 +20,7 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="{{ url_for('data_blueprint.index') }}">ホーム</a></li>
-                    <li><a href="{{ url_for('auth_blueprint.login') }}">ログイン画面</a></li>
+                    <li><a href="{{ url_for('data_blueprint.notice') }}">はじめての方</a></li>
                     <li><a href="{{ url_for('data_blueprint.index', lang='en') }}">English</a></li>
                 </ul>
             </nav>
@@ -65,9 +65,6 @@
                 <p>このソフトウェアは、診断を補助するものであり、医師の診断を代替するものではありません。<br>
                     診断結果については、医師の診断を受けてください。</p>
             </section>
-            <div class="cta">
-                <a href="{{ url_for('data_blueprint.notice') }}" class="cta-button">使⽤登録にすすむ</a>
-            </div>
         </main>
         <footer>
             <p>Dr. AI Arthritis Detector</p>

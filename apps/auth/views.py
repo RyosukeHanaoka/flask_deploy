@@ -47,7 +47,7 @@ def login():
         # ユーザーが存在し、パスワードが一致する場合、ログイン処理を行い、データページにリダイレクト
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect(url_for('data_blueprint.index'))
+            return redirect(url_for('data_blueprint.symptom'))
         else:
             flash('ログイン失敗', 'error')
     return render_template('login.html')
@@ -65,12 +65,18 @@ def register():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        user = User(email=email)
-        user.set_password(password)
+        # パスワードをハッシュ化
+        hashed_password = generate_password_hash(password, method='sha256')
+        # 新しいユーザーを作成
+        user = User(email=email, password_hash=hashed_password)
+        # データベースにユーザーを保存
         db.session.add(user)
         db.session.commit()
+        #ユーザーをログインさせる
+        login_user(user)
+        # ログインページにリダイレクト
         flash('登録完了', 'success')
-        return redirect(url_for('auth_blueprint.login'))
+        return redirect(url_for('data_blueprint.index'))
     return render_template('register.html')
 
 @auth_blueprint.route('/reset_password', methods=['GET', 'POST'])
@@ -99,8 +105,7 @@ def signin():
             return redirect(url_for('auth_blueprint.signin'))
 
         # 重複していない場合は、新しいユーザーオブジェクトを作成し、パスワードをハッシュ化してデータベースに保存
-        new_user = User(email=email)
-        new_user.set_password(password)
+        new_user = User(email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
         # 登録完了のメッセージを表示し、ログインページにリダイレクトする。
