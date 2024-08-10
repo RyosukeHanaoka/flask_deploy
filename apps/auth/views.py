@@ -28,8 +28,10 @@ from apps.data.extensions import db
 login_manager = LoginManager()
 # Blueprintオブジェクトを作成
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static')
+
 # ログインマネージャーの設定
 @login_manager.user_loader
+
 # ユーザーIDを元にユーザーオブジェクトを取得する関数
 def load_user(user_id):
     # ユーザーIDを受け取り、データベースからユーザーオブジェクトを取得

@@ -46,7 +46,7 @@ class Symptom(db.Model):
     pain_level = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    six_weeks_duration = db.Column(db.Integer)
+    six_weeks_duration = db.Column(db.String(10))
 
     def __init__(self, user_id, sex, birth_year, birth_month, birth_day, onset_year, onset_month, onset_day,
                  morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
