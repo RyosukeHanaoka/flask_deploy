@@ -1,14 +1,10 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify, session
 from flask_login import login_required, current_user
-from .models import JointData
 from .extensions import db
 import datetime
 import os
-from .models import HandData
-from .models import Criteria
+from .models import HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
 from .models import Symptom, Criteria
-from PIL import Image
-from .detr import Detr
 from .vit import Vit
 vit=Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 data_blueprint = Blueprint('data_blueprint', __name__, template_folder='templates', static_folder='static')
@@ -70,7 +66,7 @@ def symptom():
 def righthand():
     if request.method == 'POST':
         data=request.form
-        joint_entry = JointData(
+        joint_entry = RightHandData(
             dip_joint_right_2=int(data.get('dip_joint_right_2', 0)),
             dip_joint_right_3=int(data.get('dip_joint_right_3', 0)),
             dip_joint_right_4=int(data.get('dip_joint_right_4', 0)),
@@ -93,11 +89,11 @@ def righthand():
     return render_template('righthand.html')
 
 @data_blueprint.route('/lefthand', methods=['GET', 'POST'])
-@login_required
+#@login_required
 def lefthand():
     if request.method == 'POST':
         data=request.form
-        joint_entry = JointData(
+        joint_entry = LeftHandData(
             dip_joint_left_2=int(data.get('dip_joint_left_2', 0)),
             dip_joint_left_3=int(data.get('dip_joint_left_3', 0)),
             dip_joint_left_4=int(data.get('dip_joint_left_4', 0)),
@@ -124,7 +120,7 @@ def lefthand():
 def body():
     if request.method == 'POST':
         data=request.form
-        joint_entry = JointData(
+        joint_entry = LargeJointData(
             wrist_joint_hand_left=int(data.get('wrist_joint_hand_left', 0)),
             wrist_joint_hand_right=int(data.get('wrist_joint_hand_right', 0)),
             elbow_joint_left=int(data.get('elbow_joint_left', 0)),
@@ -149,7 +145,7 @@ def body():
 def foot():
     if request.method == 'POST':
         data=request.form
-        joint_entry = JointData(
+        joint_entry = FootJointData(
             mtp_joint_left_1=int(data.get('mtp_joint_left_1', 0)),
             mtp_joint_left_2=int(data.get('mtp_joint_left_2', 0)),
             mtp_joint_left_3=int(data.get('mtp_joint_left_3', 0)),
@@ -225,7 +221,7 @@ def handpicture():
         left_hand.save(left_path)
 
         #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
-        hand_data = HandData(
+        hand_data = HandPicData(
             user_id=current_user.id,
             datetime=now,
             right_hand_path=right_path,

@@ -158,7 +158,7 @@ class Criteria(db.Model):
     def calculate_total_score(self, inflammation_score, joint_score, six_weeks_duration):
         return self.calculate_immunology_score() + inflammation_score + joint_score + self.calculate_duration_score(six_weeks_duration)
 
-class HandData(db.Model):
+class HandPicData(db.Model):
     __tablename__ = 'hand_data'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -173,39 +173,46 @@ class HandData(db.Model):
         self.right_hand_path = right_hand_path
         self.left_hand_path = left_hand_path
 
-class JointData(db.Model):
-    __tablename__ = 'joint_data'
-    
+class RightHandData(db.Model):
+    __tablename__ = 'righthand_data'   
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dip_joint_right_2 = db.Column(db.Integer)
+    dip_joint_right_3 = db.Column(db.Integer)
+    dip_joint_right_4 = db.Column(db.Integer)
+    dip_joint_right_5 = db.Column(db.Integer)
+    thumb_ip_joint_right = db.Column(db.Integer)
+    pip_joint_right_2 = db.Column(db.Integer)
+    pip_joint_right_3 = db.Column(db.Integer)
+    pip_joint_right_4 = db.Column(db.Integer)
+    pip_joint_right_5 = db.Column(db.Integer)
+    mp_joint_right_1 = db.Column(db.Integer)
+    mp_joint_right_2 = db.Column(db.Integer)
+    mp_joint_right_3 = db.Column(db.Integer)
+    mp_joint_right_4 = db.Column(db.Integer)
+    mp_joint_right_5 = db.Column(db.Integer)
+class LeftHandData(db.Model):
+    __tablename__ = 'lefthand_data'    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     dip_joint_left_2 = db.Column(db.Integer)
     dip_joint_left_3 = db.Column(db.Integer)
     dip_joint_left_4 = db.Column(db.Integer)
     dip_joint_left_5 = db.Column(db.Integer)
-    dip_joint_right_2 = db.Column(db.Integer)
-    dip_joint_right_3 = db.Column(db.Integer)
-    dip_joint_right_4 = db.Column(db.Integer)
-    dip_joint_right_5 = db.Column(db.Integer)
     thumb_ip_joint_left = db.Column(db.Integer)
-    thumb_ip_joint_right = db.Column(db.Integer)
     pip_joint_left_2 = db.Column(db.Integer)
     pip_joint_left_3 = db.Column(db.Integer)
     pip_joint_left_4 = db.Column(db.Integer)
     pip_joint_left_5 = db.Column(db.Integer)
-    pip_joint_right_2 = db.Column(db.Integer)
-    pip_joint_right_3 = db.Column(db.Integer)
-    pip_joint_right_4 = db.Column(db.Integer)
-    pip_joint_right_5 = db.Column(db.Integer)
     mp_joint_left_1 = db.Column(db.Integer)
     mp_joint_left_2 = db.Column(db.Integer)
     mp_joint_left_3 = db.Column(db.Integer)
     mp_joint_left_4 = db.Column(db.Integer)
     mp_joint_left_5 = db.Column(db.Integer)
-    mp_joint_right_1 = db.Column(db.Integer)
-    mp_joint_right_2 = db.Column(db.Integer)
-    mp_joint_right_3 = db.Column(db.Integer)
-    mp_joint_right_4 = db.Column(db.Integer)
-    mp_joint_right_5 = db.Column(db.Integer)
+class LargeJointData(db.Model):
+    __tablename__ = 'largejoint_data'    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     wrist_joint_hand_left = db.Column(db.Integer)
     wrist_joint_hand_right = db.Column(db.Integer)
     elbow_joint_left = db.Column(db.Integer)
@@ -218,6 +225,10 @@ class JointData(db.Model):
     knee_joint_right = db.Column(db.Integer)
     ankle_joint_left = db.Column(db.Integer)
     ankle_joint_right = db.Column(db.Integer)
+class FootJointData(db.Model):
+    __tablename__ = 'footjoint_data'   
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     mtp_joint_left_1 = db.Column(db.Integer)
     mtp_joint_left_2 = db.Column(db.Integer)
     mtp_joint_left_3 = db.Column(db.Integer)
@@ -285,3 +296,60 @@ class JointData(db.Model):
         self.mtp_joint_right_5 = mtp_joint_right_5
         self.distal_joints = distal_joints
         self.proximal_joints = proximal_joints
+
+"""class JointData(db.Model):
+    __tablename__ = 'joint_data'    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    dip_joint_left_2 = db.Column(db.Integer)
+    dip_joint_left_3 = db.Column(db.Integer)
+    dip_joint_left_4 = db.Column(db.Integer)
+    dip_joint_left_5 = db.Column(db.Integer)
+    dip_joint_right_2 = db.Column(db.Integer)
+    dip_joint_right_3 = db.Column(db.Integer)
+    dip_joint_right_4 = db.Column(db.Integer)
+    dip_joint_right_5 = db.Column(db.Integer)
+    thumb_ip_joint_left = db.Column(db.Integer)
+    thumb_ip_joint_right = db.Column(db.Integer)
+    pip_joint_left_2 = db.Column(db.Integer)
+    pip_joint_left_3 = db.Column(db.Integer)
+    pip_joint_left_4 = db.Column(db.Integer)
+    pip_joint_left_5 = db.Column(db.Integer)
+    pip_joint_right_2 = db.Column(db.Integer)
+    pip_joint_right_3 = db.Column(db.Integer)
+    pip_joint_right_4 = db.Column(db.Integer)
+    pip_joint_right_5 = db.Column(db.Integer)
+    mp_joint_left_1 = db.Column(db.Integer)
+    mp_joint_left_2 = db.Column(db.Integer)
+    mp_joint_left_3 = db.Column(db.Integer)
+    mp_joint_left_4 = db.Column(db.Integer)
+    mp_joint_left_5 = db.Column(db.Integer)
+    mp_joint_right_1 = db.Column(db.Integer)
+    mp_joint_right_2 = db.Column(db.Integer)
+    mp_joint_right_3 = db.Column(db.Integer)
+    mp_joint_right_4 = db.Column(db.Integer)
+    mp_joint_right_5 = db.Column(db.Integer)
+    wrist_joint_hand_left = db.Column(db.Integer)
+    wrist_joint_hand_right = db.Column(db.Integer)
+    elbow_joint_left = db.Column(db.Integer)
+    elbow_joint_right = db.Column(db.Integer)
+    shoulder_joint_left = db.Column(db.Integer)
+    shoulder_joint_right = db.Column(db.Integer)
+    hip_joint_left = db.Column(db.Integer)
+    hip_joint_right = db.Column(db.Integer)
+    knee_joint_left = db.Column(db.Integer)
+    knee_joint_right = db.Column(db.Integer)
+    ankle_joint_left = db.Column(db.Integer)
+    ankle_joint_right = db.Column(db.Integer)
+    mtp_joint_left_1 = db.Column(db.Integer)
+    mtp_joint_left_2 = db.Column(db.Integer)
+    mtp_joint_left_3 = db.Column(db.Integer)
+    mtp_joint_left_4 = db.Column(db.Integer)
+    mtp_joint_left_5 = db.Column(db.Integer)
+    mtp_joint_right_1 = db.Column(db.Integer)
+    mtp_joint_right_2 = db.Column(db.Integer)
+    mtp_joint_right_3 = db.Column(db.Integer)
+    mtp_joint_right_4 = db.Column(db.Integer)
+    mtp_joint_right_5 = db.Column(db.Integer)
+    distal_joints = db.Column(db.Integer)
+    proximal_joints = db.Column(db.Integer)"""
