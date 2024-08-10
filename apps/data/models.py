@@ -191,6 +191,23 @@ class RightHandData(db.Model):
     mp_joint_right_3 = db.Column(db.Integer)
     mp_joint_right_4 = db.Column(db.Integer)
     mp_joint_right_5 = db.Column(db.Integer)
+
+    def __init__(self, user_id, dip_joint_right_2, dip_joint_right_3, dip_joint_right_4, dip_joint_right_5, thumb_ip_joint_right, pip_joint_right_2, pip_joint_right_3, pip_joint_right_4, pip_joint_right_5, mp_joint_right_1, mp_joint_right_2, mp_joint_right_3, mp_joint_right_4, mp_joint_right_5):
+        self.user_id = user_id
+        self.dip_joint_right_2 = dip_joint_right_2
+        self.dip_joint_right_3 = dip_joint_right_3
+        self.dip_joint_right_4 = dip_joint_right_4
+        self.dip_joint_right_5 = dip_joint_right_5
+        self.thumb_ip_joint_right = thumb_ip_joint_right
+        self.pip_joint_right_2 = pip_joint_right_2
+        self.pip_joint_right_3 = pip_joint_right_3
+        self.pip_joint_right_4 = pip_joint_right_4
+        self.pip_joint_right_5 = pip_joint_right_5
+        self.mp_joint_right_1 = mp_joint_right_1
+        self.mp_joint_right_2 = mp_joint_right_2
+        self.mp_joint_right_3 = mp_joint_right_3
+        self.mp_joint_right_4 = mp_joint_right_4
+        self.mp_joint_right_5 = mp_joint_right_5
 class LeftHandData(db.Model):
     __tablename__ = 'lefthand_data'    
     id = db.Column(db.Integer, primary_key=True)
@@ -209,6 +226,23 @@ class LeftHandData(db.Model):
     mp_joint_left_3 = db.Column(db.Integer)
     mp_joint_left_4 = db.Column(db.Integer)
     mp_joint_left_5 = db.Column(db.Integer)
+
+    def __init__(self, user_id, dip_joint_left_2, dip_joint_left_3, dip_joint_left_4, dip_joint_left_5, thumb_ip_joint_left, pip_joint_left_2, pip_joint_left_3, pip_joint_left_4, pip_joint_left_5, mp_joint_left_1, mp_joint_left_2, mp_joint_left_3, mp_joint_left_4, mp_joint_left_5):
+        self.user_id = user_id
+        self.dip_joint_left_2 = dip_joint_left_2
+        self.dip_joint_left_3 = dip_joint_left_3
+        self.dip_joint_left_4 = dip_joint_left_4
+        self.dip_joint_left_5 = dip_joint_left_5
+        self.thumb_ip_joint_left = thumb_ip_joint_left
+        self.pip_joint_left_2 = pip_joint_left_2
+        self.pip_joint_left_3 = pip_joint_left_3
+        self.pip_joint_left_4 = pip_joint_left_4
+        self.pip_joint_left_5 = pip_joint_left_5
+        self.mp_joint_left_1 = mp_joint_left_1
+        self.mp_joint_left_2 = mp_joint_left_2
+        self.mp_joint_left_3 = mp_joint_left_3
+        self.mp_joint_left_4 = mp_joint_left_4
+        self.mp_joint_left_5 = mp_joint_left_5
 class LargeJointData(db.Model):
     __tablename__ = 'largejoint_data'    
     id = db.Column(db.Integer, primary_key=True)
@@ -225,6 +259,21 @@ class LargeJointData(db.Model):
     knee_joint_right = db.Column(db.Integer)
     ankle_joint_left = db.Column(db.Integer)
     ankle_joint_right = db.Column(db.Integer)
+
+    def __init__(self, user_id, wrist_joint_hand_left, wrist_joint_hand_right, elbow_joint_left, elbow_joint_right, shoulder_joint_left, shoulder_joint_right, hip_joint_left, hip_joint_right, knee_joint_left, knee_joint_right, ankle_joint_left, ankle_joint_right):    
+        self.user_id = user_id
+        self.wrist_joint_hand_left = wrist_joint_hand_left
+        self.wrist_joint_hand_right = wrist_joint_hand_right
+        self.elbow_joint_left = elbow_joint_left
+        self.elbow_joint_right = elbow_joint_right
+        self.shoulder_joint_left = shoulder_joint_left
+        self.shoulder_joint_right = shoulder_joint_right
+        self.hip_joint_left = hip_joint_left
+        self.hip_joint_right = hip_joint_right
+        self.knee_joint_left = knee_joint_left
+        self.knee_joint_right = knee_joint_right
+        self.ankle_joint_left = ankle_joint_left
+        self.ankle_joint_right = ankle_joint_right
 class FootJointData(db.Model):
     __tablename__ = 'footjoint_data'   
     id = db.Column(db.Integer, primary_key=True)
@@ -242,48 +291,8 @@ class FootJointData(db.Model):
     distal_joints = db.Column(db.Integer)
     proximal_joints = db.Column(db.Integer)
 
-    def __init__(self, user_id, dip_joint_left_2, dip_joint_left_3, dip_joint_left_4, dip_joint_left_5, dip_joint_right_2, dip_joint_right_3, dip_joint_right_4, dip_joint_right_5, thumb_ip_joint_left, thumb_ip_joint_right, pip_joint_left_2, pip_joint_left_3, pip_joint_left_4, pip_joint_left_5, pip_joint_right_2, pip_joint_right_3, pip_joint_right_4, pip_joint_right_5, mp_joint_left_1, mp_joint_left_2, mp_joint_left_3, mp_joint_left_4, mp_joint_left_5, mp_joint_right_1, mp_joint_right_2, mp_joint_right_3, mp_joint_right_4, mp_joint_right_5, wrist_joint_hand_left, wrist_joint_hand_right, elbow_joint_left, elbow_joint_right, shoulder_joint_left, shoulder_joint_right, hip_joint_left, hip_joint_right, knee_joint_left, knee_joint_right, ankle_joint_left, ankle_joint_right, mtp_joint_left_1, mtp_joint_left_2, mtp_joint_left_3, mtp_joint_left_4, mtp_joint_left_5, mtp_joint_right_1, mtp_joint_right_2, mtp_joint_right_3, mtp_joint_right_4, mtp_joint_right_5, distal_joints, proximal_joints):
+    def __init__(self, user_id, mtp_joint_left_1, mtp_joint_left_2, mtp_joint_left_3, mtp_joint_left_4, mtp_joint_left_5, mtp_joint_right_1, mtp_joint_right_2, mtp_joint_right_3, mtp_joint_right_4, mtp_joint_right_5, distal_joints, proximal_joints):
         self.user_id = user_id
-        self.dip_joint_left_2 = dip_joint_left_2
-        self.dip_joint_left_3 = dip_joint_left_3
-        self.dip_joint_left_4 = dip_joint_left_4
-        self.dip_joint_left_5 = dip_joint_left_5
-        self.dip_joint_right_2 = dip_joint_right_2
-        self.dip_joint_right_3 = dip_joint_right_3
-        self.dip_joint_right_4 = dip_joint_right_4
-        self.dip_joint_right_5 = dip_joint_right_5
-        self.thumb_ip_joint_left = thumb_ip_joint_left
-        self.thumb_ip_joint_right = thumb_ip_joint_right
-        self.pip_joint_left_2 = pip_joint_left_2
-        self.pip_joint_left_3 = pip_joint_left_3
-        self.pip_joint_left_4 = pip_joint_left_4
-        self.pip_joint_left_5 = pip_joint_left_5
-        self.pip_joint_right_2 = pip_joint_right_2
-        self.pip_joint_right_3 = pip_joint_right_3
-        self.pip_joint_right_4 = pip_joint_right_4
-        self.pip_joint_right_5 = pip_joint_right_5
-        self.mp_joint_left_1 = mp_joint_left_1
-        self.mp_joint_left_2 = mp_joint_left_2
-        self.mp_joint_left_3 = mp_joint_left_3
-        self.mp_joint_left_4 = mp_joint_left_4
-        self.mp_joint_left_5 = mp_joint_left_5
-        self.mp_joint_right_1 = mp_joint_right_1
-        self.mp_joint_right_2 = mp_joint_right_2
-        self.mp_joint_right_3 = mp_joint_right_3
-        self.mp_joint_right_4 = mp_joint_right_4
-        self.mp_joint_right_5 = mp_joint_right_5
-        self.wrist_joint_hand_left = wrist_joint_hand_left
-        self.wrist_joint_hand_right = wrist_joint_hand_right
-        self.elbow_joint_left = elbow_joint_left
-        self.elbow_joint_right = elbow_joint_right
-        self.shoulder_joint_left = shoulder_joint_left
-        self.shoulder_joint_right = shoulder_joint_right
-        self.hip_joint_left = hip_joint_left
-        self.hip_joint_right = hip_joint_right
-        self.knee_joint_left = knee_joint_left
-        self.knee_joint_right = knee_joint_right
-        self.ankle_joint_left = ankle_joint_left
-        self.ankle_joint_right = ankle_joint_right
         self.mtp_joint_left_1 = mtp_joint_left_1
         self.mtp_joint_left_2 = mtp_joint_left_2
         self.mtp_joint_left_3 = mtp_joint_left_3

@@ -65,8 +65,10 @@ def symptom():
 @login_required
 def righthand():
     if request.method == 'POST':
+        print(request.form)
         data=request.form
         joint_entry = RightHandData(
+            user_id=current_user.id,
             dip_joint_right_2=int(data.get('dip_joint_right_2', 0)),
             dip_joint_right_3=int(data.get('dip_joint_right_3', 0)),
             dip_joint_right_4=int(data.get('dip_joint_right_4', 0)),
@@ -94,6 +96,7 @@ def lefthand():
     if request.method == 'POST':
         data=request.form
         joint_entry = LeftHandData(
+            user_id=current_user.id,
             dip_joint_left_2=int(data.get('dip_joint_left_2', 0)),
             dip_joint_left_3=int(data.get('dip_joint_left_3', 0)),
             dip_joint_left_4=int(data.get('dip_joint_left_4', 0)),
@@ -121,6 +124,7 @@ def body():
     if request.method == 'POST':
         data=request.form
         joint_entry = LargeJointData(
+            user_id=current_user.id,
             wrist_joint_hand_left=int(data.get('wrist_joint_hand_left', 0)),
             wrist_joint_hand_right=int(data.get('wrist_joint_hand_right', 0)),
             elbow_joint_left=int(data.get('elbow_joint_left', 0)),
@@ -146,6 +150,7 @@ def foot():
     if request.method == 'POST':
         data=request.form
         joint_entry = FootJointData(
+            user_id=current_user.id,
             mtp_joint_left_1=int(data.get('mtp_joint_left_1', 0)),
             mtp_joint_left_2=int(data.get('mtp_joint_left_2', 0)),
             mtp_joint_left_3=int(data.get('mtp_joint_left_3', 0)),
