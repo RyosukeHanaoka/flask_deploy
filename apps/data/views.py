@@ -209,20 +209,28 @@ def handpicture():
             #HTTP 400エラーを返し、エラーメッセージを提供
             abort(400, description="Missing 'right_hand' or 'left_hand' file in request")
         #現在の日時を取得
-        now = datetime.now()
+        now = datetime.datetime.now()
+        
         #日時を文字列に変換
         dt_string = now.strftime("%Y%m%d_%H%M%S")
         #ユーザーのメールアドレスと日時を組み合わせてファイル名を生成
         right_filename = f"{current_user.email}_{dt_string}_right.jpg"
-        #画像を保存するディレクトリへのパスを生成
-        right_path = os.path.join("apps/data/image_righthand", right_filename)
-        #右手の画像を指定したパスに保存
-        right_hand.save(right_path)
-        #ユーザーのメールアドレスと日時を組み合わせてファイル名を生成
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
-        #画像を保存するディレクトリへのパスを生成
-        left_path = os.path.join("apps/data/image_lefthand", left_filename)
-        #左手の画像を指定したパスに保存
+
+        # 画像を保存するディレクトリ
+        right_dir = "apps/data/image_righthand"
+        left_dir = "apps/data/image_lefthand"
+
+        # ディレクトリが存在しない場合は作成
+        os.makedirs(right_dir, exist_ok=True)
+        os.makedirs(left_dir, exist_ok=True)
+
+        # 保存するファイルのパス
+        right_path = os.path.join(right_dir, right_filename)
+        left_path = os.path.join(left_dir, left_filename)
+
+        # ファイルを保存
+        right_hand.save(right_path)
         left_hand.save(left_path)
 
         #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
@@ -248,7 +256,7 @@ def handpicture():
 
 @data_blueprint.route('/ptresult', methods=['GET', 'POST'])
 @login_required
-def result():
+def ptresult():
     # セッションから検出結果を取得
     result = session.get('result')
     #セッションに結果が保存されていない場合、HTTP 400エラーを返す
