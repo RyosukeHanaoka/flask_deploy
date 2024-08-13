@@ -247,7 +247,7 @@ def handpicture():
         #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
         result = vit.detect_rheumatoid_arthritis(right_path, left_path)
         #検出結果をセッションに保存
-        session['result'] = result
+        session['result'] = result()
         #/ptresultエンドポイントにリダイレクト
         return redirect(url_for('data_blueprint.ptresult'))
     #GETリクエストが送信された場合、handpicture.htmlテンプレートをレンダリングして返す

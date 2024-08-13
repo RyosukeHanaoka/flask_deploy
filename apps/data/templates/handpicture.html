@@ -13,7 +13,6 @@
         図のように、カメラを手の甲に向けて撮影してください。</p><br>
     <h2>写真撮影とアップロード</h2>
     <p>これから写真を撮影する場合、以下のボタンをクリックして、写真撮影を開始してください。</p>
-    <p>右手の写真：</p>
     <form action="{{ url_for('data_blueprint.handpicture') }}" method="post" enctype="multipart/form-data">
         <p>右手の写真：</p>
         <input type="file" name="right_hand" accept="image/*" capture="environment">
@@ -31,8 +30,6 @@
     <p>撮影した写真は、手の甲の状態を確認するために使用します。<br>
         撮影した写真は、個人情報保護法に基づき、厳重に管理いたします。<br>
         撮影した写真を、第三者に提供することはありません。</p><br>
-    <form action="/handpicture" method="post" >
-        <input type="submit" class="button" value="結果出力画面に進む">
     <div class="button-container">
         <a href="{{ url_for('data_blueprint.foot') }}" class="button">足指の入力に戻る</a>
     </div>

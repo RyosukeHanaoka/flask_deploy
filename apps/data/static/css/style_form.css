@@ -12,6 +12,7 @@ body {
 h1 {
     text-align: left;
     font-size:20px;
+    margin-left: 5vh;
     margin-bottom: 10px;
 }
 .form-group label {
@@ -19,7 +20,7 @@ h1 {
     font-size: 1em;
     height: 5vh;
     margin-top: 5vh;
-    margin-left:0vw;
+    margin-left:5vw;
     margin-bottom: 50px;
 }
 p {
@@ -27,7 +28,7 @@ p {
     font-size: 1.0em;
     height: 5vh;
     margin-top: 5vh;
-    margin-left:0vw;
+    margin-left:5vw;
     margin-bottom: 100px;
 }
 .form-group input[type="radio"] + label {

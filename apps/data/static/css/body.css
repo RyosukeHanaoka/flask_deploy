@@ -15,7 +15,7 @@ h2, p {
 /* 基本のボタンスタイル */
 .button {    
     display: inline-block;
-    width: 180px;
+    width: 200px;
     padding: 10px 20px;
     font-size: 16px;
     color: white;
