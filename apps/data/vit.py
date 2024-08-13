@@ -93,5 +93,6 @@ class Vit:
 
         right_hand_result = self.predict(self.preprocess_image(removed_righthand))
         left_hand_result = self.predict(self.preprocess_image(flipped_lefthand))
-
-        return {"right_hand": right_hand_result, "left_hand": left_hand_result}
+        result=100*(right_hand_result+left_hand_result)/2
+        return round(result, 2)
+        #return {"right_hand": right_hand_result, "left_hand": left_hand_result}
