@@ -49,9 +49,9 @@ def login():
         # ユーザーが存在し、パスワードが一致する場合、ログイン処理を行い、データページにリダイレクト
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect(url_for('data_blueprint.symptom'))
+            return redirect(url_for('auth_blueprint.login_success'))
         else:
-            flash('ログイン失敗', 'error')
+            return redirect(url_for('auth_blueprint.login_failure'))
     return render_template('login.html')
 
 # ログアウトページのルーティング
@@ -61,6 +61,14 @@ def logout():
     # ログアウト処理を行い、ログインページにリダイレクト
     logout_user()
     return redirect(url_for('auth_blueprint.login'))
+
+@auth_blueprint.route('/login_failure', methods=['GET', 'POST'])
+def login_failure():
+    return render_template('login_failure.html')
+
+@auth_blueprint.route('/login_success', methods=['GET', 'POST'])
+def login_success():
+    return render_template('login_success.html')
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def register():

@@ -306,6 +306,7 @@ class FootJointData(db.Model):
         self.distal_joints = distal_joints
         self.proximal_joints = proximal_joints
 
+
 """class JointData(db.Model):
     __tablename__ = 'joint_data'    
     id = db.Column(db.Integer, primary_key=True)
