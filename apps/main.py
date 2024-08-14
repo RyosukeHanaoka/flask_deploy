@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from apps.auth.views import auth_blueprint, login_manager
 from apps.data.views import data_blueprint
-# from apps.dpl import dpl_blueprint  # 準備ができたらコメントを外す
+from apps.edit.views import edit_blueprint
 from apps.data.extensions import db, migrate
 
 def create_app():
@@ -33,7 +33,7 @@ def create_app():
     # Blueprintを登録
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
     app.register_blueprint(data_blueprint, url_prefix='/data')
-    # app.register_blueprint(dpl_blueprint, url_prefix='/dpl')  # 準備ができたらコメントを外す
+    app.register_blueprint(edit_blueprint, url_prefix='/edit') 
 
     return app
 
