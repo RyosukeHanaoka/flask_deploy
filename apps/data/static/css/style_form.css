@@ -1,72 +1,71 @@
+
+
+/* 全体のスタイル */
 body {
-    position: relative;        /* 要素の配置方法を指定 */
-    margin: 0 auto; /* ページ全体のマージンを0にする */
-    width: 100%;
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* フォームセクションのスタイル */
+.form-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-    margin-bottom: 5vh; /* 各セクション間の間隔を広げる */
-}
-h1 {
-    text-align: left;
-    font-size:20px;
-    margin-left: 5vh;
-    margin-bottom: 10px;
-}
-.form-group label {
-    display: block;
-    font-size: 1em;
-    height: 5vh;
-    margin-top: 5vh;
-    margin-left:5vw;
-    margin-bottom: 50px;
-}
-p {
-    display: block;
-    font-size: 1.0em;
-    height: 5vh;
-    margin-top: 5vh;
-    margin-left:5vw;
-    margin-bottom: 100px;
-}
-.form-group input[type="radio"] + label {
-    height: 3vh;
-    margin-top: 0vh;
-    margin-right: 7vw;
-    margin-left: 1vw;
-    margin-bottom:5px;
-    display: inline-block;
+    margin-bottom: 15px;
 }
 
-.input, 
-.form-group input[type="number"], 
-.form-group input[type="date"], 
-.form-group input[type="range"] {
-    width: 50vw;
-    height: 40px;
-    padding: 8px;
+/* ラベルのスタイル */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* 入力フィールドのスタイル */
+input[type="date"],
+input[type="radio"],
+select {
     margin-top: 5px;
-    margin-bottom: 5px; /* 入力フィールドの下のマージンを調整 */
-    margin-right: 70vw; /* 入力フィールドの右のマージンを調整 */
-    margin-left:50vw
-    border 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
 }
 
-/* セレクトボックスのスタイルをカスタマイズ */
-.form-group select {
-    width: 50vw; /* セレクトボックスの幅を広げる */
-    height: 40px; /* セレクトボックスの高さを指定 */
-    padding: 5px 10px; /* 内側の余白を調整 */
-    margin-top: 5px; /* セレクトボックスのマージンを調整 */
-    margin-bottom: 5px; /* セレクトボックスの下のマージンを調整 */
-    font-size: 16px; /* テキストサイズを大きくする */
-    border: 1px solid #ccc; /* 境界線のスタイル */
-    border-radius: 4px; /* 境界線の角を丸くする */
-    box-sizing: border-box; /* ボックスサイズの計算方法 */
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* ラジオボタンのスタイル */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+input[type="radio"] + label {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+/* ボタンコンテナのスタイル */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* 基本のボタンスタイル */
@@ -92,13 +91,21 @@ p {
 .button:hover {
     background-color: #0056b3;
 }
-
-/* ボタンをFlexboxで配置するための親要素 */
-.button-container {
-    display: flex;
-    justify-content: center; /* 中央揃え */
-    align-items: center;     /* 縦方向の中央揃え */
-    margin-top: 20px;
 }
 
+/* レスポンシブデザイン */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
 
+    .form-section {
+        padding: 15px;
+    }
+
+    .button {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+    }
+}
