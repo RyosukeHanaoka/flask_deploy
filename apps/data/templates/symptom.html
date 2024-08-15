@@ -11,6 +11,8 @@
     <form id="healthsurveyform" action="{{ url_for('data_blueprint.symptom') }}" method="post">
         <div class="form-section">
             <div class="form-group">
+                <label>患者番号を教えてください。</label>
+                <input type="text" id="object_id" name="object_id">
                 <label>性別を教えてください。</label>
                 <input type="radio" id="male" name="gender" value="male">
                 <label for="male">男性</label>

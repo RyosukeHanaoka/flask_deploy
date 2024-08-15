@@ -37,6 +37,7 @@ def symptom():
         user = Symptom(
             user_id=current_user.id,
             sex=request.form.get('sex', ''),
+            object_id=request.form.get('object_id', ''),
             birth_year=int(request.form.get('birth_year', 0)),
             birth_month=int(request.form.get('birth_month', 0)),
             birth_day=int(request.form.get('birth_day', 0)),
@@ -51,6 +52,7 @@ def symptom():
         
         db.session.add(user)
         db.session.commit()
+        session['object_id'] = request.form.get('object_id', '')
         flash('登録が完了しました！', 'success')
         return redirect(url_for('data_blueprint.righthand'))
 
@@ -67,8 +69,11 @@ def righthand():
     if request.method == 'POST':
         print(request.form)
         data=request.form
+        object_id = session.get('object_id')
+            # セッションから検出結果を取得
         joint_entry = RightHandData(
             user_id=current_user.id,
+            object_id = object_id,
             dip_joint_right_2=int(data.get('dip_joint_right_2', 0)),
             dip_joint_right_3=int(data.get('dip_joint_right_3', 0)),
             dip_joint_right_4=int(data.get('dip_joint_right_4', 0)),
@@ -95,8 +100,10 @@ def righthand():
 def lefthand():
     if request.method == 'POST':
         data=request.form
+        object_id = session.get('object_id')
         joint_entry = LeftHandData(
             user_id=current_user.id,
+            object_id = object_id,
             dip_joint_left_2=int(data.get('dip_joint_left_2', 0)),
             dip_joint_left_3=int(data.get('dip_joint_left_3', 0)),
             dip_joint_left_4=int(data.get('dip_joint_left_4', 0)),
@@ -123,8 +130,10 @@ def lefthand():
 def body():
     if request.method == 'POST':
         data=request.form
+        object_id = session.get('object_id')
         joint_entry = LargeJointData(
             user_id=current_user.id,
+            object_id = object_id,
             wrist_joint_hand_left=int(data.get('wrist_joint_hand_left', 0)),
             wrist_joint_hand_right=int(data.get('wrist_joint_hand_right', 0)),
             elbow_joint_left=int(data.get('elbow_joint_left', 0)),
@@ -149,8 +158,10 @@ def body():
 def foot():
     if request.method == 'POST':
         data=request.form
+        object_id = session.get('object_id')
         joint_entry = FootJointData(
             user_id=current_user.id,
+            object_id = object_id,
             mtp_joint_left_1=int(data.get('mtp_joint_left_1', 0)),
             mtp_joint_left_2=int(data.get('mtp_joint_left_2', 0)),
             mtp_joint_left_3=int(data.get('mtp_joint_left_3', 0)),
@@ -167,7 +178,7 @@ def foot():
         db.session.add(joint_entry)
         db.session.commit()
 
-        return redirect(url_for('data_blueprint.handpicture'))
+        return redirect(url_for('data_blueprint.labo_exam'))
     return render_template('foot.html')
 
 @data_blueprint.route('/labo_exam', methods=['GET', 'POST'])
@@ -179,10 +190,12 @@ def labo_exam():
         esr = int(request.form['esr'])
         rf = float(request.form['rf'])
         acpa = float(request.form['acpa'])
+        object_id = session.get('object_id')
     
         # データベースに保存
         labo_data = Criteria(
             user_id=current_user.id,
+            object_id = object_id,
             email=current_user.email,
             crp=crp,
             esr=esr,
@@ -200,6 +213,7 @@ def labo_exam():
 @login_required
 def handpicture():
     if request.method == 'POST':
+        object_id = session.get('object_id')
         #フォームから送信されたファイルのうち、right_handという名前のファイルを取得
         right_hand = request.files.get('right_hand')
         #フォームから送信されたファイルのうち、left_handという名前のファイルを取得
@@ -233,21 +247,29 @@ def handpicture():
         right_hand.save(right_path)
         left_hand.save(left_path)
 
+                #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
+        result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+        right_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+        left_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+
         #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
         hand_data = HandPicData(
             user_id=current_user.id,
+            object_id = object_id,
             datetime=now,
             right_hand_path=right_path,
-            left_hand_path=left_path
+            left_hand_path=left_path,
+            right_hand_result=right_hand_result,  # 右手の結果
+            left_hand_result=left_hand_result,  # 左手の結果
+            result=result  # 全体の結果
         )
         #データベースセッションに新しいHandDataオブジェクトを追加
         db.session.add(hand_data)
         #データベースに変更をコミット（保存）
         db.session.commit()
-        #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
-        result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+
         #検出結果をセッションに保存
-        session['result'] = result()
+        session['result'] = result
         #/ptresultエンドポイントにリダイレクト
         return redirect(url_for('data_blueprint.ptresult'))
     #GETリクエストが送信された場合、handpicture.htmlテンプレートをレンダリングして返す

@@ -14,6 +14,48 @@
         {% endfor %}
     </ul>
 
+    <h2>基準情報</h2>
+    <ul>
+        {% for criteria_item in criteria %}
+        <li>作成日: {{ criteria_item.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>手の画像データ</h2>
+    <ul>
+        {% for hand_pic in hand_pics %}
+        <li>作成日: {{ hand_pic.datetime.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>右手データ</h2>
+    <ul>
+        {% for right_hand in right_hand_data %}
+        <li>作成日: {{ right_hand.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>左手データ</h2>
+    <ul>
+        {% for left_hand in left_hand_data %}
+        <li>作成日: {{ left_hand.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>大関節データ</h2>
+    <ul>
+        {% for large_joint in large_joint_data %}
+        <li>作成日: {{ large_joint.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>足関節データ</h2>
+    <ul>
+        {% for foot_joint in foot_joint_data %}
+        <li>作成日: {{ foot_joint.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+        {% endfor %}
+    </ul>
+
 </body>
 </html>
 

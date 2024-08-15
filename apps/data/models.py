@@ -10,8 +10,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     
     #idを患者特定に使用するときは、email="####"にする。idをid=-1からidに変更する。
     def __init__(self, email, password):
@@ -46,8 +46,8 @@ class Symptom(db.Model):
     morning_stiffness = db.Column(db.String(50))
     stiffness_duration = db.Column(db.Integer)
     pain_level = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     six_weeks_duration = db.Column(db.String(10))
 
     def __init__(self, user_id, object_id, sex, birth_year, birth_month, birth_day, onset_year, onset_month, onset_day,
@@ -101,8 +101,8 @@ class Criteria(db.Model):
     joint_score = db.Column(db.Integer, nullable=False)
     total_score = db.Column(db.Integer, nullable=False)
     duration_score = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, object_id, email, crp, esr, rf, acpa):
         self.user_id = user_id
@@ -179,8 +179,8 @@ class HandPicData(db.Model):
     datetime = db.Column(db.DateTime, nullable=False)
     right_hand_path = db.Column(db.String(255), nullable=False)
     left_hand_path = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     right_hand_result= db.Column(db.Float)
     left_hand_resulr= db.Column(db.Float)
     result= db.Column(db.Float)
@@ -213,8 +213,8 @@ class RightHandData(db.Model):
     mp_joint_right_3 = db.Column(db.Integer)
     mp_joint_right_4 = db.Column(db.Integer)
     mp_joint_right_5 = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, object_id, dip_joint_right_2, dip_joint_right_3, dip_joint_right_4, dip_joint_right_5, thumb_ip_joint_right, pip_joint_right_2, pip_joint_right_3, pip_joint_right_4, pip_joint_right_5, mp_joint_right_1, mp_joint_right_2, mp_joint_right_3, mp_joint_right_4, mp_joint_right_5):
         self.user_id = user_id
@@ -252,8 +252,8 @@ class LeftHandData(db.Model):
     mp_joint_left_3 = db.Column(db.Integer)
     mp_joint_left_4 = db.Column(db.Integer)
     mp_joint_left_5 = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, object_id, dip_joint_left_2, dip_joint_left_3, dip_joint_left_4, dip_joint_left_5, thumb_ip_joint_left, pip_joint_left_2, pip_joint_left_3, pip_joint_left_4, pip_joint_left_5, mp_joint_left_1, mp_joint_left_2, mp_joint_left_3, mp_joint_left_4, mp_joint_left_5):
         self.user_id = user_id
@@ -289,8 +289,8 @@ class LargeJointData(db.Model):
     knee_joint_right = db.Column(db.Integer)
     ankle_joint_left = db.Column(db.Integer)
     ankle_joint_right = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, object_id, wrist_joint_hand_left, wrist_joint_hand_right, elbow_joint_left, elbow_joint_right, shoulder_joint_left, shoulder_joint_right, hip_joint_left, hip_joint_right, knee_joint_left, knee_joint_right, ankle_joint_left, ankle_joint_right):    
         self.user_id = user_id
@@ -324,8 +324,8 @@ class FootJointData(db.Model):
     mtp_joint_right_5 = db.Column(db.Integer)
     distal_joints = db.Column(db.Integer)
     proximal_joints = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=func.now)
-    updated_at = db.Column(db.DateTime, default=func.now, onupdate=func.now)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, object_id, mtp_joint_left_1, mtp_joint_left_2, mtp_joint_left_3, mtp_joint_left_4, mtp_joint_left_5, mtp_joint_right_1, mtp_joint_right_2, mtp_joint_right_3, mtp_joint_right_4, mtp_joint_right_5, distal_joints, proximal_joints):
         self.user_id = user_id
