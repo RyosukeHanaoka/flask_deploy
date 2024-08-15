@@ -1,8 +1,8 @@
-"""Initial migration
+"""Reset and recreate all tables
 
-Revision ID: f13a2fba59a8
+Revision ID: 84b46cd6da3f
 Revises: 
-Create Date: 2024-08-11 04:14:16.806279
+Create Date: 2024-08-15 13:42:32.279351
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f13a2fba59a8'
+revision = '84b46cd6da3f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,6 +30,7 @@ def upgrade():
     op.create_table('criteria',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('crp', sa.Float(), nullable=False),
     sa.Column('esr', sa.Integer(), nullable=False),
@@ -40,12 +41,15 @@ def upgrade():
     sa.Column('joint_score', sa.Integer(), nullable=False),
     sa.Column('total_score', sa.Integer(), nullable=False),
     sa.Column('duration_score', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('footjoint_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('mtp_joint_left_1', sa.Integer(), nullable=True),
     sa.Column('mtp_joint_left_2', sa.Integer(), nullable=True),
     sa.Column('mtp_joint_left_3', sa.Integer(), nullable=True),
@@ -58,21 +62,30 @@ def upgrade():
     sa.Column('mtp_joint_right_5', sa.Integer(), nullable=True),
     sa.Column('distal_joints', sa.Integer(), nullable=True),
     sa.Column('proximal_joints', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('hand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('datetime', sa.DateTime(), nullable=False),
     sa.Column('right_hand_path', sa.String(length=255), nullable=False),
     sa.Column('left_hand_path', sa.String(length=255), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('right_hand_result', sa.Float(), nullable=True),
+    sa.Column('left_hand_resulr', sa.Float(), nullable=True),
+    sa.Column('result', sa.Float(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('largejoint_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('wrist_joint_hand_left', sa.Integer(), nullable=True),
     sa.Column('wrist_joint_hand_right', sa.Integer(), nullable=True),
     sa.Column('elbow_joint_left', sa.Integer(), nullable=True),
@@ -85,12 +98,15 @@ def upgrade():
     sa.Column('knee_joint_right', sa.Integer(), nullable=True),
     sa.Column('ankle_joint_left', sa.Integer(), nullable=True),
     sa.Column('ankle_joint_right', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('lefthand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('dip_joint_left_2', sa.Integer(), nullable=True),
     sa.Column('dip_joint_left_3', sa.Integer(), nullable=True),
     sa.Column('dip_joint_left_4', sa.Integer(), nullable=True),
@@ -105,12 +121,15 @@ def upgrade():
     sa.Column('mp_joint_left_3', sa.Integer(), nullable=True),
     sa.Column('mp_joint_left_4', sa.Integer(), nullable=True),
     sa.Column('mp_joint_left_5', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('righthand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('dip_joint_right_2', sa.Integer(), nullable=True),
     sa.Column('dip_joint_right_3', sa.Integer(), nullable=True),
     sa.Column('dip_joint_right_4', sa.Integer(), nullable=True),
@@ -125,12 +144,15 @@ def upgrade():
     sa.Column('mp_joint_right_3', sa.Integer(), nullable=True),
     sa.Column('mp_joint_right_4', sa.Integer(), nullable=True),
     sa.Column('mp_joint_right_5', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('symptom',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('object_id', sa.String(length=50), nullable=False),
     sa.Column('sex', sa.String(length=10), nullable=True),
     sa.Column('birth_year', sa.Integer(), nullable=True),
     sa.Column('birth_month', sa.Integer(), nullable=True),
