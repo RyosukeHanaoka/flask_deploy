@@ -75,9 +75,6 @@ input[type="radio"] + label {
 /* ボタンコンテナのスタイル */
 .button-container {
     text-align: center;
-    margin-top: 20px;
-}
-
 /* 基本のボタンスタイル */
 .button {
     
@@ -100,7 +97,10 @@ input[type="radio"] + label {
 /* ホバー時の効果 */
 .button:hover {
     background-color: #0056b3;
+}    margin-top: 20px;
 }
+
+
 
 /* レスポンシブデザイン */
 @media (max-width: 600px) {

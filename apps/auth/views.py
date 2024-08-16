@@ -67,6 +67,7 @@ def login_failure():
     return render_template('login_failure.html')
 
 @auth_blueprint.route('/login_success', methods=['GET', 'POST'])
+@login_required
 def login_success():
     return render_template('login_success.html')
 

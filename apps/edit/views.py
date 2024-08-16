@@ -1,27 +1,38 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask import Flask, render_template
 from flask_login import login_required, current_user
-from apps.data.models import User, Symptom, Criteria, HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
+from apps.data.models import Symptom
+from apps.data.extensions import db
 
-app = Flask(__name__)
+# Blueprintの定義
 edit_blueprint = Blueprint('edit_blueprint', __name__, template_folder='templates', static_folder='static')
-@edit_blueprint.route('/dashboard', methods=['GET'])
-#@login_required  # ログインしているユーザのみアクセス可能
-def dashboard():
-    # ログイン中のユーザのデータを各テーブルから取得
-    symptoms = Symptom.query.filter_by(user_id=current_user.id).all()
-    criteria = Criteria.query.filter_by(user_id=current_user.id).all()
-    hand_pics = HandPicData.query.filter_by(user_id=current_user.id).all()
-    right_hand_data = RightHandData.query.filter_by(user_id=current_user.id).all()
-    left_hand_data = LeftHandData.query.filter_by(user_id=current_user.id).all()
-    large_joint_data = LargeJointData.query.filter_by(user_id=current_user.id).all()
-    foot_joint_data = FootJointData.query.filter_by(user_id=current_user.id).all()
 
-    return render_template('dashboard.html', 
-                           symptoms=symptoms, 
-                           criteria=criteria,
-                           hand_pics=hand_pics,
-                           right_hand_data=right_hand_data,
-                           left_hand_data=left_hand_data,
-                           large_joint_data=large_joint_data,
-                           foot_joint_data=foot_joint_data)
+# サインイン中の医師が入力した患者のobject_idを取得する補助関数
+def get_user_patient_object_ids():
+    object_ids = db.session.query(Symptom.object_id).filter_by(user_id=current_user.id).distinct().all()
+    return [obj_id[0] for obj_id in object_ids]  # クエリ結果のタプルからobject_idを抽出
+
+# ダッシュボード表示（患者のobject_id一覧表示）
+@edit_blueprint.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def select_patient():
+    object_ids = get_user_patient_object_ids()
+    
+    """if request.method == 'POST':
+        selected_object_id = request.form.get('object_id')
+        # ここで選択されたobject_idを使って編集画面などにリダイレクトする
+        return redirect(url_for('edit_blueprint.edit_patient', object_id=selected_object_id))"""
+    
+    return render_template('dashboard.html', object_ids=object_ids)
+
+# 患者データの編集ページ
+@edit_blueprint.route('/edit_patient/<object_id>', methods=['GET', 'POST'])
+@login_required
+def edit_patient(object_id):
+    # ここでobject_idを使って編集ページを表示する
+    # 患者データを取得し、編集フォームにプリロードします。
+    symptom = Symptom.query.filter_by(object_id=object_id, user_id=current_user.id).first()
+    if request.method == 'POST':
+        # フォームのデータを使って患者情報を更新
+        pass
+    
+    return render_template('edit_patient.html', symptom=symptom)
