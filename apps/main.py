@@ -5,11 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from apps.auth.views import auth_blueprint, login_manager
 from apps.data.views import data_blueprint
-from apps.edit.views import edit_blueprint
+from .edit import edit_blueprint
 from apps.data.extensions import db, migrate
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates')  # テンプレートフォルダの指定
     app.config.from_object('apps.settings.Config')  # Configクラスから設定を読み込む
 
     # データベースとマイグレーションの設定（インポートされたインスタンスを使用）
