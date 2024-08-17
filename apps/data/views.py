@@ -232,8 +232,8 @@ def handpicture():
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
 
         # 画像を保存するディレクトリ
-        right_dir = "apps/data/image_righthand"
-        left_dir = "apps/data/image_lefthand"
+        right_dir = "data/image_righthand"
+        left_dir = "data/image_lefthand"
 
         # ディレクトリが存在しない場合は作成
         os.makedirs(right_dir, exist_ok=True)
@@ -287,69 +287,3 @@ def ptresult():
     
     # 結果を表示する
     return render_template('ptresult.html', result=result)
-
-
-"""
-@data_blueprint.route('/x_ray', methods=['GET', 'POST'])
-#@login_required
-def x_ray():
-    if request.method == 'POST':
-        upload_type = request.form['upload_type']
-
-        if upload_type == 'camera':
-            # ディスプレイ画面上の画像をスマートフォンで撮影する場合
-            right_hand = request.files['right_hand']
-            left_hand = request.files['left_hand']
-
-            # 画像を保存するフォルダのパスを指定
-            save_folder = 'apps/data/x_ray'
-
-            # 右手のX線画像を保存
-            right_filename = f"{current_user.email}_right_xray.jpg"
-            right_path = os.path.join(save_folder, right_filename)
-            right_hand.save(right_path)
-
-            # 左手のX線画像を保存
-            left_filename = f"{current_user.email}_left_xray.jpg"
-            left_path = os.path.join(save_folder, left_filename)
-            left_hand.save(left_path)
-
-        elif upload_type == 'dicom':
-            # DICOMファイルをアップロードする場合
-            dicom_type = request.form['dicom_type']
-
-            if dicom_type == 'combined':
-                # 両手が同時に撮影された画像を取り込む
-                dicom_file = request.files['dicom_file']
-
-                # 画像を保存するフォルダのパスを指定
-                save_folder = 'apps/data/x_ray_dcm'
-
-                # DICOMファイルを保存
-                filename = f"{current_user.email}_combined.dcm"
-                path = os.path.join(save_folder, filename)
-                dicom_file.save(path)
-
-            elif dicom_type == 'separate':
-                # 左右の手のX線を別々に取り込む
-                right_dicom = request.files['right_dicom']
-                left_dicom = request.files['left_dicom']
-
-                # 画像を保存するフォルダのパスを指定
-                save_folder = 'apps/data/x_ray_dcm'
-
-                # 右手のDICOMファイルを保存
-                right_filename = f"{current_user.email}_right.dcm"
-                right_path = os.path.join(save_folder, right_filename)
-                right_dicom.save(right_path)
-
-                # 左手のDICOMファイルを保存
-                left_filename = f"{current_user.email}_left.dcm"
-                left_path = os.path.join(save_folder, left_filename)
-                left_dicom.save(left_path)
-
-        return redirect(url_for('data_blueprint.drresult'))
-
-    return render_template('x_ray.html')"""
-
-
