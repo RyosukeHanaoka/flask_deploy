@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, session
+from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_required, current_user
 from apps.data.models import Symptom, RightHandData, LeftHandData, LargeJointData, FootJointData, Criteria, HandPicData
 from apps.data.extensions import db
@@ -9,21 +9,21 @@ from . import edit_blueprint
 
 vit = Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 
-@edit_blueprint.route('/dashboard', methods=['GET', 'POST'])
+@edit_blueprint.route('/index', methods=['GET', 'POST'])
 @login_required
-def dashboard():
+def index():
     object_ids = db.session.query(Symptom.object_id).filter_by(user_id=current_user.id).distinct().all()
     object_ids = [obj_id[0] for obj_id in object_ids]
     
     if request.method == 'POST':
         selected_object_id = request.form.get('object_id')
-        return redirect(url_for('edit_blueprint.edit_symptom', object_id=selected_object_id))
+        return redirect(url_for('edit_blueprint.symptom', object_id=selected_object_id))
     
-    return render_template('edit/edit_dashboard.html', object_ids=object_ids)
+    return render_template('index.html', object_ids=object_ids)
 
-@edit_blueprint.route('/edit_symptom/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/symptom/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_symptom(object_id):
+def symptom(object_id):
     symptom = Symptom.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(Symptom.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -41,16 +41,16 @@ def edit_symptom(object_id):
         
         db.session.commit()
         flash('症状データが更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_righthand', object_id=object_id))
+        return redirect(url_for('edit_blueprint.righthand', object_id=object_id))
 
     years = range(1920, datetime.now().year + 1)
     months = range(1, 13)
     days = range(1, 32)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
 
-    return render_template('edit_symptom.html', symptom=symptom, years=years, months=months, days=days, stiffness_durations=stiffness_durations)
+    return render_template('symptom.html', symptom=symptom, years=years, months=months, days=days, stiffness_durations=stiffness_durations)
 
-@edit_blueprint.route('/edit_righthand/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/righthand/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_righthand(object_id):
     righthand = RightHandData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(RightHandData.created_at.desc()).first_or_404()
@@ -62,11 +62,11 @@ def edit_righthand(object_id):
         
         db.session.commit()
         flash('右手データが更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_lefthand', object_id=object_id))
+        return redirect(url_for('edit_blueprint.lefthand', object_id=object_id))
 
-    return render_template('edit_righthand.html', righthand=righthand)
+    return render_template('righthand.html', righthand=righthand)
 
-@edit_blueprint.route('/edit_lefthand/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/lefthand/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_lefthand(object_id):
     lefthand = LeftHandData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(LeftHandData.created_at.desc()).first_or_404()
@@ -78,11 +78,11 @@ def edit_lefthand(object_id):
         
         db.session.commit()
         flash('左手データが更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_body', object_id=object_id))
+        return redirect(url_for('edit_blueprint.body', object_id=object_id))
 
-    return render_template('edit_lefthand.html', lefthand=lefthand)
+    return render_template('lefthand.html', lefthand=lefthand)
 
-@edit_blueprint.route('/edit_body/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/body/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_body(object_id):
     body = LargeJointData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(LargeJointData.created_at.desc()).first_or_404()
@@ -94,11 +94,11 @@ def edit_body(object_id):
         
         db.session.commit()
         flash('体のデータが更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_foot', object_id=object_id))
+        return redirect(url_for('edit_blueprint.foot', object_id=object_id))
 
-    return render_template('edit_body.html', body=body)
+    return render_template('body.html', body=body)
 
-@edit_blueprint.route('/edit_foot/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/foot/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_foot(object_id):
     foot = FootJointData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(FootJointData.created_at.desc()).first_or_404()
@@ -110,11 +110,11 @@ def edit_foot(object_id):
         
         db.session.commit()
         flash('足のデータが更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_labo_exam', object_id=object_id))
+        return redirect(url_for('edit_blueprint.labo_exam', object_id=object_id))
 
-    return render_template('edit_foot.html', foot=foot)
+    return render_template('foot.html', foot=foot)
 
-@edit_blueprint.route('/edit_labo_exam/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/labo_exam/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_labo_exam(object_id):
     labo_exam = Criteria.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(Criteria.created_at.desc()).first_or_404()
@@ -127,11 +127,11 @@ def edit_labo_exam(object_id):
         
         db.session.commit()
         flash('検査結果が更新されました。', 'success')
-        return redirect(url_for('edit_blueprint.edit_handpicture', object_id=object_id))
+        return redirect(url_for('edit_blueprint.handpicture', object_id=object_id))
 
-    return render_template('edit_labo_exam.html', labo_exam=labo_exam)
+    return render_template('labo_exam.html', labo_exam=labo_exam)
 
-@edit_blueprint.route('/edit_handpicture/<object_id>', methods=['GET', 'POST'])
+@edit_blueprint.route('/handpicture/<object_id>', methods=['GET', 'POST'])
 @login_required
 def edit_handpicture(object_id):
     handpic = HandPicData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(HandPicData.created_at.desc()).first_or_404()
@@ -147,8 +147,8 @@ def edit_handpicture(object_id):
             right_filename = f"{current_user.email}_{dt_string}_right.jpg"
             left_filename = f"{current_user.email}_{dt_string}_left.jpg"
 
-            right_dir = "apps/data/image_righthand"
-            left_dir = "apps/data/image_lefthand"
+            right_dir = "data/image_righthand"
+            left_dir = "data/image_lefthand"
 
             os.makedirs(right_dir, exist_ok=True)
             os.makedirs(left_dir, exist_ok=True)
@@ -172,13 +172,13 @@ def edit_handpicture(object_id):
 
             db.session.commit()
             flash('手の写真が更新されました。', 'success')
-            return redirect(url_for('edit_blueprint.edit_complete', object_id=object_id))
+            return redirect(url_for('edit_blueprint.complete', object_id=object_id))
         else:
             flash('右手と左手の写真を両方アップロードしてください。', 'error')
 
-    return render_template('edit_handpicture.html', handpic=handpic)
+    return render_template('handpicture.html', handpic=handpic)
 
-@edit_blueprint.route('/edit_complete/<object_id>')
+@edit_blueprint.route('/complete/<object_id>')
 @login_required
 def edit_complete(object_id):
-    return render_template('edit_complete.html', object_id=object_id)
+    return render_template('complete.html', object_id=object_id)

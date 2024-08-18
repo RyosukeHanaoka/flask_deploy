@@ -1,0 +1,104 @@
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+h2 {
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.1em;
+    font-weight: normal;
+    color: #7f8c8d;
+}
+
+.form-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="number"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52,152,219,0.5);
+}
+
+/* ボタンコンテナのスタイル */
+.button-container {
+    text-align: center;
+/* 基本のボタンスタイル */
+.button {
+    
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    border: none;
+    border-radius: 5px;
+    text-decoration: solid;
+    text-shadow: rgba(0,0,0,0.5) 2px 2px 2px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left:20px;
+    margin-right:20px;
+}
+
+/* ホバー時の効果 */
+.button:hover {
+    background-color: #0056b3;
+}    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .form-section {
+        padding: 15px;
+    }
+
+    input[type="number"] {
+        font-size: 14px;
+    }
+
+    .button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
