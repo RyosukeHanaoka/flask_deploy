@@ -232,8 +232,8 @@ def handpicture():
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
 
         # 画像を保存するディレクトリ
-        right_dir = "data/image_righthand"
-        left_dir = "data/image_lefthand"
+        right_dir = "data/pictures/image_righthand"
+        left_dir = "data/pictures/image_lefthand"
 
         # ディレクトリが存在しない場合は作成
         os.makedirs(right_dir, exist_ok=True)

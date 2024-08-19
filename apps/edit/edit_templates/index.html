@@ -6,7 +6,7 @@
     <title>Select Patient</title>
 </head>
 <body>
-    <h1>Select a Patient to Edit</h1>
+    <h1>編集する患者さんのデータを選択してください</h1>
     <form method="POST">
         <label for="object_id">Select Patient Object ID:</label>
         <select name="object_id" id="object_id">
@@ -14,7 +14,7 @@
             <option value="{{ object_id }}">{{ object_id }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Edit</button>
+        <button type="submit">編集する</button>
     </form>
 </body>
 </html>

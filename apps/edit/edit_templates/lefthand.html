@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>関節チェックリスト</title>
-    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/lefthand.css') }}">
+    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='css/lefthand.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <h2>痛みや腫れがある関節の場所をうかがいます。</h2>
     <p>下の図で、あなたが痛みや腫れがあると感じる関節をタップして印をつけてください。</p>
     <div id="imageContainer">
-        <form id="jointForm" action="{{ url_for('data_blueprint.lefthand') }}" method="post">
+        <form id="jointForm" action="{{ url_for('edit_blueprint.lefthand') }}" method="post">
         <!-- 関節のチェックボックスをここに配置 -->
         <!-- 左手のDIP関節のチェックボックス -->
         <!--<label for="dip_joint_left_2" class="checkbox" data-x="40%" data-y="40%">左手指DIP関節2</label>-->
@@ -50,12 +50,12 @@
         <input type="checkbox" id="mp_joint_left_5" name="mp_joint_left_5" value="1" class="checkbox" data-x="26.9%" data-y="53.5%">
     </div> <!-- imageContainerの終了タグ -->
         <div class="button-container">
-            <a href="{{ url_for('data_blueprint.righthand') }}" class="button">右手入力画面に戻る</a>
+            <a href="{{ url_for('edit_blueprint.righthand') }}" class="button">右手入力画面に戻る</a>
             <br>
             <button type="submit" class="button">全身入力画面に進む</button>
         </div>
         </form>
-        <script src="{{ url_for('data_blueprint.static', filename='js/script.js') }}"></script>
+        <script src="{{ url_for('edit_blueprint.static', filename='js/script.js') }}"></script>
 </body>
 </html>
 

@@ -9,6 +9,10 @@ from . import edit_blueprint
 
 vit = Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 
+@edit_blueprint.route('/test')
+def test():
+    return "Edit blueprint is working!"
+
 @edit_blueprint.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
@@ -52,7 +56,7 @@ def symptom(object_id):
 
 @edit_blueprint.route('/righthand/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_righthand(object_id):
+def righthand(object_id):
     righthand = RightHandData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(RightHandData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -68,7 +72,7 @@ def edit_righthand(object_id):
 
 @edit_blueprint.route('/lefthand/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_lefthand(object_id):
+def lefthand(object_id):
     lefthand = LeftHandData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(LeftHandData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -84,7 +88,7 @@ def edit_lefthand(object_id):
 
 @edit_blueprint.route('/body/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_body(object_id):
+def body(object_id):
     body = LargeJointData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(LargeJointData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -100,7 +104,7 @@ def edit_body(object_id):
 
 @edit_blueprint.route('/foot/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_foot(object_id):
+def foot(object_id):
     foot = FootJointData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(FootJointData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -116,7 +120,7 @@ def edit_foot(object_id):
 
 @edit_blueprint.route('/labo_exam/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_labo_exam(object_id):
+def labo_exam(object_id):
     labo_exam = Criteria.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(Criteria.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -133,7 +137,7 @@ def edit_labo_exam(object_id):
 
 @edit_blueprint.route('/handpicture/<object_id>', methods=['GET', 'POST'])
 @login_required
-def edit_handpicture(object_id):
+def handpicture(object_id):
     handpic = HandPicData.query.filter_by(user_id=current_user.id, object_id=object_id).order_by(HandPicData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
@@ -180,5 +184,5 @@ def edit_handpicture(object_id):
 
 @edit_blueprint.route('/complete/<object_id>')
 @login_required
-def edit_complete(object_id):
+def complete(object_id):
     return render_template('complete.html', object_id=object_id)

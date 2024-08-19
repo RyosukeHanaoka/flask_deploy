@@ -4,3 +4,4 @@ from apps.data.extensions import db, migrate  # migrateが適切にインポー�
 from flask import Blueprint
 
 from apps.data.views import data_blueprint
+from .edit import edit_blueprint

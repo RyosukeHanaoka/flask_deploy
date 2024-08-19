@@ -9,7 +9,8 @@ from .edit import edit_blueprint
 from apps.data.extensions import db, migrate
 
 def create_app():
-    app = Flask(__name__, template_folder='templates')  # テンプレートフォルダの指定
+    app = Flask(__name__)  # テンプレートフォルダの指定
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.config.from_object('apps.settings.Config')  # Configクラスから設定を読み込む
 
     # データベースとマイグレーションの設定（インポートされたインスタンスを使用）
