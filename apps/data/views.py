@@ -51,7 +51,6 @@ def symptom():
         db.session.add(user)
         db.session.commit()
         session['object_id'] = request.form.get('object_id', '')
-        flash('登録が完了しました！', 'success')
         return redirect(url_for('data_blueprint.righthand'))
 
     years = range(1920, datetime.date.today().year + 1)
