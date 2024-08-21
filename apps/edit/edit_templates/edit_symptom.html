@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='css/style_form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='style_form.css') }}">
     <title>フォーム画面</title>
 </head>
 <body>
     <h1>以下の質問にお答えください</h1>
-    <form id="healthsurveyform" action="{{ url_for('edit_blueprint.symptom') }}" method="post">
+    <form id="healthsurveyform" action="{{ url_for('edit_blueprint.edit_symptom', object_id=symptom.object_id) }}" method="post">
         <div class="form-section">
             <div class="form-group">
                 <label>患者番号を教えてください。</label>
@@ -73,7 +73,7 @@
         </div>
         <p>出来上がったら、「次へすすむ」を押してください。</p>
         <div class="button-container">
-            <a href="{{ url_for('edit_blueprint.notice') }}" class="button">前に戻る</a>
+            <a href="{{ url_for('edit_blueprint.edit_righthand',object_id=symptom.object_id) }}" class="button">前に戻る</a>
             <!-- このボタンがフォームデータを送信する -->
             <button type="submit" class="button">次に進む</button>
         </div>

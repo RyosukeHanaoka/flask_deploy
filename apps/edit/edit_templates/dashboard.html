@@ -8,7 +8,7 @@
 <body>
     <h1>編集する患者さんのデータを選択してください</h1>
     <form method="POST">
-        <label for="object_id">Select Patient Object ID:</label>
+        <label for="object_id">患者番号を選択してください:</label>
         <select name="object_id" id="object_id">
             {% for object_id in object_ids %}
             <option value="{{ object_id }}">{{ object_id }}</option>
