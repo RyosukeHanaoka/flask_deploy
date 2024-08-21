@@ -81,7 +81,7 @@ class YourTestClass(unittest.TestCase):
             db.session.commit()
 
             symptom = Symptom(user_id=user.id, sex='female', birth_year=1990, birth_month=1, birth_day=1, 
-                              onset_year=2020, onset_month=1, onset_day=1, morning_stiffness='yes', 
+                              disease_duration=2, morning_stiffness='yes', 
                               stiffness_duration=30, pain_level=5, six_weeks_duration=6)
             db.session.add(symptom)
             db.session.commit()

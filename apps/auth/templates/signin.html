@@ -24,15 +24,6 @@
             <input type="submit" value="サインイン">
         </form>
         <p class="message">サインイン後、認証用のメールが送付されます。</p>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul class="flashes">
-            {% for category, message in messages %}
-                <li class="{{ category }}">{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
     </div>
 </body>
 </html>

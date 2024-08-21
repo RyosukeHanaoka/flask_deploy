@@ -40,9 +40,7 @@ class Symptom(db.Model):
     birth_year = db.Column(db.Integer)
     birth_month = db.Column(db.Integer)
     birth_day = db.Column(db.Integer)
-    onset_year = db.Column(db.Integer)
-    onset_month = db.Column(db.Integer)
-    onset_day = db.Column(db.Integer)
+    disease_duration = db.Column(db.Integer)
     morning_stiffness = db.Column(db.String(50))
     stiffness_duration = db.Column(db.Integer)
     pain_level = db.Column(db.Integer)
@@ -50,7 +48,7 @@ class Symptom(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     six_weeks_duration = db.Column(db.String(10))
 
-    def __init__(self, user_id, object_id, sex, birth_year, birth_month, birth_day, onset_year, onset_month, onset_day,
+    def __init__(self, user_id, object_id, sex, birth_year, birth_month, birth_day, disease_duration,
                  morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
         self.user_id = user_id
         self.object_id = object_id
@@ -58,9 +56,7 @@ class Symptom(db.Model):
         self.birth_year = birth_year
         self.birth_month = birth_month
         self.birth_day = birth_day
-        self.onset_year = onset_year
-        self.onset_month = onset_month
-        self.onset_day = onset_day
+        self.disease_duration = disease_duration
         self.morning_stiffness = morning_stiffness
         self.stiffness_duration = stiffness_duration
         self.pain_level = pain_level
@@ -71,20 +67,6 @@ class Symptom(db.Model):
         if (current_month, current_day) < (self.birth_month, self.birth_day):
             age -= 1
         return age    
-    
-    def calculate_duration(self, current_year, current_month, current_day):
-        onset_date = datetime(self.onset_year, self.onset_month, self.onset_day)
-        current_date = datetime(current_year, current_month, current_day)
-        duration = (current_date - onset_date).days
-        return duration
-
-    def calculate_six_weeks_duration(self, current_year, current_month, current_day):
-        onset_date = datetime(self.onset_year, self.onset_month, self.onset_day)
-        current_date = datetime(current_year, current_month, current_day)
-        duration = (current_date - onset_date).days
-        six_weeks_duration = duration // 7
-        return six_weeks_duration
-
 class Criteria(db.Model):
     __tablename__ = 'criteria'
     
