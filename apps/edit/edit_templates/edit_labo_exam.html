@@ -9,7 +9,7 @@
 <body>
     <h2>血液検査の結果をうかがいます。</h2>
     <h3>以下の項目の検査結果が判明している場合に入力してください。</h3>
-    <form action="{{ url_for('edit_blueprint.edit_labo_exam', object_id=labo_exam.object_id) }}" method="post">
+    <form action="{{ url_for('edit_blueprint.edit_labo_exam', pt_id=labo_exam.pt_id) }}" method="post">
         <div class="form-section">
             <div class="form-group">
                 <label for="crp">血清CRP値 (mg/dl)</label>
@@ -35,8 +35,8 @@
             </div>
         </div>
         <div class="button-container">
-        <a href="{{ url_for('edit_blueprint.edit_foot', object_id=labo_exam.object_id) }}" class="button">前に戻る</a>
-        <a href="{{ url_for('edit_blueprint.edit_handpicture',object_id=labo_exam.object_id) }}" class="button">先に進む</a>
+        <a href="{{ url_for('edit_blueprint.edit_foot', pt_id=labo_exam.pt_id) }}" class="button">前に戻る</a>
+        <a href="{{ url_for('edit_blueprint.edit_handpicture',pt_id=labo_exam.pt_id) }}" class="button">先に進む</a>
         </div>
     </form>
 </body>

@@ -35,9 +35,9 @@ def notice_post_login():
 def symptom():
     if request.method == 'POST':
         user = Symptom(
-            user_id=current_user.id,
             sex=request.form.get('sex', ''),
-            object_id=request.form.get('object_id', ''),
+            user_id=current_user.id,
+            pt_id=request.form.get('pt_id', ''),
             birth_year=int(request.form.get('birth_year', 0)),
             birth_month=int(request.form.get('birth_month', 0)),
             birth_day=int(request.form.get('birth_day', 0)),
@@ -46,11 +46,10 @@ def symptom():
             six_weeks_duration=request.form.get('six_weeks_duration', ''),
             stiffness_duration=int(request.form.get('stiffness_duration', 0)),
             pain_level=int(request.form.get('pain_level', 0))       
-        )
-        
+        )        
         db.session.add(user)
         db.session.commit()
-        session['object_id'] = request.form.get('object_id', '')
+        session['pt_id'] = request.form.get('pt_id', '')
         return redirect(url_for('data_blueprint.righthand'))
 
     years = range(1920, datetime.date.today().year + 1)
@@ -66,11 +65,11 @@ def righthand():
     if request.method == 'POST':
         print(request.form)
         data=request.form
-        object_id = session.get('object_id')
+        pt_id = session.get('pt_id')
             # セッションから検出結果を取得
         joint_entry = RightHandData(
+            pt_id = pt_id,
             user_id=current_user.id,
-            object_id = object_id,
             dip_joint_right_2=int(data.get('dip_joint_right_2', 0)),
             dip_joint_right_3=int(data.get('dip_joint_right_3', 0)),
             dip_joint_right_4=int(data.get('dip_joint_right_4', 0)),
@@ -97,10 +96,10 @@ def righthand():
 def lefthand():
     if request.method == 'POST':
         data=request.form
-        object_id = session.get('object_id')
+        pt_id = session.get('pt_id')
         joint_entry = LeftHandData(
+            pt_id = pt_id,
             user_id=current_user.id,
-            object_id = object_id,
             dip_joint_left_2=int(data.get('dip_joint_left_2', 0)),
             dip_joint_left_3=int(data.get('dip_joint_left_3', 0)),
             dip_joint_left_4=int(data.get('dip_joint_left_4', 0)),
@@ -127,10 +126,10 @@ def lefthand():
 def body():
     if request.method == 'POST':
         data=request.form
-        object_id = session.get('object_id')
+        pt_id = session.get('pt_id')
         joint_entry = LargeJointData(
+            pt_id = pt_id,
             user_id=current_user.id,
-            object_id = object_id,
             wrist_joint_hand_left=int(data.get('wrist_joint_hand_left', 0)),
             wrist_joint_hand_right=int(data.get('wrist_joint_hand_right', 0)),
             elbow_joint_left=int(data.get('elbow_joint_left', 0)),
@@ -155,10 +154,10 @@ def body():
 def foot():
     if request.method == 'POST':
         data=request.form
-        object_id = session.get('object_id')
+        pt_id = session.get('pt_id')
         joint_entry = FootJointData(
+            pt_id = pt_id,
             user_id=current_user.id,
-            object_id = object_id,
             mtp_joint_left_1=int(data.get('mtp_joint_left_1', 0)),
             mtp_joint_left_2=int(data.get('mtp_joint_left_2', 0)),
             mtp_joint_left_3=int(data.get('mtp_joint_left_3', 0)),
@@ -187,12 +186,13 @@ def labo_exam():
         esr = int(request.form['esr'])
         rf = float(request.form['rf'])
         acpa = float(request.form['acpa'])
-        object_id = session.get('object_id')
+        user_id = current_user.id
+        pt_id = session.get('pt_id')
     
         # データベースに保存
         labo_data = Criteria(
-            user_id=current_user.id,
-            object_id = object_id,
+            pt_id = pt_id,
+            user_id=user_id,
             email=current_user.email,
             crp=crp,
             esr=esr,
@@ -210,7 +210,7 @@ def labo_exam():
 @login_required
 def handpicture():
     if request.method == 'POST':
-        object_id = session.get('object_id')
+        pt_id = session.get('pt_id')
         #フォームから送信されたファイルのうち、right_handという名前のファイルを取得
         right_hand = request.files.get('right_hand')
         #フォームから送信されたファイルのうち、left_handという名前のファイルを取得
@@ -252,7 +252,7 @@ def handpicture():
         #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
         hand_data = HandPicData(
             user_id=current_user.id,
-            object_id = object_id,
+            pt_id = pt_id,
             datetime=now,
             right_hand_path=right_path,
             left_hand_path=left_path,

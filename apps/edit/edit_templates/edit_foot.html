@@ -11,7 +11,7 @@
     <h2>痛みや腫れがある関節の場所をうかがいます。</h2>
     <p>下の図で、あなたが痛みや腫れがあると感じる関節をタップして印をつけてください。</p>
     <div id="imageContainer">
-        <form id="jointForm" action="{{ url_for('edit_blueprint.edit_foot', object_id=foot.object_id) }}" method="post">
+        <form id="jointForm" action="{{ url_for('edit_blueprint.edit_foot', pt_id=foot.pt_id) }}" method="post">
         <!-- 関節のチェックボックスをここに配置 -->
         <!-- 左足指のMTP関節のチェックボックス -->
         <!--<label for="mtp_joint_left_1" class="checkbox" data-x="42%" data-y="91%">左足指MP関節1</label>-->
@@ -38,7 +38,7 @@
         <input type="checkbox" id="mtp_joint_right_5" name="mtp_joint_right_5" value="1" class="checkbox" data-x="8.6%" data-y="56.5%" {% if foot.mtp_joint_right_5 %}checked{% endif %}>
     </div> <!-- imageContainerの終了タグ -->
         <div class="button-container">
-                <a href="{{ url_for('edit_blueprint.edit_foot', object_id=foot.object_id) }}" class="button">大関節入力画面に戻る</a>
+                <a href="{{ url_for('edit_blueprint.edit_foot', pt_id=foot.pt_id) }}" class="button">大関節入力画面に戻る</a>
                 <br>
                 <button type="submit" class="button">検査入力画面に進む</button>
             </div>

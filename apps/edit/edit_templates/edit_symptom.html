@@ -8,11 +8,11 @@
 </head>
 <body>
     <h1>以下の質問にお答えください</h1>
-    <form id="healthsurveyform" action="{{ url_for('edit_blueprint.edit_symptom', object_id=symptom.object_id) }}" method="post">
+    <form id="healthsurveyform" action="{{ url_for('edit_blueprint.edit_symptom', pt_id=symptom.pt_id) }}" method="post">
         <div class="form-section">
             <div class="form-group">
                 <label>患者番号を教えてください。</label>
-                <input type="text" id="object_id" name="object_id" value="{{ symptom.object_id }}" readonly>
+                <input type="text" id="pt_id" name="pt_id" value="{{ symptom.pt_id }}" readonly>
                 <label>性別を教えてください。</label>
                 <input type="radio" id="male" name="sex" value="male" {% if symptom.sex == 'male' %}checked{% endif %}>
                 <label for="male">男性</label>
@@ -89,7 +89,7 @@
         </div>
         <p>出来上がったら、「次へすすむ」を押してください。</p>
         <div class="button-container">
-            <a href="{{ url_for('edit_blueprint.edit_righthand',object_id=symptom.object_id) }}" class="button">前に戻る</a>
+            <a href="{{ url_for('edit_blueprint.edit_righthand',pt_id=symptom.pt_id) }}" class="button">前に戻る</a>
             <!-- このボタンがフォームデータを送信する -->
             <button type="submit" class="button">次に進む</button>
         </div>

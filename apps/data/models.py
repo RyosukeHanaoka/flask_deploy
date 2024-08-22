@@ -5,8 +5,7 @@ from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
-    __tablename__ = "user"
-    
+    __tablename__ = "user"    
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
@@ -32,10 +31,9 @@ class User(UserMixin, db.Model):
 
 class Symptom(db.Model):
     __tablename__ = 'symptom'
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     sex = db.Column(db.String(10))
     birth_year = db.Column(db.Integer)
     birth_month = db.Column(db.Integer)
@@ -48,10 +46,10 @@ class Symptom(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     six_weeks_duration = db.Column(db.String(10))
 
-    def __init__(self, user_id, object_id, sex, birth_year, birth_month, birth_day, disease_duration,
+    def __init__(self, user_id, pt_id, sex, birth_year, birth_month, birth_day, disease_duration,
                  morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
-        self.user_id = user_id
-        self.object_id = object_id
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.sex = sex
         self.birth_year = birth_year
         self.birth_month = birth_month
@@ -68,11 +66,10 @@ class Symptom(db.Model):
             age -= 1
         return age    
 class Criteria(db.Model):
-    __tablename__ = 'criteria'
-    
+    __tablename__ = 'criteria'    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     crp = db.Column(db.Float, nullable=False)
     esr = db.Column(db.Integer, nullable=False)
@@ -86,9 +83,9 @@ class Criteria(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, object_id, email, crp, esr, rf, acpa):
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, email, crp, esr, rf, acpa):
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.email = email
         self.crp = crp
         self.esr = esr
@@ -153,11 +150,10 @@ class Criteria(db.Model):
         return self.calculate_immunology_score() + inflammation_score + joint_score + self.calculate_duration_score(six_weeks_duration)
 
 class HandPicData(db.Model):
-    __tablename__ = 'hand_data'
-    
+    __tablename__ = 'hand_data'    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
     right_hand_path = db.Column(db.String(255), nullable=False)
     left_hand_path = db.Column(db.String(255), nullable=False)
@@ -167,9 +163,9 @@ class HandPicData(db.Model):
     left_hand_resulr= db.Column(db.Float)
     result= db.Column(db.Float)
 
-    def __init__(self, user_id, object_id, datetime, right_hand_path, left_hand_path, right_hand_result, left_hand_result, result):
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, datetime, right_hand_path, left_hand_path, right_hand_result, left_hand_result, result):
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.datetime = datetime
         self.right_hand_path = right_hand_path
         self.left_hand_path = left_hand_path
@@ -180,7 +176,7 @@ class RightHandData(db.Model):
     __tablename__ = 'righthand_data'   
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     dip_joint_right_2 = db.Column(db.Integer)
     dip_joint_right_3 = db.Column(db.Integer)
     dip_joint_right_4 = db.Column(db.Integer)
@@ -198,9 +194,9 @@ class RightHandData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, object_id, dip_joint_right_2, dip_joint_right_3, dip_joint_right_4, dip_joint_right_5, thumb_ip_joint_right, pip_joint_right_2, pip_joint_right_3, pip_joint_right_4, pip_joint_right_5, mp_joint_right_1, mp_joint_right_2, mp_joint_right_3, mp_joint_right_4, mp_joint_right_5):
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, dip_joint_right_2, dip_joint_right_3, dip_joint_right_4, dip_joint_right_5, thumb_ip_joint_right, pip_joint_right_2, pip_joint_right_3, pip_joint_right_4, pip_joint_right_5, mp_joint_right_1, mp_joint_right_2, mp_joint_right_3, mp_joint_right_4, mp_joint_right_5):
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.dip_joint_right_2 = dip_joint_right_2
         self.dip_joint_right_3 = dip_joint_right_3
         self.dip_joint_right_4 = dip_joint_right_4
@@ -219,7 +215,7 @@ class LeftHandData(db.Model):
     __tablename__ = 'lefthand_data'    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     dip_joint_left_2 = db.Column(db.Integer)
     dip_joint_left_3 = db.Column(db.Integer)
     dip_joint_left_4 = db.Column(db.Integer)
@@ -237,9 +233,9 @@ class LeftHandData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, object_id, dip_joint_left_2, dip_joint_left_3, dip_joint_left_4, dip_joint_left_5, thumb_ip_joint_left, pip_joint_left_2, pip_joint_left_3, pip_joint_left_4, pip_joint_left_5, mp_joint_left_1, mp_joint_left_2, mp_joint_left_3, mp_joint_left_4, mp_joint_left_5):
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, dip_joint_left_2, dip_joint_left_3, dip_joint_left_4, dip_joint_left_5, thumb_ip_joint_left, pip_joint_left_2, pip_joint_left_3, pip_joint_left_4, pip_joint_left_5, mp_joint_left_1, mp_joint_left_2, mp_joint_left_3, mp_joint_left_4, mp_joint_left_5):
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.dip_joint_left_2 = dip_joint_left_2
         self.dip_joint_left_3 = dip_joint_left_3
         self.dip_joint_left_4 = dip_joint_left_4
@@ -258,7 +254,7 @@ class LargeJointData(db.Model):
     __tablename__ = 'largejoint_data'    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     wrist_joint_hand_left = db.Column(db.Integer)
     wrist_joint_hand_right = db.Column(db.Integer)
     elbow_joint_left = db.Column(db.Integer)
@@ -274,9 +270,9 @@ class LargeJointData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, object_id, wrist_joint_hand_left, wrist_joint_hand_right, elbow_joint_left, elbow_joint_right, shoulder_joint_left, shoulder_joint_right, hip_joint_left, hip_joint_right, knee_joint_left, knee_joint_right, ankle_joint_left, ankle_joint_right):    
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, wrist_joint_hand_left, wrist_joint_hand_right, elbow_joint_left, elbow_joint_right, shoulder_joint_left, shoulder_joint_right, hip_joint_left, hip_joint_right, knee_joint_left, knee_joint_right, ankle_joint_left, ankle_joint_right):    
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.wrist_joint_hand_left = wrist_joint_hand_left
         self.wrist_joint_hand_right = wrist_joint_hand_right
         self.elbow_joint_left = elbow_joint_left
@@ -293,7 +289,7 @@ class FootJointData(db.Model):
     __tablename__ = 'footjoint_data'   
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    object_id = db.Column(db.String(50), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     mtp_joint_left_1 = db.Column(db.Integer)
     mtp_joint_left_2 = db.Column(db.Integer)
     mtp_joint_left_3 = db.Column(db.Integer)
@@ -309,9 +305,9 @@ class FootJointData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, object_id, mtp_joint_left_1, mtp_joint_left_2, mtp_joint_left_3, mtp_joint_left_4, mtp_joint_left_5, mtp_joint_right_1, mtp_joint_right_2, mtp_joint_right_3, mtp_joint_right_4, mtp_joint_right_5, distal_joints, proximal_joints):
-        self.user_id = user_id
-        self.object_id = object_id
+    def __init__(self, user_id, pt_id, mtp_joint_left_1, mtp_joint_left_2, mtp_joint_left_3, mtp_joint_left_4, mtp_joint_left_5, mtp_joint_right_1, mtp_joint_right_2, mtp_joint_right_3, mtp_joint_right_4, mtp_joint_right_5, distal_joints, proximal_joints):
+        self.user_id=user_id
+        self.pt_id = pt_id
         self.mtp_joint_left_1 = mtp_joint_left_1
         self.mtp_joint_left_2 = mtp_joint_left_2
         self.mtp_joint_left_3 = mtp_joint_left_3
@@ -324,60 +320,3 @@ class FootJointData(db.Model):
         self.mtp_joint_right_5 = mtp_joint_right_5
         self.distal_joints = distal_joints
         self.proximal_joints = proximal_joints
-
-"""class JointData(db.Model):
-    __tablename__ = 'joint_data'    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    dip_joint_left_2 = db.Column(db.Integer)
-    dip_joint_left_3 = db.Column(db.Integer)
-    dip_joint_left_4 = db.Column(db.Integer)
-    dip_joint_left_5 = db.Column(db.Integer)
-    dip_joint_right_2 = db.Column(db.Integer)
-    dip_joint_right_3 = db.Column(db.Integer)
-    dip_joint_right_4 = db.Column(db.Integer)
-    dip_joint_right_5 = db.Column(db.Integer)
-    thumb_ip_joint_left = db.Column(db.Integer)
-    thumb_ip_joint_right = db.Column(db.Integer)
-    pip_joint_left_2 = db.Column(db.Integer)
-    pip_joint_left_3 = db.Column(db.Integer)
-    pip_joint_left_4 = db.Column(db.Integer)
-    pip_joint_left_5 = db.Column(db.Integer)
-    pip_joint_right_2 = db.Column(db.Integer)
-    pip_joint_right_3 = db.Column(db.Integer)
-    pip_joint_right_4 = db.Column(db.Integer)
-    pip_joint_right_5 = db.Column(db.Integer)
-    mp_joint_left_1 = db.Column(db.Integer)
-    mp_joint_left_2 = db.Column(db.Integer)
-    mp_joint_left_3 = db.Column(db.Integer)
-    mp_joint_left_4 = db.Column(db.Integer)
-    mp_joint_left_5 = db.Column(db.Integer)
-    mp_joint_right_1 = db.Column(db.Integer)
-    mp_joint_right_2 = db.Column(db.Integer)
-    mp_joint_right_3 = db.Column(db.Integer)
-    mp_joint_right_4 = db.Column(db.Integer)
-    mp_joint_right_5 = db.Column(db.Integer)
-    wrist_joint_hand_left = db.Column(db.Integer)
-    wrist_joint_hand_right = db.Column(db.Integer)
-    elbow_joint_left = db.Column(db.Integer)
-    elbow_joint_right = db.Column(db.Integer)
-    shoulder_joint_left = db.Column(db.Integer)
-    shoulder_joint_right = db.Column(db.Integer)
-    hip_joint_left = db.Column(db.Integer)
-    hip_joint_right = db.Column(db.Integer)
-    knee_joint_left = db.Column(db.Integer)
-    knee_joint_right = db.Column(db.Integer)
-    ankle_joint_left = db.Column(db.Integer)
-    ankle_joint_right = db.Column(db.Integer)
-    mtp_joint_left_1 = db.Column(db.Integer)
-    mtp_joint_left_2 = db.Column(db.Integer)
-    mtp_joint_left_3 = db.Column(db.Integer)
-    mtp_joint_left_4 = db.Column(db.Integer)
-    mtp_joint_left_5 = db.Column(db.Integer)
-    mtp_joint_right_1 = db.Column(db.Integer)
-    mtp_joint_right_2 = db.Column(db.Integer)
-    mtp_joint_right_3 = db.Column(db.Integer)
-    mtp_joint_right_4 = db.Column(db.Integer)
-    mtp_joint_right_5 = db.Column(db.Integer)
-    distal_joints = db.Column(db.Integer)
-    proximal_joints = db.Column(db.Integer)"""

@@ -1,8 +1,8 @@
-"""Reset and recreate all tables
+"""empty message
 
-Revision ID: 84b46cd6da3f
+Revision ID: dfd1b5371caa
 Revises: 
-Create Date: 2024-08-15 13:42:32.279351
+Create Date: 2024-08-22 20:34:14.702148
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '84b46cd6da3f'
+revision = 'dfd1b5371caa'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade():
     op.create_table('criteria',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('crp', sa.Float(), nullable=False),
     sa.Column('esr', sa.Integer(), nullable=False),
@@ -49,7 +49,7 @@ def upgrade():
     op.create_table('footjoint_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('mtp_joint_left_1', sa.Integer(), nullable=True),
     sa.Column('mtp_joint_left_2', sa.Integer(), nullable=True),
     sa.Column('mtp_joint_left_3', sa.Integer(), nullable=True),
@@ -70,7 +70,7 @@ def upgrade():
     op.create_table('hand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('datetime', sa.DateTime(), nullable=False),
     sa.Column('right_hand_path', sa.String(length=255), nullable=False),
     sa.Column('left_hand_path', sa.String(length=255), nullable=False),
@@ -85,7 +85,7 @@ def upgrade():
     op.create_table('largejoint_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('wrist_joint_hand_left', sa.Integer(), nullable=True),
     sa.Column('wrist_joint_hand_right', sa.Integer(), nullable=True),
     sa.Column('elbow_joint_left', sa.Integer(), nullable=True),
@@ -106,7 +106,7 @@ def upgrade():
     op.create_table('lefthand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('dip_joint_left_2', sa.Integer(), nullable=True),
     sa.Column('dip_joint_left_3', sa.Integer(), nullable=True),
     sa.Column('dip_joint_left_4', sa.Integer(), nullable=True),
@@ -129,7 +129,7 @@ def upgrade():
     op.create_table('righthand_data',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('dip_joint_right_2', sa.Integer(), nullable=True),
     sa.Column('dip_joint_right_3', sa.Integer(), nullable=True),
     sa.Column('dip_joint_right_4', sa.Integer(), nullable=True),
@@ -152,11 +152,12 @@ def upgrade():
     op.create_table('symptom',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('object_id', sa.String(length=50), nullable=False),
+    sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('sex', sa.String(length=10), nullable=True),
     sa.Column('birth_year', sa.Integer(), nullable=True),
     sa.Column('birth_month', sa.Integer(), nullable=True),
     sa.Column('birth_day', sa.Integer(), nullable=True),
+    sa.Column('disease_duration', sa.Integer(), nullable=True),
     sa.Column('morning_stiffness', sa.String(length=50), nullable=True),
     sa.Column('stiffness_duration', sa.Integer(), nullable=True),
     sa.Column('pain_level', sa.Integer(), nullable=True),
