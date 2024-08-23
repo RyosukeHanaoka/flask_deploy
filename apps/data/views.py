@@ -188,6 +188,7 @@ def labo_exam():
         acpa = float(request.form['acpa'])
         user_id = current_user.id
         pt_id = session.get('pt_id')
+        
     
         # データベースに保存
         labo_data = Criteria(
@@ -197,7 +198,7 @@ def labo_exam():
             crp=crp,
             esr=esr,
             rf=rf,
-            acpa=acpa
+            acpa=acpa,
         )
         db.session.add(labo_data)
         db.session.commit()
