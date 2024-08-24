@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_required, current_user
-from apps.data.models import Symptom, RightHandData, LeftHandData, LargeJointData, FootJointData, Criteria, HandPicData
+from apps.data.models import Symptom, RightHandData, LeftHandData, LargeJointData, FootJointData, LabData, HandPicData
 from apps.data.extensions import db
 from datetime import datetime
 import os
@@ -123,7 +123,7 @@ def edit_foot(pt_id):
 @edit_blueprint.route('/edit_labo_exam/<pt_id>', methods=['GET', 'POST'])
 @login_required
 def edit_labo_exam(pt_id):
-    labo_exam = Criteria.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(Criteria.created_at.desc()).first_or_404()
+    labo_exam = LabData.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(LabData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
         labo_exam.crp = float(request.form['crp'])

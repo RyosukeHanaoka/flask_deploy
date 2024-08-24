@@ -65,72 +65,6 @@ class Symptom(db.Model):
         if (current_month, current_day) < (self.birth_month, self.birth_day):
             age -= 1
         return age    
-class Criteria(db.Model):
-    __tablename__ = 'criteria'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    pt_id = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    crp = db.Column(db.Float, nullable=False)
-    esr = db.Column(db.Integer, nullable=False)
-    rf = db.Column(db.Float, nullable=False)
-    acpa = db.Column(db.Float, nullable=False)
-    immunology_score = db.Column(db.Integer, nullable=False)
-    inflammation_score = db.Column(db.Integer, nullable=False)
-    joint_score = db.Column(db.Integer, nullable=False)
-    total_score = db.Column(db.Integer, nullable=False)
-    duration_score = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=func.now())
-    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
-
-    def __init__(self, user_id, pt_id, email, crp, esr, rf, acpa, sex, six_weeks_duration, proximal_joints, distal_joints):
-        self.user_id = user_id
-        self.pt_id = pt_id
-        self.email = email
-        self.crp = crp
-        self.esr = esr
-        self.rf = rf
-        self.acpa = acpa
-        self.immunology_score = self.calculate_immunology_score()
-        self.inflammation_score = self.calculate_inflammation_score(sex)
-        self.joint_score = self.calculate_joint_score(proximal_joints, distal_joints)
-        self.duration_score = self.calculate_duration_score(six_weeks_duration)
-        self.total_score = self.calculate_total_score()
-
-    def calculate_immunology_score(self):
-        if self.rf >= 45 or self.acpa >= 13.5:
-            return 2
-        elif self.rf >= 15 or self.acpa >= 4.5:
-            return 1
-        return 0
-
-    def calculate_inflammation_score(self, sex):
-        if self.crp > 0.3:
-            return 1
-        elif (sex == 0 and self.esr > 10) or (sex == 1 and self.esr > 15):
-            return 1
-        return 0
-
-    def calculate_duration_score(self, six_weeks_duration):
-        return 1 if six_weeks_duration == 1 else 0
-
-    def calculate_joint_score(self, proximal_joints, distal_joints):
-        if distal_joints == 0:
-            return 1 if proximal_joints != 0 else 0
-        elif proximal_joints + distal_joints >= 11:
-            return 5
-        elif distal_joints <= 3:
-            return 2 if proximal_joints + distal_joints < 10 else 3
-        return 0
-
-    def calculate_total_score(self):
-        return (
-            self.immunology_score +
-            self.inflammation_score +
-            self.joint_score +
-            self.duration_score
-        )
-
 class HandPicData(db.Model):
     __tablename__ = 'hand_data'    
     id = db.Column(db.Integer, primary_key=True)
@@ -282,8 +216,6 @@ class FootJointData(db.Model):
     mtp_joint_right_3 = db.Column(db.Integer)
     mtp_joint_right_4 = db.Column(db.Integer)
     mtp_joint_right_5 = db.Column(db.Integer)
-    distal_joints = db.Column(db.Integer)
-    proximal_joints = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
@@ -300,5 +232,110 @@ class FootJointData(db.Model):
         self.mtp_joint_right_3 = mtp_joint_right_3
         self.mtp_joint_right_4 = mtp_joint_right_4
         self.mtp_joint_right_5 = mtp_joint_right_5
-        self.distal_joints = distal_joints
-        self.proximal_joints = proximal_joints
+
+class LabData(db.Model):
+    __tablename__ = 'lab_data'    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
+    crp = db.Column(db.Float)
+    esr = db.Column(db.Integer)
+    rf = db.Column(db.Float)
+    acpa = db.Column(db.Float)
+
+    def __init__(self, user_id, pt_id, crp, esr, rf, acpa):
+        self.user_id=user_id
+        self.pt_id = pt_id
+        self.crp = crp
+        self.esr = esr
+        self.rf = rf
+        self.acpa = acpa
+
+class ScoreData(db.Model):
+    __tablename__ = 'score_data'
+    
+    # 主キーとなるidを追加します
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    distal_joints = db.Column(db.Integer)
+    proximal_joints = db.Column(db.Integer)
+    immunology_score = db.Column(db.Integer, nullable=False)
+    inflammation_score = db.Column(db.Integer, nullable=False)
+    joint_score = db.Column(db.Integer, nullable=False)
+    total_score = db.Column(db.Integer, nullable=False)
+    duration_score = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
+
+    def __init__(self, distal_joints, proximal_joints, sex, six_weeks_duration):
+        self.distal_joints = self.calculate_distal_joints(distal_joints)
+        self.proximal_joints = self.calculate_proximal_joints(proximal_joints)
+        self.immunology_score = self.calculate_immunology_score()
+        self.inflammation_score = self.calculate_inflammation_score(sex)
+        self.joint_score = self.calculate_joint_score(self.proximal_joints, self.distal_joints)
+        self.duration_score = self.calculate_duration_score(six_weeks_duration)
+        self.total_score = self.calculate_total_score()
+    
+    # 以下のメソッドはスコアの計算を行います
+    def calculate_distal_joints(self, joint_entry):
+        distal_joints = sum(
+            [getattr(joint_entry, f"pip_joint_left_{i}", 0) for i in range(2, 6)] + \
+            [getattr(joint_entry, f"pip_joint_right_{i}", 0) for i in range(2, 6)]+ \
+            [getattr(joint_entry, f"mtp_joint_left_{i}", 0) for i in range(1, 6)]+ \
+            [getattr(joint_entry, f"mtp_joint_right_{i}", 0) for i in range(1, 6)]+ \
+            getattr(joint_entry, "thumb_ip_joint_left", 0) + \
+            getattr(joint_entry, "thumb_ip_joint_right", 0)+ \
+            getattr(joint_entry, "hand_wrist_joint_left", 0) + \
+            getattr(joint_entry, "hand_wrist_joint_right", 0))
+        return distal_joints
+
+    def calculate_proximal_joints(self, joint_entry):
+        proximal_joints = sum(
+            [
+                getattr(joint_entry, "elbow_joint_left", 0),
+                getattr(joint_entry, "shoulder_joint_left", 0),
+                getattr(joint_entry, "elbow_joint_right", 0),
+                getattr(joint_entry, "shoulder_joint_right", 0),
+                getattr(joint_entry, "hip_joint_left", 0),
+                getattr(joint_entry, "hip_joint_right", 0),
+                getattr(joint_entry, "knee_joint_left", 0),
+                getattr(joint_entry, "knee_joint_right", 0),
+                getattr(joint_entry, "ankle_joint_left", 0),
+                getattr(joint_entry, "ankle_joint_right", 0),
+            ]
+        )
+        return proximal_joints
+
+    def calculate_immunology_score(self):
+        if self.rf >= 45 or self.acpa >= 13.5:
+            return 2
+        elif self.rf >= 15 or self.acpa >= 4.5:
+            return 1
+        return 0
+
+    def calculate_inflammation_score(self, sex):
+        if self.crp > 0.3:
+            return 1
+        elif (sex == 0 and self.esr > 10) or (sex == 1 and self.esr > 15):
+            return 1
+        return 0
+
+    def calculate_duration_score(self, six_weeks_duration):
+        return 1 if six_weeks_duration == 1 else 0
+
+    def calculate_joint_score(self, proximal_joints, distal_joints):
+        if distal_joints == 0:
+            return 1 if proximal_joints != 0 else 0
+        elif proximal_joints + distal_joints >= 11:
+            return 5
+        elif distal_joints <= 3:
+            return 2 if proximal_joints + distal_joints < 10 else 3
+        return 0
+
+    def calculate_total_score(self):
+        return (
+            self.immunology_score +
+            self.inflammation_score +
+            self.joint_score +
+            self.duration_score
+        )

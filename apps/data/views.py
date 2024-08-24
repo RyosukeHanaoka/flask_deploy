@@ -4,7 +4,7 @@ from .extensions import db
 import datetime
 import os
 from .models import HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
-from .models import Symptom, Criteria
+from .models import Symptom, LabData, ScoreData
 from .vit import Vit
 vit=Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 data_blueprint = Blueprint('data_blueprint', __name__, template_folder='templates', static_folder='static')
@@ -182,19 +182,17 @@ def foot():
 def labo_exam():
     if request.method == 'POST':
         # フォームからデータを取得
+        user_id = current_user.id
+        pt_id = session.get('pt_id')
         crp = float(request.form['crp'])
         esr = int(request.form['esr'])
         rf = float(request.form['rf'])
         acpa = float(request.form['acpa'])
-        user_id = current_user.id
-        pt_id = session.get('pt_id')
-        
     
         # データベースに保存
-        labo_data = Criteria(
+        labo_data = LabData(
             pt_id = pt_id,
             user_id=user_id,
-            email=current_user.email,
             crp=crp,
             esr=esr,
             rf=rf,
@@ -245,7 +243,7 @@ def handpicture():
         right_hand.save(right_path)
         left_hand.save(left_path)
 
-                #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
+        #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
         result = vit.detect_rheumatoid_arthritis(right_path, left_path)
         right_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
         left_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
@@ -285,3 +283,70 @@ def ptresult():
     
     # 結果を表示する
     return render_template('ptresult.html', result=result)
+
+@data_blueprint.route('/scoring', methods=['GET', 'POST'])
+@login_required
+def scoring():
+    # 現在のユーザーに関連するデータを取得
+    user_id = current_user.id
+    symptom = Symptom.query.filter_by(user_id=user_id).first()
+    right_hand_data = RightHandData.query.filter_by(user_id=user_id).first()
+    left_hand_data = LeftHandData.query.filter_by(user_id=user_id).first()
+    large_joint_data = LargeJointData.query.filter_by(user_id=user_id).first()
+    foot_joint_data = FootJointData.query.filter_by(user_id=user_id).first()
+    lab_data = LabData.query.filter_by(user_id=user_id).first()
+
+    # データがすべて揃っているかチェック
+    if not (symptom and right_hand_data and left_hand_data and large_joint_data and foot_joint_data and lab_data):
+        return jsonify({"error": "Data not found"}), 404
+
+    # ScoreDataクラスのインスタンスを作成し、スコアを計算
+    joint_entry = {
+        "pip_joint_left_2": left_hand_data.pip_joint_left_2,
+        "pip_joint_left_3": left_hand_data.pip_joint_left_3,
+        "pip_joint_left_4": left_hand_data.pip_joint_left_4,
+        "pip_joint_left_5": left_hand_data.pip_joint_left_5,
+        "pip_joint_right_2": right_hand_data.pip_joint_right_2,
+        "pip_joint_right_3": right_hand_data.pip_joint_right_3,
+        "pip_joint_right_4": right_hand_data.pip_joint_right_4,
+        "pip_joint_right_5": right_hand_data.pip_joint_right_5,
+        "mtp_joint_left_1": foot_joint_data.mtp_joint_left_1,
+        "mtp_joint_left_2": foot_joint_data.mtp_joint_left_2,
+        "mtp_joint_left_3": foot_joint_data.mtp_joint_left_3,
+        "mtp_joint_left_4": foot_joint_data.mtp_joint_left_4,
+        "mtp_joint_left_5": foot_joint_data.mtp_joint_left_5,
+        "mtp_joint_right_1": foot_joint_data.mtp_joint_right_1,
+        "mtp_joint_right_2": foot_joint_data.mtp_joint_right_2,
+        "mtp_joint_right_3": foot_joint_data.mtp_joint_right_3,
+        "mtp_joint_right_4": foot_joint_data.mtp_joint_right_4,
+        "mtp_joint_right_5": foot_joint_data.mtp_joint_right_5,
+        "thumb_ip_joint_left": left_hand_data.thumb_ip_joint_left,
+        "thumb_ip_joint_right": right_hand_data.thumb_ip_joint_right,
+        "hand_wrist_joint_left": large_joint_data.wrist_joint_hand_left,
+        "hand_wrist_joint_right": large_joint_data.wrist_joint_hand_right,
+        "elbow_joint_left": large_joint_data.elbow_joint_left,
+        "elbow_joint_right": large_joint_data.elbow_joint_right,
+        "shoulder_joint_left": large_joint_data.shoulder_joint_left,
+        "shoulder_joint_right": large_joint_data.shoulder_joint_right,
+        "hip_joint_left": large_joint_data.hip_joint_left,
+        "hip_joint_right": large_joint_data.hip_joint_right,
+        "knee_joint_left": large_joint_data.knee_joint_left,
+        "knee_joint_right": large_joint_data.knee_joint_right,
+        "ankle_joint_left": large_joint_data.ankle_joint_left,
+        "ankle_joint_right": large_joint_data.ankle_joint_right
+    }
+
+    # スコア計算のためのScoreDataオブジェクトを作成
+    score_data = ScoreData(
+        distal_joints=joint_entry,
+        proximal_joints=joint_entry,
+        sex=symptom.sex,
+        six_weeks_duration=symptom.six_weeks_duration
+    )
+    
+    # 計算されたスコアをテンプレートに渡す
+    return render_template('scoring.html', 
+                           total_score=score_data.total_score, 
+                           joint_score=score_data.joint_score, 
+                           inflammation_score=score_data.inflammation_score, 
+                           immunology_score=score_data.immunology_score)
