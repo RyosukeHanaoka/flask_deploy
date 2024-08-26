@@ -439,5 +439,4 @@ def scoring():
         current_app.logger.error(f"Error during scoring process: {str(e)}")
         return jsonify({"error": "An error occurred during the scoring process.", "details": str(e)}), 500
     
-    return render_template('scoring.html')
      
