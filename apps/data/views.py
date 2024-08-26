@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, render_template, request, redirect, url_for, flash, current_app, jsonify, session
 from flask_login import login_required, current_user
 from .extensions import db
+from sqlalchemy import func
 import datetime
 import os
 from .models import HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
@@ -35,24 +36,22 @@ def notice_post_login():
 def symptom():
     if request.method == 'POST':
         user = Symptom(
-            sex=request.form.get('sex', ''),
+            sex=request.form.get('sex'),
             user_id=current_user.id,
-            pt_id=request.form.get('pt_id', ''),
-            birth_year=int(request.form.get('birth_year', 0)),
-            birth_month=int(request.form.get('birth_month', 0)),
-            birth_day=int(request.form.get('birth_day', 0)),
-            disease_duration=int(request.form.get('disease_duration', 0)),
-            morning_stiffness=request.form.get('morning_stiffness', ''),
-            six_weeks_duration=request.form.get('six_weeks_duration', ''),
-            stiffness_duration=int(request.form.get('stiffness_duration', 0)),
-            pain_level=int(request.form.get('pain_level', 0))       
+            pt_id=request.form.get('pt_id'),
+            birth_date=request.form.get('birth_year', ''),
+            disease_duration=int(request.form.get('disease_duration') or 0),
+            morning_stiffness=request.form.get('morning_stiffness'),
+            six_weeks_duration=request.form.get('six_weeks_duration'),
+            stiffness_duration=int(request.form.get('stiffness_duration') or 0),
+            pain_level=int(request.form.get('pain_level') or 0)       
         )        
         db.session.add(user)
         db.session.commit()
         session['pt_id'] = request.form.get('pt_id', '')
         return redirect(url_for('data_blueprint.righthand'))
 
-    years = range(1920, datetime.date.today().year + 1)
+    years = range(1930, datetime.date.today().year + 1)
     months = range(1, 13)
     days = range(1, 32)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
@@ -244,9 +243,7 @@ def handpicture():
         left_hand.save(left_path)
 
         #モデル（ここではvit）を使ってリウマチ関節炎の検出を行い、その結果を取得
-        result = vit.detect_rheumatoid_arthritis(right_path, left_path)
-        right_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
-        left_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
+        right_hand_result, left_hand_result, result = vit.detect_rheumatoid_arthritis(right_path, left_path)
 
         #右手と左手の画像のパス、現在のユーザーID、日時を含む新しいHandDataオブジェクトを作成
         hand_data = HandPicData(
@@ -277,6 +274,7 @@ def handpicture():
 def ptresult():
     # セッションから検出結果を取得
     result = session.get('result')
+    result = round(result, 2)
     #セッションに結果が保存されていない場合、HTTP 400エラーを返す
     if result is None:
         abort(400, description="結果が見つかりません")
@@ -287,66 +285,159 @@ def ptresult():
 @data_blueprint.route('/scoring', methods=['GET', 'POST'])
 @login_required
 def scoring():
-    # 現在のユーザーに関連するデータを取得
-    user_id = current_user.id
-    symptom = Symptom.query.filter_by(user_id=user_id).first()
-    right_hand_data = RightHandData.query.filter_by(user_id=user_id).first()
-    left_hand_data = LeftHandData.query.filter_by(user_id=user_id).first()
-    large_joint_data = LargeJointData.query.filter_by(user_id=user_id).first()
-    foot_joint_data = FootJointData.query.filter_by(user_id=user_id).first()
-    lab_data = LabData.query.filter_by(user_id=user_id).first()
+    try:
+        pt_id = session.get('pt_id')
+        if pt_id is None:
+            raise ValueError("Patient ID not found in session")
 
-    # データがすべて揃っているかチェック
-    if not (symptom and right_hand_data and left_hand_data and large_joint_data and foot_joint_data and lab_data):
-        return jsonify({"error": "Data not found"}), 404
+        def get_latest_sum(model, pt_id, *columns):
+            subq = db.session.query(
+                func.max(model.created_at).label('max_date')
+            ).filter(model.pt_id == pt_id).subquery()
 
-    # ScoreDataクラスのインスタンスを作成し、スコアを計算
-    joint_entry = {
-        "pip_joint_left_2": left_hand_data.pip_joint_left_2,
-        "pip_joint_left_3": left_hand_data.pip_joint_left_3,
-        "pip_joint_left_4": left_hand_data.pip_joint_left_4,
-        "pip_joint_left_5": left_hand_data.pip_joint_left_5,
-        "pip_joint_right_2": right_hand_data.pip_joint_right_2,
-        "pip_joint_right_3": right_hand_data.pip_joint_right_3,
-        "pip_joint_right_4": right_hand_data.pip_joint_right_4,
-        "pip_joint_right_5": right_hand_data.pip_joint_right_5,
-        "mtp_joint_left_1": foot_joint_data.mtp_joint_left_1,
-        "mtp_joint_left_2": foot_joint_data.mtp_joint_left_2,
-        "mtp_joint_left_3": foot_joint_data.mtp_joint_left_3,
-        "mtp_joint_left_4": foot_joint_data.mtp_joint_left_4,
-        "mtp_joint_left_5": foot_joint_data.mtp_joint_left_5,
-        "mtp_joint_right_1": foot_joint_data.mtp_joint_right_1,
-        "mtp_joint_right_2": foot_joint_data.mtp_joint_right_2,
-        "mtp_joint_right_3": foot_joint_data.mtp_joint_right_3,
-        "mtp_joint_right_4": foot_joint_data.mtp_joint_right_4,
-        "mtp_joint_right_5": foot_joint_data.mtp_joint_right_5,
-        "thumb_ip_joint_left": left_hand_data.thumb_ip_joint_left,
-        "thumb_ip_joint_right": right_hand_data.thumb_ip_joint_right,
-        "hand_wrist_joint_left": large_joint_data.wrist_joint_hand_left,
-        "hand_wrist_joint_right": large_joint_data.wrist_joint_hand_right,
-        "elbow_joint_left": large_joint_data.elbow_joint_left,
-        "elbow_joint_right": large_joint_data.elbow_joint_right,
-        "shoulder_joint_left": large_joint_data.shoulder_joint_left,
-        "shoulder_joint_right": large_joint_data.shoulder_joint_right,
-        "hip_joint_left": large_joint_data.hip_joint_left,
-        "hip_joint_right": large_joint_data.hip_joint_right,
-        "knee_joint_left": large_joint_data.knee_joint_left,
-        "knee_joint_right": large_joint_data.knee_joint_right,
-        "ankle_joint_left": large_joint_data.ankle_joint_left,
-        "ankle_joint_right": large_joint_data.ankle_joint_right
-    }
+            return db.session.query(
+                func.coalesce(sum(column for column in columns), 0)
+            ).filter(
+                model.pt_id == pt_id,
+                model.created_at == subq.c.max_date
+            ).scalar()
 
-    # スコア計算のためのScoreDataオブジェクトを作成
-    score_data = ScoreData(
-        distal_joints=joint_entry,
-        proximal_joints=joint_entry,
-        sex=symptom.sex,
-        six_weeks_duration=symptom.six_weeks_duration
-    )
+        # distal_jointsの計算（前回の改善を維持）
+        distal_joints = (
+            get_latest_sum(RightHandData, pt_id,
+                           RightHandData.thumb_ip_joint_right,
+                           RightHandData.pip_joint_right_2,
+                           RightHandData.pip_joint_right_3,
+                           RightHandData.pip_joint_right_4,
+                           RightHandData.pip_joint_right_5,
+                           RightHandData.mp_joint_right_1,
+                           RightHandData.mp_joint_right_2,
+                           RightHandData.mp_joint_right_3,
+                           RightHandData.mp_joint_right_4,
+                           RightHandData.mp_joint_right_5) +
+            get_latest_sum(LeftHandData, pt_id,
+                           LeftHandData.thumb_ip_joint_left,
+                           LeftHandData.pip_joint_left_2,
+                           LeftHandData.pip_joint_left_3,
+                           LeftHandData.pip_joint_left_4,
+                           LeftHandData.pip_joint_left_5,
+                           LeftHandData.mp_joint_left_1,
+                           LeftHandData.mp_joint_left_2,
+                           LeftHandData.mp_joint_left_3,
+                           LeftHandData.mp_joint_left_4,
+                           LeftHandData.mp_joint_left_5) +
+            get_latest_sum(LargeJointData, pt_id,
+                           LargeJointData.wrist_joint_hand_left,
+                           LargeJointData.wrist_joint_hand_right) +
+            get_latest_sum(FootJointData, pt_id,
+                           FootJointData.mtp_joint_left_1,
+                           FootJointData.mtp_joint_left_2,
+                           FootJointData.mtp_joint_left_3,
+                           FootJointData.mtp_joint_left_4,
+                           FootJointData.mtp_joint_left_5,
+                           FootJointData.mtp_joint_right_1,
+                           FootJointData.mtp_joint_right_2,
+                           FootJointData.mtp_joint_right_3,
+                           FootJointData.mtp_joint_right_4,
+                           FootJointData.mtp_joint_right_5)
+        )
+
+        # 改善されたproximal_jointsの計算
+        proximal_joints = get_latest_sum(LargeJointData, pt_id,
+                                         LargeJointData.elbow_joint_left,
+                                         LargeJointData.elbow_joint_right,
+                                         LargeJointData.shoulder_joint_left,
+                                         LargeJointData.shoulder_joint_right,
+                                         LargeJointData.hip_joint_left,
+                                         LargeJointData.hip_joint_right,
+                                         LargeJointData.knee_joint_left,
+                                         LargeJointData.knee_joint_right,
+                                         LargeJointData.ankle_joint_left,
+                                         LargeJointData.ankle_joint_right)
+
+        print(f"Total distal_joints: {distal_joints}")  # デバッグ用出力
+        print(f"Total proximal_joints: {proximal_joints}")  # デバッグ用出力
+
+        # joint_scoreの計算（変更なし）
+        if distal_joints == 0:
+            if proximal_joints <= 1:
+                joint_score = 0
+            else:
+                joint_score = 1
+        else:
+            if proximal_joints + distal_joints >= 11:
+                joint_score = 5
+            else:
+                if distal_joints <= 3:
+                    joint_score = 2
+                else: 
+                    if distal_joints <= 10:
+                        joint_score = 3
+                    else:
+                        joint_score = 5
+
+        # LabDataとSymptomデータを取得
+        lab_data = LabData.query.filter_by(pt_id=pt_id).first()
+        symptom = Symptom.query.filter_by(pt_id=pt_id).first()
+
+        if not lab_data or not symptom:
+            raise ValueError("Required lab data or symptom data not found")
+
+        # inflammation_scoreを計算
+        if lab_data.crp > 0.3:
+            inflammation_score = 1
+        elif (symptom.sex == 0 and lab_data.esr > 10) or (symptom.sex == 1 and lab_data.esr > 15):
+            inflammation_score = 1
+        else:
+            inflammation_score = 0
+
+        # immunology_scoreを計算
+        if lab_data.rf >= 45 or lab_data.acpa >= 13.5:
+            immunology_score = 2
+        elif lab_data.rf >= 15 or lab_data.acpa >= 4.5:
+            immunology_score = 1
+        else:
+            immunology_score = 0
+
+        # duration_scoreを計算
+        if symptom.six_weeks_duration==1:
+            duration_score = 1
+        else:
+            duration_score = 0
+
+        # total_scoreを計算
+        total_score = joint_score + inflammation_score + immunology_score + duration_score
+
+        # ScoreDataに結果を保存
+        score_data = ScoreData(
+            user_id=current_user.id,
+            pt_id=pt_id,
+            distal_joints=distal_joints,
+            proximal_joints=proximal_joints,
+            joint_score=joint_score,
+            inflammation_score=inflammation_score,
+            immunology_score=immunology_score,
+            duration_score=duration_score,
+            total_score=total_score
+        )
+
+        db.session.add(score_data)
+        db.session.commit()
+
+        return jsonify({
+            'total_score': total_score,
+            'distal_joints': distal_joints,
+            'proximal_joints': proximal_joints,
+            'joint_score': joint_score,
+            'inflammation_score': inflammation_score,
+            'immunology_score': immunology_score,
+            'duration_score': duration_score
+        })
+
+    except Exception as e:
+        db.session.rollback()  # ロールバックしてトランザクションをキャンセル
+        current_app.logger.error(f"Error during scoring process: {str(e)}")
+        return jsonify({"error": "An error occurred during the scoring process.", "details": str(e)}), 500
     
-    # 計算されたスコアをテンプレートに渡す
-    return render_template('scoring.html', 
-                           total_score=score_data.total_score, 
-                           joint_score=score_data.joint_score, 
-                           inflammation_score=score_data.inflammation_score, 
-                           immunology_score=score_data.immunology_score)
+    return render_template('scoring.html')
+     

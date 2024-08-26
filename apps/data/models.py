@@ -35,9 +35,7 @@ class Symptom(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     pt_id = db.Column(db.String(50), nullable=False)
     sex = db.Column(db.String(10))
-    birth_year = db.Column(db.Integer)
-    birth_month = db.Column(db.Integer)
-    birth_day = db.Column(db.Integer)
+    birth_date = db.Column(db.String(10))
     disease_duration = db.Column(db.Integer)
     morning_stiffness = db.Column(db.String(50))
     stiffness_duration = db.Column(db.Integer)
@@ -46,25 +44,35 @@ class Symptom(db.Model):
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     six_weeks_duration = db.Column(db.String(10))
 
-    def __init__(self, user_id, pt_id, sex, birth_year, birth_month, birth_day, disease_duration,
-                 morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
-        self.user_id=user_id
+    def __init__(self, user_id, pt_id, sex, birth_date, disease_duration,
+                morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
+        super().__init__()
+        self.user_id = user_id
         self.pt_id = pt_id
         self.sex = sex
-        self.birth_year = birth_year
-        self.birth_month = birth_month
-        self.birth_day = birth_day
+        self.birth_date = birth_date
         self.disease_duration = disease_duration
         self.morning_stiffness = morning_stiffness
         self.stiffness_duration = stiffness_duration
         self.pain_level = pain_level
         self.six_weeks_duration = six_weeks_duration
 
-    def calculate_age(self, current_year, current_month, current_day):
-        age = current_year - self.birth_year
-        if (current_month, current_day) < (self.birth_month, self.birth_day):
+    def calculate_age(self, current_date=None):
+        if current_date is None:
+            current_date = datetime.today()
+
+    # `birth_date` を `datetime` オブジェクトに変換
+        birth_date = datetime.strptime(self.birth_date, "%Y-%m-%d")
+    
+    # 年齢を計算
+        age = current_date.year - birth_date.year
+    
+    # 誕生日がまだ来ていない場合、年齢を1つ減らす
+        if (current_date.month, current_date.day) < (birth_date.month, birth_date.day):
             age -= 1
-        return age    
+    
+        return age
+      
 class HandPicData(db.Model):
     __tablename__ = 'hand_data'    
     id = db.Column(db.Integer, primary_key=True)
@@ -250,13 +258,11 @@ class LabData(db.Model):
         self.esr = esr
         self.rf = rf
         self.acpa = acpa
-
 class ScoreData(db.Model):
     __tablename__ = 'score_data'
-    
-    # 主キーとなるidを追加します
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    pt_id = db.Column(db.String(50), nullable=False)
     distal_joints = db.Column(db.Integer)
     proximal_joints = db.Column(db.Integer)
     immunology_score = db.Column(db.Integer, nullable=False)
@@ -267,75 +273,17 @@ class ScoreData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, distal_joints, proximal_joints, sex, six_weeks_duration):
-        self.distal_joints = self.calculate_distal_joints(distal_joints)
-        self.proximal_joints = self.calculate_proximal_joints(proximal_joints)
-        self.immunology_score = self.calculate_immunology_score()
-        self.inflammation_score = self.calculate_inflammation_score(sex)
-        self.joint_score = self.calculate_joint_score(self.proximal_joints, self.distal_joints)
-        self.duration_score = self.calculate_duration_score(six_weeks_duration)
-        self.total_score = self.calculate_total_score()
-    
-    # 以下のメソッドはスコアの計算を行います
-    def calculate_distal_joints(self, joint_entry):
-        distal_joints = sum(
-            [getattr(joint_entry, f"pip_joint_left_{i}", 0) for i in range(2, 6)] + \
-            [getattr(joint_entry, f"pip_joint_right_{i}", 0) for i in range(2, 6)]+ \
-            [getattr(joint_entry, f"mtp_joint_left_{i}", 0) for i in range(1, 6)]+ \
-            [getattr(joint_entry, f"mtp_joint_right_{i}", 0) for i in range(1, 6)]+ \
-            getattr(joint_entry, "thumb_ip_joint_left", 0) + \
-            getattr(joint_entry, "thumb_ip_joint_right", 0)+ \
-            getattr(joint_entry, "hand_wrist_joint_left", 0) + \
-            getattr(joint_entry, "hand_wrist_joint_right", 0))
-        return distal_joints
-
-    def calculate_proximal_joints(self, joint_entry):
-        proximal_joints = sum(
-            [
-                getattr(joint_entry, "elbow_joint_left", 0),
-                getattr(joint_entry, "shoulder_joint_left", 0),
-                getattr(joint_entry, "elbow_joint_right", 0),
-                getattr(joint_entry, "shoulder_joint_right", 0),
-                getattr(joint_entry, "hip_joint_left", 0),
-                getattr(joint_entry, "hip_joint_right", 0),
-                getattr(joint_entry, "knee_joint_left", 0),
-                getattr(joint_entry, "knee_joint_right", 0),
-                getattr(joint_entry, "ankle_joint_left", 0),
-                getattr(joint_entry, "ankle_joint_right", 0),
-            ]
-        )
-        return proximal_joints
-
-    def calculate_immunology_score(self):
-        if self.rf >= 45 or self.acpa >= 13.5:
-            return 2
-        elif self.rf >= 15 or self.acpa >= 4.5:
-            return 1
-        return 0
-
-    def calculate_inflammation_score(self, sex):
-        if self.crp > 0.3:
-            return 1
-        elif (sex == 0 and self.esr > 10) or (sex == 1 and self.esr > 15):
-            return 1
-        return 0
-
-    def calculate_duration_score(self, six_weeks_duration):
-        return 1 if six_weeks_duration == 1 else 0
-
-    def calculate_joint_score(self, proximal_joints, distal_joints):
-        if distal_joints == 0:
-            return 1 if proximal_joints != 0 else 0
-        elif proximal_joints + distal_joints >= 11:
-            return 5
-        elif distal_joints <= 3:
-            return 2 if proximal_joints + distal_joints < 10 else 3
-        return 0
+    def __init__(self, user_id, pt_id, distal_joints, proximal_joints, immunology_score, 
+                 inflammation_score, joint_score, duration_score, total_score):
+        self.user_id = user_id
+        self.pt_id = pt_id
+        self.distal_joints = distal_joints
+        self.proximal_joints = proximal_joints
+        self.immunology_score = immunology_score
+        self.inflammation_score = inflammation_score
+        self.joint_score = joint_score
+        self.duration_score = duration_score
+        self.total_score = total_score
 
     def calculate_total_score(self):
-        return (
-            self.immunology_score +
-            self.inflammation_score +
-            self.joint_score +
-            self.duration_score
-        )
+        return self.joint_score + self.inflammation_score + self.immunology_score + self.duration_score

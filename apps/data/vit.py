@@ -21,36 +21,6 @@ class Vit:
         self.jpeg_righthand_dir = "/Users/hanaokaryousuke/flask/apps/data/pictures/jpeg_righthand"
         self.jpeg_lefthand_dir = "/Users/hanaokaryousuke/flask/apps/data/pictures/jpeg_lefthand"
 
-        # データベース接続の初期化
-        """self.db_path = db_path
-        self.initialize_database()
-
-    def initialize_database(self):
-        # SQLiteデータベースに接続し、テーブルを作成
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS results (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                right_hand_result REAL,
-                left_hand_result REAL,
-                result REAL
-            )
-        ''')
-        conn.commit()
-        conn.close()
-
-    def save_results_to_db(self, right_hand_result, left_hand_result, result):
-        # データベースに結果を挿入
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO results (right_hand_result, left_hand_result, result)
-            VALUES (?, ?, ?)
-        ''', (right_hand_result, left_hand_result, result))
-        conn.commit()
-        conn.close()"""
-
     def load_model(self, model_checkpoint):
         model = timm.create_model('vit_base_patch16_224.augreg_in21k', pretrained=False, num_classes=2)
         checkpoint = torch.load(model_checkpoint, map_location=self.device)
@@ -125,4 +95,4 @@ class Vit:
         
         # 結果をデータベースに保存
         #self.save_results_to_db(right_hand_result, left_hand_result, result)
-        return round(result, 2)
+        return right_hand_result, left_hand_result, result
