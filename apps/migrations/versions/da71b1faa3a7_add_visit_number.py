@@ -1,8 +1,8 @@
-"""empty message
+"""add visit_number
 
-Revision ID: d9f62916d305
+Revision ID: da71b1faa3a7
 Revises: 
-Create Date: 2024-08-26 00:30:14.843634
+Create Date: 2024-08-28 22:18:38.004273
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd9f62916d305'
+revision = 'da71b1faa3a7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -88,6 +88,12 @@ def upgrade():
     sa.Column('knee_joint_right', sa.Integer(), nullable=True),
     sa.Column('ankle_joint_left', sa.Integer(), nullable=True),
     sa.Column('ankle_joint_right', sa.Integer(), nullable=True),
+    sa.Column('sternoclavicular_joint_right', sa.Integer(), nullable=True),
+    sa.Column('sternoclavicular_joint_left', sa.Integer(), nullable=True),
+    sa.Column('acromioclavicular_joint_right', sa.Integer(), nullable=True),
+    sa.Column('acromioclavicular_joint_left', sa.Integer(), nullable=True),
+    sa.Column('temporomandibular_joint_right', sa.Integer(), nullable=True),
+    sa.Column('temporomandibular_joint_left', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -160,7 +166,7 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('pt_id', sa.String(length=50), nullable=False),
     sa.Column('sex', sa.String(length=10), nullable=True),
-    sa.Column('birth_date', sa.String(length=10), nullable=True),
+    sa.Column('birth_date', sa.Date(), nullable=True),
     sa.Column('disease_duration', sa.Integer(), nullable=True),
     sa.Column('morning_stiffness', sa.String(length=50), nullable=True),
     sa.Column('stiffness_duration', sa.Integer(), nullable=True),

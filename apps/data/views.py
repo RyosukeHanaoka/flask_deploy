@@ -35,11 +35,13 @@ def notice_post_login():
 @login_required
 def symptom():
     if request.method == 'POST':
+        visit_number = int(request.form.get('visit_number'))
         user = Symptom(
             sex=request.form.get('sex'),
             user_id=current_user.id,
             pt_id=request.form.get('pt_id'),
-            birth_date=request.form.get('birth_year', ''),
+            visit_number=visit_number,
+            birth_date=request.form.get('birth_date', ''),
             disease_duration=int(request.form.get('disease_duration') or 0),
             morning_stiffness=request.form.get('morning_stiffness'),
             six_weeks_duration=request.form.get('six_weeks_duration'),
@@ -49,14 +51,16 @@ def symptom():
         db.session.add(user)
         db.session.commit()
         session['pt_id'] = request.form.get('pt_id', '')
+        session['visit_number'] = visit_number
         return redirect(url_for('data_blueprint.righthand'))
 
     years = range(1930, datetime.date.today().year + 1)
     months = range(1, 13)
     days = range(1, 32)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
+    visit_numbers = range(1, 6)
 
-    return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations)
+    return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations, visit_numbers=visit_numbers)
 
 @data_blueprint.route('/righthand', methods=['GET', 'POST'])
 @login_required
@@ -69,6 +73,7 @@ def righthand():
         joint_entry = RightHandData(
             pt_id = pt_id,
             user_id=current_user.id,
+            visit_number = session.get('visit_number'),
             dip_joint_right_2=int(data.get('dip_joint_right_2', 0)),
             dip_joint_right_3=int(data.get('dip_joint_right_3', 0)),
             dip_joint_right_4=int(data.get('dip_joint_right_4', 0)),
@@ -91,7 +96,7 @@ def righthand():
     return render_template('righthand.html')
 
 @data_blueprint.route('/lefthand', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def lefthand():
     if request.method == 'POST':
         data=request.form
@@ -99,6 +104,7 @@ def lefthand():
         joint_entry = LeftHandData(
             pt_id = pt_id,
             user_id=current_user.id,
+            visit_number = session.get('visit_number'),
             dip_joint_left_2=int(data.get('dip_joint_left_2', 0)),
             dip_joint_left_3=int(data.get('dip_joint_left_3', 0)),
             dip_joint_left_4=int(data.get('dip_joint_left_4', 0)),
@@ -129,6 +135,7 @@ def body():
         joint_entry = LargeJointData(
             pt_id = pt_id,
             user_id=current_user.id,
+            visit_number = session.get('visit_number'),
             wrist_joint_hand_left=int(data.get('wrist_joint_hand_left', 0)),
             wrist_joint_hand_right=int(data.get('wrist_joint_hand_right', 0)),
             elbow_joint_left=int(data.get('elbow_joint_left', 0)),
@@ -141,6 +148,12 @@ def body():
             knee_joint_right=int(data.get('knee_joint_right', 0)),
             ankle_joint_left=int(data.get('ankle_joint_left', 0)),
             ankle_joint_right=int(data.get('ankle_joint_right', 0)),
+            sternoclavicular_joint_left=int(data.get('sternoclavicular_joint_left', 0)),
+            sternoclavicular_joint_right=int(data.get('sternoclavicular_joint_right', 0)),
+            acromioclavicular_joint_left=int(data.get('acromioclavicular_joint_left', 0)),
+            acromioclavicular_joint_right=int(data.get('acromioclavicular_joint_right', 0)),
+            temporomandibular_joint_left=int(data.get('temporomandibular_joint_left', 0)),
+            temporomandibular_joint_right=int(data.get('temporomandibular_joint_right', 0))
         )
         db.session.add(joint_entry)
         db.session.commit()
@@ -157,6 +170,7 @@ def foot():
         joint_entry = FootJointData(
             pt_id = pt_id,
             user_id=current_user.id,
+            visit_number = session.get('visit_number'),
             mtp_joint_left_1=int(data.get('mtp_joint_left_1', 0)),
             mtp_joint_left_2=int(data.get('mtp_joint_left_2', 0)),
             mtp_joint_left_3=int(data.get('mtp_joint_left_3', 0)),
@@ -183,6 +197,7 @@ def labo_exam():
         # フォームからデータを取得
         user_id = current_user.id
         pt_id = session.get('pt_id')
+        visit_number = session.get('visit_number')
         crp = float(request.form['crp'])
         esr = int(request.form['esr'])
         rf = float(request.form['rf'])
@@ -192,6 +207,7 @@ def labo_exam():
         labo_data = LabData(
             pt_id = pt_id,
             user_id=user_id,
+            visit_number = visit_number,
             crp=crp,
             esr=esr,
             rf=rf,
@@ -249,6 +265,7 @@ def handpicture():
         hand_data = HandPicData(
             user_id=current_user.id,
             pt_id = pt_id,
+            visit_number = session.get('visit_number'),
             datetime=now,
             right_hand_path=right_path,
             left_hand_path=left_path,
@@ -287,8 +304,9 @@ def ptresult():
 def scoring():
     try:
         pt_id = session.get('pt_id')
-        if pt_id is None:
-            raise ValueError("Patient ID not found in session")
+        visit_number = session.get('visit_number')
+        if pt_id is None or visit_number is None:
+            raise ValueError("Patient ID or Visit Number not found in session")
 
         def get_latest_sum(model, pt_id, *columns):
             subq = db.session.query(
@@ -299,7 +317,7 @@ def scoring():
                 func.coalesce(sum(column for column in columns), 0)
             ).filter(
                 model.pt_id == pt_id,
-                model.created_at == subq.c.max_date
+                model.visit_number == visit_number
             ).scalar()
 
         # distal_jointsの計算（前回の改善を維持）
@@ -354,9 +372,18 @@ def scoring():
                                          LargeJointData.knee_joint_right,
                                          LargeJointData.ankle_joint_left,
                                          LargeJointData.ankle_joint_right)
+        
+        other_proximal_joints = get_latest_sum(LargeJointData, pt_id, 
+                                               LargeJointData.sternoclavicular_joint_left,
+                                               LargeJointData.sternoclavicular_joint_right,
+                                               LargeJointData.acromioclavicular_joint_left,
+                                               LargeJointData.acromioclavicular_joint_right,
+                                               LargeJointData.temporomandibular_joint_left, 
+                                               LargeJointData.temporomandibular_joint_right)
 
         print(f"Total distal_joints: {distal_joints}")  # デバッグ用出力
         print(f"Total proximal_joints: {proximal_joints}")  # デバッグ用出力
+        print(f"Total other_proximal_joints: {other_proximal_joints}")  # デバッグ用出力
 
         # joint_scoreの計算（変更なし）
         if distal_joints == 0:
@@ -365,7 +392,7 @@ def scoring():
             else:
                 joint_score = 1
         else:
-            if proximal_joints + distal_joints >= 11:
+            if proximal_joints + distal_joints + other_proximal_joints>= 11:
                 joint_score = 5
             else:
                 if distal_joints <= 3:
@@ -412,8 +439,10 @@ def scoring():
         score_data = ScoreData(
             user_id=current_user.id,
             pt_id=pt_id,
+            visit_number=visit_number,
             distal_joints=distal_joints,
             proximal_joints=proximal_joints,
+            other_proximal_joints=other_proximal_joints,
             joint_score=joint_score,
             inflammation_score=inflammation_score,
             immunology_score=immunology_score,
@@ -428,6 +457,7 @@ def scoring():
             'total_score': total_score,
             'distal_joints': distal_joints,
             'proximal_joints': proximal_joints,
+            'other_proximal_joints': other_proximal_joints,
             'joint_score': joint_score,
             'inflammation_score': inflammation_score,
             'immunology_score': immunology_score,
