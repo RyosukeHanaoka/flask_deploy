@@ -36,8 +36,6 @@ def edit_symptom(pt_id):
     
     if request.method == 'POST':
         symptom.sex = request.form.get('sex', '')
-        symptom.birth_year = int(request.form.get('birth_year', 0))
-        symptom.birth_month = int(request.form.get('birth_month', 0))
         symptom.birth_day = int(request.form.get('birth_day', 0))
         symptom.disease_duration = int(request.form.get('disease_duration', 0))
         symptom.morning_stiffness = request.form.get('morning_stiffness', '')

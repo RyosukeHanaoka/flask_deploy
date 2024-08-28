@@ -360,7 +360,7 @@ def scoring():
                            FootJointData.mtp_joint_right_5)
         )
 
-        # 改善されたproximal_jointsの計算
+        # proximal_jointsの計算
         proximal_joints = get_latest_sum(LargeJointData, pt_id,
                                          LargeJointData.elbow_joint_left,
                                          LargeJointData.elbow_joint_right,
@@ -404,8 +404,8 @@ def scoring():
                         joint_score = 5
 
         # LabDataとSymptomデータを取得
-        lab_data = LabData.query.filter_by(pt_id=pt_id).first()
-        symptom = Symptom.query.filter_by(pt_id=pt_id).first()
+        lab_data = LabData.query.filter_by(pt_id=pt_id, visit_number=visit_number).first()
+        symptom = Symptom.query.filter_by(pt_id=pt_id, visit_number=visit_number).first()
 
         if not lab_data or not symptom:
             raise ValueError("Required lab data or symptom data not found")
@@ -413,7 +413,7 @@ def scoring():
         # inflammation_scoreを計算
         if lab_data.crp > 0.3:
             inflammation_score = 1
-        elif (symptom.sex == 0 and lab_data.esr > 10) or (symptom.sex == 1 and lab_data.esr > 15):
+        elif (symptom.sex == "male" and lab_data.esr > 10) or (symptom.sex == "female" and lab_data.esr > 15):
             inflammation_score = 1
         else:
             inflammation_score = 0
@@ -427,7 +427,7 @@ def scoring():
             immunology_score = 0
 
         # duration_scoreを計算
-        if symptom.six_weeks_duration==1:
+        if symptom.six_weeks_duration=="yes":
             duration_score = 1
         else:
             duration_score = 0

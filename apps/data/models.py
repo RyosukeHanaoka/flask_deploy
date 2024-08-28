@@ -36,7 +36,7 @@ class BaseVisitData(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     visit_number = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=func.now())
-    
+
 class Symptom(db.Model):
     __tablename__ = 'symptom'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -51,7 +51,7 @@ class Symptom(db.Model):
     pain_level = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
-    six_weeks_duration = db.Column(db.String(10))
+    six_weeks_duration = db.Column(db.String(3))
 
     def __init__(self, user_id, pt_id, visit_number, sex, birth_date, disease_duration,
                 morning_stiffness, stiffness_duration, pain_level, six_weeks_duration):
@@ -295,6 +295,7 @@ class ScoreData(db.Model):
     visit_number = db.Column(db.Integer, nullable=False)
     distal_joints = db.Column(db.Integer)
     proximal_joints = db.Column(db.Integer)
+    other_proximal_joints = db.Column(db.Integer)
     immunology_score = db.Column(db.Integer, nullable=False)
     inflammation_score = db.Column(db.Integer, nullable=False)
     joint_score = db.Column(db.Integer, nullable=False)
@@ -303,13 +304,14 @@ class ScoreData(db.Model):
     created_at = db.Column(db.DateTime, default=func.now())
     updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
-    def __init__(self, user_id, pt_id, visit_number, distal_joints, proximal_joints, immunology_score, 
+    def __init__(self, user_id, pt_id, visit_number, distal_joints, proximal_joints, other_proximal_joints, immunology_score, 
                  inflammation_score, joint_score, duration_score, total_score):
         self.user_id = user_id
         self.pt_id = pt_id
         self.visit_number = visit_number
         self.distal_joints = distal_joints
         self.proximal_joints = proximal_joints
+        self.other_proximal_joints = other_proximal_joints
         self.immunology_score = immunology_score
         self.inflammation_score = inflammation_score
         self.joint_score = joint_score
