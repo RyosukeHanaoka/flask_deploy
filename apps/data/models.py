@@ -278,6 +278,8 @@ class LabData(db.Model):
     esr = db.Column(db.Integer)
     rf = db.Column(db.Float)
     acpa = db.Column(db.Float)
+    created_at = db.Column(db.DateTime, default=func.now())
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
 
     def __init__(self, user_id, pt_id, visit_number, crp, esr, rf, acpa):
         self.user_id=user_id

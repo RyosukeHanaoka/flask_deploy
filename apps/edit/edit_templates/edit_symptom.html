@@ -11,6 +11,18 @@
     <form id="healthsurveyform" action="{{ url_for('edit_blueprint.edit_symptom', pt_id=symptom.pt_id) }}" method="post">
         <div class="form-section">
             <div class="form-group">
+                <label for="visit_number">来院回数を選択してください。</label>
+                <select id="visit_number" name="visit_number" required>
+                    {% for visit in range(1, 6) %}  <!-- Assuming visit numbers are from 1 to 5 -->
+                        <option value="{{ visit }}" {% if symptom.visit_number == visit %}selected{% endif %}>
+                            visit {{ visit }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
                 <label>患者番号を教えてください。</label>
                 <input type="text" id="pt_id" name="pt_id" value="{{ symptom.pt_id }}" readonly>
                 <label>性別を教えてください。</label>
@@ -23,13 +35,13 @@
         <div class="form-section">
             <div class="form-group">
                 <label for="birth_date">生年月日を教えてください。</label>
-                <input type="date" id="birth_date" name="birth_date" value="{{ symptom.birth_year }}-{{ '%02d'|format(symptom.birth_month) }}-{{ '%02d'|format(symptom.birth_day) }}">
+                <input type="date" id="birth_date" name="birth_date" value="{{ symptom.birth_date.strftime('%Y-%m-%d') if symptom.birth_date else '' }}">
             </div>
         </div>
         <div class="form-section">
             <div class="form-group">
-                <label for="painstart">関節に初めて痛みや腫れが生じた時期はいつですか？</label>
-                <select id="painstart" name="painstart">
+                <label for="disease_duration">関節に初めて痛みや腫れが生じた時期はいつですか？</label>
+                <select id="disease_duration" name="disease_duration">
                     <option value="0">1ヶ月以内</option>
                     <option value="1">1ヶ月前</option>
                     <option value="2">2ヶ月前</option>

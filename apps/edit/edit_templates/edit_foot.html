@@ -38,7 +38,7 @@
         <input type="checkbox" id="mtp_joint_right_5" name="mtp_joint_right_5" value="1" class="checkbox" data-x="8.6%" data-y="56.5%" {% if foot.mtp_joint_right_5 %}checked{% endif %}>
     </div> <!-- imageContainerの終了タグ -->
         <div class="button-container">
-                <a href="{{ url_for('edit_blueprint.edit_foot', pt_id=foot.pt_id) }}" class="button">大関節入力画面に戻る</a>
+                <a href="{{ url_for('edit_blueprint.edit_body', pt_id=foot.pt_id) }}" class="button">大関節入力画面に戻る</a>
                 <br>
                 <button type="submit" class="button">検査入力画面に進む</button>
             </div>

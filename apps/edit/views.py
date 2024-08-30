@@ -35,6 +35,10 @@ def edit_symptom(pt_id):
     symptom = Symptom.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(Symptom.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
+        symptom.visit_number = int(request.form.get('visit_number'))
+        birth_date_str = request.form.get('birth_date')
+        if birth_date_str:
+            symptom.birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
         symptom.sex = request.form.get('sex', '')
         symptom.birth_day = int(request.form.get('birth_day', 0))
         symptom.disease_duration = int(request.form.get('disease_duration', 0))
@@ -50,9 +54,10 @@ def edit_symptom(pt_id):
     years = range(1920, datetime.now().year + 1)
     months = range(1, 13)
     days = range(1, 32)
+    visit_numbers = range(1, 6)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
 
-    return render_template('edit_symptom.html', symptom=symptom, years=years, months=months, days=days, stiffness_durations=stiffness_durations)
+    return render_template('edit_symptom.html', symptom=symptom, years=years, months=months, days=days, stiffness_durations=stiffness_durations,pt_id=pt_id, visit_number=symptom.visit_number, visit_numbers=visit_numbers)
 
 @edit_blueprint.route('/edit_righthand/<pt_id>', methods=['GET', 'POST'])
 @login_required
@@ -138,7 +143,7 @@ def edit_labo_exam(pt_id):
 @edit_blueprint.route('/edit_handpicture/<pt_id>', methods=['GET', 'POST'])
 @login_required
 def edit_handpicture(pt_id):
-    handpic = HandPicData.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(HandPicData.created_at.desc()).first_or_404()
+    handpicture = HandPicData.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(HandPicData.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
         right_hand = request.files.get('right_hand')
@@ -167,12 +172,12 @@ def edit_handpicture(pt_id):
             right_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
             left_hand_result = vit.detect_rheumatoid_arthritis(right_path, left_path)
 
-            handpic.datetime = now
-            handpic.right_hand_path = right_path
-            handpic.left_hand_path = left_path
-            handpic.right_hand_result = right_hand_result
-            handpic.left_hand_result = left_hand_result
-            handpic.result = result
+            handpicture.datetime = now
+            handpicture.right_hand_path = right_path
+            handpicture.left_hand_path = left_path
+            handpicture.right_hand_result = right_hand_result
+            handpicture.left_hand_result = left_hand_result
+            handpicture.result = result
 
             db.session.commit()
             flash('手の写真が更新されました。', 'success')
@@ -180,7 +185,7 @@ def edit_handpicture(pt_id):
         else:
             flash('右手と左手の写真を両方アップロードしてください。', 'error')
 
-    return render_template('edit_handpicture.html', handpic=handpic)
+    return render_template('edit_handpicture.html', handpicture=handpicture)
 
 @edit_blueprint.route('/edit_complete/<pt_id>')
 @login_required
