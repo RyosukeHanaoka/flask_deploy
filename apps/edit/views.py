@@ -22,12 +22,14 @@ def examination():
 def dashboard():
     pt_ids = db.session.query(Symptom.pt_id).filter_by(user_id=current_user.id).distinct().all()
     pt_ids = [pt_id[0] for pt_id in pt_ids]
-    
+    visit_numbers = db.session.query(Symptom.visit_number).filter_by(user_id=current_user.id).distinct().order_by(Symptom.visit_number).all()
+    visit_numbers = [visit[0] for visit in visit_numbers]
     if request.method == 'POST':
         selected_pt_id = request.form.get('pt_id')
-        return redirect(url_for('edit_blueprint.edit_symptom', pt_id=selected_pt_id))
-    
-    return render_template('dashboard.html', pt_ids=pt_ids)
+        selected_visit_number = request.form.get('visit_number')
+        return redirect(url_for('edit_blueprint.edit_symptom', pt_id=selected_pt_id, visit_number=selected_visit_number))
+        
+    return render_template('dashboard.html', pt_ids=pt_ids, visit_numbers=visit_numbers)
 
 @edit_blueprint.route('/edit_symptom/<int:pt_id>', methods=['GET', 'POST'])
 @login_required
@@ -35,12 +37,7 @@ def edit_symptom(pt_id):
     symptom = Symptom.query.filter_by(user_id=current_user.id, pt_id=pt_id).order_by(Symptom.created_at.desc()).first_or_404()
     
     if request.method == 'POST':
-        symptom.visit_number = int(request.form.get('visit_number'))
-        birth_date_str = request.form.get('birth_date')
-        if birth_date_str:
-            symptom.birth_date = datetime.strptime(birth_date_str, '%Y-%m-%d').date()
         symptom.sex = request.form.get('sex', '')
-        symptom.birth_day = int(request.form.get('birth_day', 0))
         symptom.disease_duration = int(request.form.get('disease_duration', 0))
         symptom.morning_stiffness = request.form.get('morning_stiffness', '')
         symptom.six_weeks_duration = request.form.get('six_weeks_duration', '')
@@ -51,13 +48,10 @@ def edit_symptom(pt_id):
         flash('症状データが更新されました。', 'success')
         return redirect(url_for('edit_blueprint.edit_righthand', pt_id=pt_id))
 
-    years = range(1920, datetime.now().year + 1)
-    months = range(1, 13)
-    days = range(1, 32)
-    visit_numbers = range(1, 6)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
 
-    return render_template('edit_symptom.html', symptom=symptom, years=years, months=months, days=days, stiffness_durations=stiffness_durations,pt_id=pt_id, visit_number=symptom.visit_number, visit_numbers=visit_numbers)
+    return render_template('edit_symptom.html', symptom=symptom, stiffness_durations=stiffness_durations, pt_id=pt_id)
+    
 
 @edit_blueprint.route('/edit_righthand/<pt_id>', methods=['GET', 'POST'])
 @login_required

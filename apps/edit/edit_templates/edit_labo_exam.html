@@ -13,30 +13,30 @@
         <div class="form-section">
             <div class="form-group">
                 <label for="crp">血清CRP値 (mg/dl)</label>
-                <input type="number" id="crp" name="crp" min="0.01" step="0.01" required>mg/dl
+                <input type="number" id="crp" name="crp" min="0.01" step="0.01" value="{{ labo_exam.crp|default('', true) }}" required>mg/dl
             </div>
         </div>
         <div class="form-section">
             <div class="form-group">
                 <label for="esr">赤血球沈降速度 (mm)</label>
-                <input type="number" id="esr" name="esr" min="1" step="1" required>mm
+                <input type="number" id="esr" name="esr" min="1" step="1" value="{{ labo_exam.esr|default('', true) }}" required>mm
             </div>
         </div>
         <div class="form-section">
             <div class="form-group">
                 <label for="rf">リウマトイド因子 (IU/ml)</label>
-                <input type="number" id="rf" name="rf" min="1" step="1" required>IU/ml
+                <input type="number" id="rf" name="rf" min="1" step="1" value="{{ labo_exam.rf|default('', true) }}" required>IU/ml
             </div>
         </div>
         <div class="form-section">
             <div class="form-group">
                 <label for="acpa">抗環状シトルリン化ペプチド抗体 (U/ml)</label>
-                <input type="number" id="acpa" name="acpa" min="0.01" step="0.01" required>U/ml
+                <input type="number" id="acpa" name="acpa" min="0.01" step="0.01" value="{{ labo_exam.acpa|default('', true) }}" required>U/ml
             </div>
         </div>
         <div class="button-container">
-        <a href="{{ url_for('edit_blueprint.edit_foot', pt_id=labo_exam.pt_id) }}" class="button">前に戻る</a>
-        <a href="{{ url_for('edit_blueprint.edit_handpicture',pt_id=labo_exam.pt_id) }}" class="button">先に進む</a>
+            <a href="{{ url_for('edit_blueprint.edit_foot', pt_id=labo_exam.pt_id) }}" class="button">前に戻る</a>
+            <button type="submit" class="button">保存して進む</button>
         </div>
     </form>
 </body>

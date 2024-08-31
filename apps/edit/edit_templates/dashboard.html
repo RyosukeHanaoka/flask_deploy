@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Patient</title>
+    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='dashboard.css') }}">
+    <title>Select Patient and Visit</title>
 </head>
 <body>
     <h1>編集する患者さんのデータを選択してください</h1>
     <form method="POST">
-        <label for="pt_id">患者番号を選択してください:</label>
-        <select name="pt_id" id="pt_id">
-            {% for pt_id in pt_ids %}
-            <option value="{{ pt_id }}">{{ pt_id }}</option>
-            {% endfor %}
-        </select>
+        <div>
+            <label for="pt_id">患者番号を選択してください:</label>
+            <select name="pt_id" id="pt_id">
+                {% for pt_id in pt_ids %}
+                <option value="{{ pt_id }}">{{ pt_id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="visit_number">visitを選択してください:</label>
+            <select name="visit_number" id="visit_number">
+                {% for visit in visit_numbers %}
+                <option value="{{ visit }}">{{ visit }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <button type="submit">編集する</button>
     </form>
 </body>

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/scoring.css') }}">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/criteria.css') }}">
     <title>Scoring_System</title>
 </head>
 <body>
     <h1>ACR/EULAR診断基準</h1>
     <ul>
-        <li>Total Score: {{ total_score }}</li>
-        <li>Joint Score: {{ joint_score }}</li>
-        <li>Inflammation Score: {{ inflammation_score }}</li>
-        <li>Immunology Score: {{ immunology_score }}</li>
+        <li data-score="{{ total_score }}">Total Score</li>
+        <li data-score="{{ joint_score }}">Joint Score</li>
+        <li data-score="{{ inflammation_score }}">Inflammation Score</li>
+        <li data-score="{{ immunology_score }}">Immunology Score</li>
     </ul>
     <div class="button-container">
         <a href="{{ url_for('auth_blueprint.login_success') }}" class="button">ログイン成功画面に戻る</a>

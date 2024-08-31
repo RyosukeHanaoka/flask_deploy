@@ -281,7 +281,8 @@ def handpicture():
         #検出結果をセッションに保存
         session['result'] = result
         #/ptresultエンドポイントにリダイレクト
-        return redirect(url_for('data_blueprint.ptresult'))
+        #return redirect(url_for('data_blueprint.ptresult'))
+        return redirect(url_for('data_blueprint.finished'))
     #GETリクエストが送信された場合、handpicture.htmlテンプレートをレンダリングして返す
     return render_template('handpicture.html')
 
@@ -468,5 +469,10 @@ def scoring():
         db.session.rollback()  # ロールバックしてトランザクションをキャンセル
         current_app.logger.error(f"Error during scoring process: {str(e)}")
         return jsonify({"error": "An error occurred during the scoring process.", "details": str(e)}), 500
+
+@data_blueprint.route('/finished', methods=['GET', 'POST'])
+@login_required
+def finished():
+    return render_template('finished.html')
     
      

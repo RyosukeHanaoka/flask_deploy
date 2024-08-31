@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. AI Arthritis Detector</title>
+    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='css/criteria.css') }}">
+</head>
+<body>
+    <h1>入力が終了しました。</h1>
+    <p>入力が終了しました。ログイン成功画面に戻ってください。</p>
+    <div class="button-container">
+        <a href="{{ url_for('auth_blueprint.login_success') }}" class="button">ログイン成功画面に戻る</a>
+    </div>
+</body>
+</html>
