@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('data_blueprint.static', filename='css/dashboard.css') }}">
+    <title>新規データ入力</title>
+</head>
+<body>
+    <h1>新規データ入力</h1>
+    <form method="POST">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="pt_id">患者番号を教えてください。</label>
+                <input type="text" id="pt_id" name="pt_id" required>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="form-group">
+                <label for="visit_number">来院回数を選択してください。</label>
+                <select id="visit_number" name="visit_number" required>
+                    {% for visit in visit_numbers %}
+                        <option value="{{ visit }}">visit {{ visit }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit">新規データ入力</button>
+    </form>
+</body>
+</html>

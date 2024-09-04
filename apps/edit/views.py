@@ -17,19 +17,38 @@ def test():
 def examination():
     return render_template('examination.html')
 
-@edit_blueprint.route('/dashboard', methods=['GET', 'POST'])
+@edit_blueprint.route('/panel', methods=['GET', 'POST'])
 @login_required
-def dashboard():
+def panel():
     pt_ids = db.session.query(Symptom.pt_id).filter_by(user_id=current_user.id).distinct().all()
     pt_ids = [pt_id[0] for pt_id in pt_ids]
     visit_numbers = db.session.query(Symptom.visit_number).filter_by(user_id=current_user.id).distinct().order_by(Symptom.visit_number).all()
     visit_numbers = [visit[0] for visit in visit_numbers]
+    
     if request.method == 'POST':
         selected_pt_id = request.form.get('pt_id')
         selected_visit_number = request.form.get('visit_number')
-        return redirect(url_for('edit_blueprint.edit_symptom', pt_id=selected_pt_id, visit_number=selected_visit_number))
         
-    return render_template('dashboard.html', pt_ids=pt_ids, visit_numbers=visit_numbers)
+        # 選択されたpt_idとvisit_numberに合致するデータが存在するか確認
+        existing_data = Symptom.query.filter_by(
+            user_id=current_user.id,
+            pt_id=selected_pt_id,
+            visit_number=selected_visit_number
+        ).first()
+        
+        if existing_data:
+            return redirect(url_for('edit_blueprint.edit_symptom', pt_id=selected_pt_id, visit_number=selected_visit_number))
+        else:
+            error_message = f"患者ID {selected_pt_id} の来院回数 {selected_visit_number} のデータは存在しません。別の組み合わせを選択してください。"
+            return redirect(url_for('edit_blueprint.error', error_message=error_message))
+        
+    return render_template('panel.html', pt_ids=pt_ids, visit_numbers=visit_numbers)
+
+@edit_blueprint.route('/error')
+@login_required
+def error():
+    error_message = request.args.get('error_message', 'エラーが発生しました。')
+    return render_template('error.html', error_message=error_message)
 
 @edit_blueprint.route('/edit_symptom/<int:pt_id>', methods=['GET', 'POST'])
 @login_required

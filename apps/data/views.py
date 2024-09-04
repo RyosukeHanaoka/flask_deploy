@@ -31,16 +31,38 @@ def notice_post_login():
         return redirect(url_for('data.symptom'))
     return render_template('notice_post_login.html')
 
+@data_blueprint.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    if request.method == 'POST':
+        visit_number = int(request.form.get('visit_number'))
+        pt_id=str(request.form.get('pt_id'))
+        existing_record = Symptom.query.filter_by(pt_id=pt_id, visit_number=visit_number).first()        
+        if existing_record:
+                    return redirect(url_for('data_blueprint.error', 
+                                            error_message='そのデータはすでに存在します。別の患者IDまたは来院回数を選択してください。'))
+        else:
+            session['pt_id'] = pt_id
+            session['visit_number'] = visit_number
+            return redirect(url_for('data_blueprint.symptom'))
+    
+    visit_numbers = range(1, 6)
+    return render_template('dashboard.html', visit_numbers=visit_numbers)
+
+@data_blueprint.route('/error')
+def error():
+    error_message = request.args.get('error_message', 'エラーが発生しました。')
+    return render_template('error.html', error_message=error_message)
+
 @data_blueprint.route('/symptom', methods=['GET', 'POST'])
 @login_required
 def symptom():
     if request.method == 'POST':
-        visit_number = int(request.form.get('visit_number'))
         user = Symptom(
             sex=request.form.get('sex'),
             user_id=current_user.id,
-            pt_id=request.form.get('pt_id'),
-            visit_number=visit_number,
+            pt_id=session.get('pt_id'),
+            visit_number=session.get('visit_number'),
             birth_date=request.form.get('birth_date', ''),
             disease_duration=int(request.form.get('disease_duration') or 0),
             morning_stiffness=request.form.get('morning_stiffness'),
@@ -50,17 +72,14 @@ def symptom():
         )        
         db.session.add(user)
         db.session.commit()
-        session['pt_id'] = request.form.get('pt_id', '')
-        session['visit_number'] = visit_number
         return redirect(url_for('data_blueprint.righthand'))
 
     years = range(1930, datetime.date.today().year + 1)
     months = range(1, 13)
     days = range(1, 32)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
-    visit_numbers = range(1, 6)
 
-    return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations, visit_numbers=visit_numbers)
+    return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations)
 
 @data_blueprint.route('/righthand', methods=['GET', 'POST'])
 @login_required
@@ -69,7 +88,6 @@ def righthand():
         print(request.form)
         data=request.form
         pt_id = session.get('pt_id')
-            # セッションから検出結果を取得
         joint_entry = RightHandData(
             pt_id = pt_id,
             user_id=current_user.id,

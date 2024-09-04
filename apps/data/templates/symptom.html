@@ -11,18 +11,12 @@
     <form id="healthsurveyform" action="{{ url_for('data_blueprint.symptom') }}" method="post">
         <div class="form-section">
             <div class="form-group">
-                <label for="visit_number">来院回数を選択してください。</label>
-                <select id="visit_number" name="visit_number" required>
-                    {% for visit in visit_numbers %}
-                        <option value="{{ visit }}">visit {{ visit }}</option>
-                    {% endfor %}
-                </select>
+                <label>来院回数：{{session.get('visit_number','')}}</label>
+                <label>患者番号：{{ session.get('pt_id', '')}}</label>
             </div>
         </div>
         <div class="form-section">
             <div class="form-group">
-                <label>患者番号を教えてください。</label>
-                <input type="text" id="pt_id" name="pt_id">
                 <label>性別を教えてください。</label>
                 <input type="radio" id="male" name="sex" value="male">
                 <label for="male">男性</label>

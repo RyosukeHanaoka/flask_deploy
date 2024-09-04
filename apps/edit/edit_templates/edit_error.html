@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('edit_blueprint.static', filename='css/error.css') }}">
+    <title>エラー - データが存在しません</title>
+</head>
+<body>
+    <div class="error-container">
+        <h1>エラー</h1>
+        <p>{{ error_message }}</p>
+        <a href="{{ url_for('edit_blueprint.panel') }}" class="button">データ選択画面に戻る</a>
+    </div>
+</body>
+</html>
