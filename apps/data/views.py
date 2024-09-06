@@ -54,32 +54,70 @@ def error():
     error_message = request.args.get('error_message', 'エラーが発生しました。')
     return render_template('error.html', error_message=error_message)
 
+@data_blueprint.route('/value_defect')
+def value_defect():
+    error_message = request.args.get('error_message', 'エラーが発生しました。')
+    return render_template('value_defect.html', error_message=error_message)
+
 @data_blueprint.route('/symptom', methods=['GET', 'POST'])
 @login_required
 def symptom():
     if request.method == 'POST':
-        user = Symptom(
-            sex=request.form.get('sex'),
-            user_id=current_user.id,
-            pt_id=session.get('pt_id'),
-            visit_number=session.get('visit_number'),
-            birth_date=request.form.get('birth_date', ''),
-            disease_duration=int(request.form.get('disease_duration') or 0),
-            morning_stiffness=request.form.get('morning_stiffness'),
-            six_weeks_duration=request.form.get('six_weeks_duration'),
-            stiffness_duration=int(request.form.get('stiffness_duration') or 0),
-            pain_level=int(request.form.get('pain_level') or 0)       
-        )        
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('data_blueprint.righthand'))
+        errors = []
+
+        # 必須フィールドのチェック
+        required_fields = {
+            'sex': '性別',
+            'birth_date': '生年月日',
+            'disease_duration': '罹病期間',
+            'morning_stiffness': '朝のこわばりの有無',
+            'six_weeks_duration': '6週間以上の症状持続',
+            'stiffness_duration': 'こわばりの持続時間',
+            'pain_level': '痛みのレベル'
+        }
+
+        for field, name in required_fields.items():
+            if not request.form.get(field):
+                errors.append(f'{name}が入力されていません。')
+
+        # pt_idとvisit_numberのチェック
+        if not session.get('pt_id'):
+            errors.append('患者IDが設定されていません。')
+        if not session.get('visit_number'):
+            errors.append('来院回数が設定されていません。')
+
+        if errors:
+            error_message = "以下の項目が未入力です：" + ", ".join(errors)
+            return render_template('value_defect.html', errors=errors, error_message=error_message)
+            #return render_template('error.html', errors=errors, error_message=error_message)
+
+        try:
+            user = Symptom(
+                sex=request.form.get('sex'),
+                user_id=current_user.id,
+                pt_id=session.get('pt_id'),
+                visit_number=session.get('visit_number'),
+                birth_date=request.form.get('birth_date'),
+                disease_duration=int(request.form.get('disease_duration')),
+                morning_stiffness=request.form.get('morning_stiffness'),
+                six_weeks_duration=request.form.get('six_weeks_duration'),
+                stiffness_duration=int(request.form.get('stiffness_duration')),
+                pain_level=int(request.form.get('pain_level'))       
+            )        
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('data_blueprint.righthand'))
+        except Exception as e:
+            db.session.rollback()
+            error_message = 'データの保存中にエラーが発生しました。' + str(e)
+            return render_template('error.html', error_message=error_message)
 
     years = range(1930, datetime.date.today().year + 1)
     months = range(1, 13)
     days = range(1, 32)
     stiffness_durations = [0, 5, 10, 15, 20, 30, 40, 50, 60, 120]
 
-    return render_template('symptom.html' , years=years, months=months, days=days, stiffness_durations=stiffness_durations)
+    return render_template('symptom.html', years=years, months=months, days=days, stiffness_durations=stiffness_durations)
 
 @data_blueprint.route('/righthand', methods=['GET', 'POST'])
 @login_required
@@ -212,31 +250,43 @@ def foot():
 @login_required
 def labo_exam():
     if request.method == 'POST':
-        # フォームからデータを取得
-        user_id = current_user.id
-        pt_id = session.get('pt_id')
-        visit_number = session.get('visit_number')
-        crp = float(request.form['crp'])
-        esr = int(request.form['esr'])
-        rf = float(request.form['rf'])
-        acpa = float(request.form['acpa'])
-    
-        # データベースに保存
-        labo_data = LabData(
-            pt_id = pt_id,
-            user_id=user_id,
-            visit_number = visit_number,
-            crp=crp,
-            esr=esr,
-            rf=rf,
-            acpa=acpa,
-        )
-        db.session.add(labo_data)
-        db.session.commit()
+        try:
+            # フォームからデータを取得
+            user_id = current_user.id
+            pt_id = session.get('pt_id')
+            visit_number = session.get('visit_number')
+            crp = float(request.form['crp'])
+            esr = int(request.form['esr'])
+            rf = float(request.form['rf'])
+            acpa = float(request.form['acpa'])
+        
+            # データベースに保存
+            labo_data = LabData(
+                pt_id=pt_id,
+                user_id=user_id,
+                visit_number=visit_number,
+                crp=crp,
+                esr=esr,
+                rf=rf,
+                acpa=acpa,
+            )
+            db.session.add(labo_data)
+            db.session.commit()
 
-        return redirect(url_for('data_blueprint.handpicture'))
+            return redirect(url_for('data_blueprint.handpicture'))
+        except Exception as e:
+            # エラーハンドリング
+            db.session.rollback()
+            error_message = f'データの保存中にエラーが発生しました: {str(e)}'
+            return redirect(url_for('data_blueprint.labo_defect', error_message=error_message))
 
-    return render_template('labo_exam.html') 
+    # GETリクエストの場合
+    return render_template('labo_exam.html')
+
+@data_blueprint.route('/labo_defect')
+def labo_defect():
+    error_message = request.args.get('error_message', 'エラーが発生しました。')
+    return render_template('labo_defect.html', error_message=error_message)
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
 @login_required
@@ -300,7 +350,7 @@ def handpicture():
         session['result'] = result
         #/ptresultエンドポイントにリダイレクト
         #return redirect(url_for('data_blueprint.ptresult'))
-        return redirect(url_for('data_blueprint.finished'))
+        return redirect(url_for('data_blueprint.scoring'))
     #GETリクエストが送信された場合、handpicture.htmlテンプレートをレンダリングして返す
     return render_template('handpicture.html')
 
@@ -472,16 +522,7 @@ def scoring():
         db.session.add(score_data)
         db.session.commit()
 
-        return jsonify({
-            'total_score': total_score,
-            'distal_joints': distal_joints,
-            'proximal_joints': proximal_joints,
-            'other_proximal_joints': other_proximal_joints,
-            'joint_score': joint_score,
-            'inflammation_score': inflammation_score,
-            'immunology_score': immunology_score,
-            'duration_score': duration_score
-        })
+        return render_template('results.html', score_data=score_data)
 
     except Exception as e:
         db.session.rollback()  # ロールバックしてトランザクションをキャンセル

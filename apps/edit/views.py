@@ -9,14 +9,6 @@ from . import edit_blueprint
 
 vit = Vit(model_checkpoint='/Users/hanaokaryousuke/flask/apps/data/model.pth')
 
-@edit_blueprint.route('/test')
-def test():
-    return "Edit blueprint is working!"
-
-@edit_blueprint.route('/examination')
-def examination():
-    return render_template('examination.html')
-
 @edit_blueprint.route('/panel', methods=['GET', 'POST'])
 @login_required
 def panel():
@@ -37,11 +29,12 @@ def panel():
         ).first()
         
         if existing_data:
+            session['pt_id'] = selected_pt_id
+            session['visit_number'] = selected_visit_number
             return redirect(url_for('edit_blueprint.edit_symptom', pt_id=selected_pt_id, visit_number=selected_visit_number))
         else:
             error_message = f"患者ID {selected_pt_id} の来院回数 {selected_visit_number} のデータは存在しません。別の組み合わせを選択してください。"
             return redirect(url_for('edit_blueprint.error', error_message=error_message))
-        
     return render_template('panel.html', pt_ids=pt_ids, visit_numbers=visit_numbers)
 
 @edit_blueprint.route('/error')
@@ -57,6 +50,8 @@ def edit_symptom(pt_id):
     
     if request.method == 'POST':
         symptom.sex = request.form.get('sex', '')
+        symptom.pt_id=session.get('pt_id')
+        symptom.visit_number=session.get('visit_number')
         symptom.disease_duration = int(request.form.get('disease_duration', 0))
         symptom.morning_stiffness = request.form.get('morning_stiffness', '')
         symptom.six_weeks_duration = request.form.get('six_weeks_duration', '')

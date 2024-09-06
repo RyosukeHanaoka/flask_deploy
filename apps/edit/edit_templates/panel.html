@@ -25,7 +25,10 @@
                 {% endfor %}
             </select>
         </div>
-        <button type="submit">編集する</button>
+            <div class="button-container">
+                <a href="{{ url_for('auth_blueprint.login_success') }}" class="button">前に戻る</a>
+                <button type="submit" class="button">編集する</button>
+            </div>
     </form>
 </body>
 </html>
