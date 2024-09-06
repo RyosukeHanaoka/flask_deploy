@@ -31,7 +31,6 @@ li {
     padding: 15px;
     border-bottom: 1px solid #eee;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 }
 
@@ -44,6 +43,9 @@ li::after {
     content: attr(data-score);
     font-weight: bold;
     color: #3498db;
+    position: absolute; /* 絶対位置で配置 */
+    right: 50%; /* 右端から50%の位置に配置 */
+    transform: translateX(50%); /* X軸方向に50%シフトして中央寄せ */
 }
 
 /* ボタンコンテナのスタイル */

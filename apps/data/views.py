@@ -522,7 +522,7 @@ def scoring():
         db.session.add(score_data)
         db.session.commit()
 
-        return render_template('results.html', score_data=score_data)
+        return render_template('scoring.html', score_data=score_data, total_score=total_score, immunology_score=immunology_score, inflammation_score=inflammation_score, joint_score=joint_score, duration_score=duration_score)
 
     except Exception as e:
         db.session.rollback()  # ロールバックしてトランザクションをキャンセル
