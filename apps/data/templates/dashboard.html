@@ -25,7 +25,10 @@
                 </select>
             </div>
         </div>
-        <button type="submit">新規データ入力</button>
+        <div class="button-container">
+            <a href="{{ url_for('auth_blueprint.login_success') }}" class="button">前に戻る</a>
+            <button type="submit" class="button">次に進む</button>
+        </div>
     </form>
 </body>
 </html>
