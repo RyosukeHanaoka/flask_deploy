@@ -7,6 +7,7 @@ from apps.auth.views import auth_blueprint, login_manager
 from apps.data.views import data_blueprint
 from .edit import edit_blueprint
 from apps.data.extensions import db, migrate
+from apps.settings import Config
 
 def create_app():
     app = Flask(__name__)  # テンプレートフォルダの指定
@@ -19,6 +20,8 @@ def create_app():
 
     # メール機能の設定
     mail = Mail(app)
+    app.config.from_object(Config)
+    mail.init_app(app)
 
     # ログインマネージャーの設定
     login_manager = LoginManager()
