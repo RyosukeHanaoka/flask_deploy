@@ -1,52 +1,36 @@
-# Flaskの必要なモジュールをインポート
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-"""Blueprint: アプリケーションの機能を分割するためのクラス
-# render_template: テンプレートをレンダリングするための関数
-# request: HTTPリクエストを処理するためのオブジェクト
-# redirect: 別のURLにリダイレクトするための関数
-# url_for: URLを生成するための関数
-# flash: フラッシュメッセージを表示するための関数"""
-
-#Flask-Loginの必要なモジュールをインポート
 from flask_login import login_required, login_user, logout_user, current_user, UserMixin, LoginManager
-"""login_required: ログインが必要なビューを装飾するためのデコレータ
-#login_user: ユーザーをログインさせるための関数
-#logout_user: ユーザーをログアウトさせるための関数
-#current_user: 現在ログインしているユーザーを表すオブジェクト
-#UserMixin: ユーザークラスに必要なメソッドを提供するクラス
-#LoginManager: ログイン管理を行うためのクラス"""
-
-#Werkzeugのセキュリティ関連のモジュールをインポート
 from werkzeug.security import generate_password_hash, check_password_hash
-"""generate_password_hash: パスワードをハッシュ化する関数
-check_password_hash: ハッシュ化されたパスワードを検証するための関数"""
-# クラス"User"をインポート
+from flask_mail import Mail, Message
+import random
 from apps.data.models import User
-# アプリケーションのデータベース拡張機能をインポート
 from apps.data.extensions import db
-# ログインマネージャーのインスタンスを作成
+
 login_manager = LoginManager()
-# Blueprintオブジェクトを作成
 auth_blueprint = Blueprint('auth_blueprint', __name__, template_folder='templates', static_folder='static')
+
+from itsdangerous import URLSafeTimedSerializer
+
+# シークレットキーとセキュリティ用のソルト
+secret_key = 'your-secret-key'
+salt = 'your-salt'
+serializer = URLSafeTimedSerializer(secret_key)
+
+# メール設定
+mail = Mail()
 
 # ログインマネージャーの設定
 @login_manager.user_loader
-
-# ユーザーIDを元にユーザーオブジェクトを取得する関数
 def load_user(user_id):
-    # ユーザーIDを受け取り、データベースからユーザーオブジェクトを取得
     return User.query.get(int(user_id))
 
 # ログインページのルーティング
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-    # POSTリクエストの場合、フォームからメールアドレスとパスワードを取得
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        # メールアドレスとパスワードが一致するユーザーをデータベースから取得
         user = User.query.filter_by(email=email).first()
-        # ユーザーが存在し、パスワードが一致する場合、ログイン処理を行い、データページにリダイレクト
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
             return redirect(url_for('auth_blueprint.login_success'))
@@ -58,69 +42,122 @@ def login():
 @auth_blueprint.route('/logout')
 @login_required
 def logout():
-    # ログアウト処理を行い、ログインページにリダイレクト
     logout_user()
-    return redirect(url_for('auth_blueprint.login'))
+    return render_template('logout.html')
 
+# ログイン失敗ページのルーティング
 @auth_blueprint.route('/login_failure', methods=['GET', 'POST'])
 def login_failure():
     return render_template('login_failure.html')
 
+# ログイン成功ページのルーティング
 @auth_blueprint.route('/login_success', methods=['GET', 'POST'])
 @login_required
 def login_success():
     return render_template('login_success.html')
 
-@auth_blueprint.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        # パスワードをハッシュ化
-        hashed_password = generate_password_hash(password, method='sha256')
-        # 新しいユーザーを作成
-        user = User(email=email, password_hash=hashed_password)
-        # データベースにユーザーを保存
-        db.session.add(user)
-        db.session.commit()
-        #ユーザーをログインさせる
-        login_user(user)
-        # ログインページにリダイレクト
-        flash('登録完了', 'success')
-        return redirect(url_for('data_blueprint.index'))
-    return render_template('register.html')
+def generate_reset_token(email):
+    return serializer.dumps(email, salt=salt)
 
+def send_reset_password_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        token = generate_reset_token(user.email)
+        reset_url = url_for('auth_blueprint.reset_password_confirm', token=token, _external=True)
+        msg = Message('パスワードリセットのリクエスト', 
+                      recipients=[email])
+        msg.body = f'パスワードリセットのリクエストを受け取りました。以下のリンクをクリックして新しいパスワードを設定してください。\n\n{reset_url}\n\nこのリンクは一定時間のみ有効です。'
+        mail.send(msg)
+
+# **新しく追加するエンドポイント**
 @auth_blueprint.route('/reset_password', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form.get('email')
+        send_reset_password_email(email)
+        flash('パスワードリセットのメールを送信しました。', 'success')
+        #return redirect(url_for('auth_blueprint.login'))
+    return render_template('reset_password_request.html')
+
+# **既存のエンドポイント名を変更**
+@auth_blueprint.route('/reset_password_confirm/<token>', methods=['GET', 'POST'])
+def reset_password_confirm(token):
+    try:
+        email = serializer.loads(token, salt=salt, max_age=3600)
+    except:
+        flash('無効または期限切れのトークンです。', 'error')
+        return redirect(url_for('auth_blueprint.reset_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        password_confirm = request.form.get('password_confirm')
+        
+        if not new_password or not password_confirm:
+            flash('すべてのフィールドを入力してください。', 'error')
+            return render_template('reset_password.html')
+        
         user = User.query.filter_by(email=email).first()
         if user:
-            # パスワードリセットのメールを送信する処理を実装
-            flash('パスワードリセットリンクがメールに送られました。', 'info')
-        else:
-            flash('メールアドレスが見つかりません', 'error')
+            if new_password != password_confirm:
+                flash('パスワードが一致しません。', 'error')
+                return render_template('reset_password.html')
+            user.password_hash = generate_password_hash(new_password)
+            db.session.commit()
+            flash('パスワードが正常に更新されました。', 'success')
+            return redirect(url_for('auth_blueprint.login'))
     return render_template('reset_password.html')
 
+# サインインページのルーティング
 @auth_blueprint.route('/signin', methods=['GET', 'POST'])
 def signin():
-    #POSTリクエストの場合、フォームからメールアドレスとパスワードを取得
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        
-        # メールアドレスの重複チェックを行い、重複している場合はエラーメッセージを表示してsigninページにリダイレクトする。
+        password_confirm = request.form['password_confirm']
+        if password != password_confirm:
+            #return redirect(url_for('auth_blueprint.signin_failure'))
+            flash('パスワードが一致しません')
+            return render_template('signin.html')
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
-            flash('そのメールアドレスは既に登録されています。', 'error')
-            return redirect(url_for('auth_blueprint.signin'))
-
-        # 重複していない場合は、新しいユーザーオブジェクトを作成し、パスワードをハッシュ化してデータベースに保存
-        new_user = User(email=email, password=password)
-        db.session.add(new_user)
-        db.session.commit()
-        # 登録完了のメッセージを表示し、ログインページにリダイレクトする。
-        flash('登録が完了しました。ログインしてください。', 'success')
-        return redirect(url_for('auth_blueprint.login'))
-    # GETリクエストの場合は、signin.htmlをレンダリングする。
+            return redirect(url_for('auth_blueprint.signin_failure'))
+        else:
+            verification_code = str(random.randint(100000, 999999))
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            new_user = User(email=email, password_hash=hashed_password, verification_code=verification_code)
+            db.session.add(new_user)
+            db.session.commit()
+            send_verification_email(email, verification_code)
+            return redirect(url_for('auth_blueprint.verify', user_id=new_user.id))
     return render_template('signin.html')
+
+def send_verification_email(email, code):
+    msg = Message('Your Verification Code',
+                  sender='',
+                  recipients=[email])
+    msg.body = f'あなたの認証番号: {code}'
+    mail.send(msg)
+
+@auth_blueprint.route('/signin_failure', methods=['GET', 'POST'])
+def signin_failure():
+    return render_template('signin_failure.html')
+
+# ユーザー認証ページのルーティング
+@auth_blueprint.route('/verify/<int:user_id>', methods=['GET', 'POST'])
+def verify(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        flash('ユーザーが見つかりません', 'error')
+        return redirect(url_for('auth_blueprint.signin'))
+    
+    if request.method == 'POST':
+        code = request.form.get('code')
+        if code == user.verification_code:
+            login_user(user)
+            user.is_verified = True
+            user.verification_code = None  # コードを使用済みにする
+            db.session.commit()
+            return redirect(url_for('auth_blueprint.login_success'))
+        else:
+            return redirect(url_for('auth_blueprint.verification_error'))
+    return render_template('verify.html')
