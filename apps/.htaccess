@@ -1,0 +1,10 @@
+# WSGIアプリケーションを有効にする
+AddHandler application/x-httpd-wsgi .wsgi
+
+# URLの書き換えを有効にする
+RewriteEngine On
+
+# 静的ファイルやディレクトリが存在しない場合に限り、WSGIスクリプトに処理を渡す
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /flask_app.wsgi/$1 [QSA,PT,L]
