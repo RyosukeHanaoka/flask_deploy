@@ -17,7 +17,7 @@
     </div>
     <div class="content">
         <header>
-            <nav class="main-nav">
+            <nav class="app-nav">
                 <ul>
                     <li><a href="{{ url_for('data_blueprint.index') }}">ホーム</a></li>
                     <li><a href="{{ url_for('auth_blueprint.login') }}">ログイン画面</a></li>
@@ -25,7 +25,7 @@
                 </ul>
             </nav>
         </header>
-        <main>
+        <app>
             <section>
                 <h2>関節リウマチってなに？</h2>
                 <div class="horizontal-line"></div> <!-- 横棒 -->
@@ -68,7 +68,7 @@
             <div class="cta">
                 <a href="{{ url_for('data_blueprint.notice') }}" class="cta-button">使⽤登録にすすむ</a>
             </div>
-        </main>
+        </app>
         <footer>
             <p>Dr. AI Arthritis Detector</p>
         </footer>

@@ -133,7 +133,7 @@ def signin():
 
 def send_verification_email(email, code):
     msg = Message('Your Verification Code',
-                  sender='',
+                  sender='braindamage261@gmail.com',
                   recipients=[email])
     msg.body = f'あなたの認証番号: {code}'
     mail.send(msg)

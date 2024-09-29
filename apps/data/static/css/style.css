@@ -105,21 +105,21 @@ address {
 }
 
 /* ナビゲーションバーのスタイリング */
-.main-nav {
+.app-nav {
     display: flex;
     justify-content: center;
     background-color: #ffffff;
     padding: 2rem 0;
 }
 
-.main-nav ul {
+.app-nav ul {
     list-style-type: none;
     padding: 0;
     display: flex;
     gap: 90px;
 }
 
-.main-nav ul li a {
+.app-nav ul li a {
     text-decoration: none;
     font-weight: bold;
     font-size: larger;
@@ -128,12 +128,12 @@ address {
     padding: 0.5rem 1rem;
 }
 
-.main-nav ul li a:hover {
+.app-nav ul li a:hover {
     background-color: white;
 }
 
 @media (max-width: 700px) {
-    .main-nav ul {
+    .app-nav ul {
         flex-direction: column;
         gap: 20px;
     }
