@@ -13,13 +13,13 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-for-development' """os.urandom(24)"""
 
     # 管理者のユーザー名とパスワードを設定
-    USERNAME = os.environ.get('RYOSUKE_HANAOKA') 
+    USERNAME = os.environ.get('username') 
     PASSWORD = os.environ.get('password') 
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/pictures')
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = '______________'  # あなたのGmailアドレス
-    MAIL_PASSWORD = '______________'  # Gmailのアプリパスワード
-    MAIL_DEFAULT_SENDER = '______________'  # あなたのGmailアドレス
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') 
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')  
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')  
