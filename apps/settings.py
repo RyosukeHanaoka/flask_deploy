@@ -23,3 +23,9 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') 
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')  
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')  
+
+    # AWS S3の設定
+    S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
+    S3_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+    S3_SECRET = os.environ.get("AWS_SECRET_ACCESS_KEY")
+    S3_LOCATION = f"http://{S3_BUCKET}.s3.amazonaws.com/"
