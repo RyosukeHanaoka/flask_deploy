@@ -3,7 +3,11 @@ from flask_login import login_required, current_user
 from .extensions import db
 from sqlalchemy import func
 import datetime
+import requests  # 自宅PCにHTTPリクエストを送信するために必要
+import boto3  # S3へのアップロードに使用
 import os
+from apps.settings import Config
+from apps.app import app  # Import the Flask app instance
 from .models import HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
 from .models import Symptom, LabData, ScoreData
 from .vit import Vit
@@ -289,9 +293,34 @@ def labo_defect():
     error_message = request.args.get('error_message', 'エラーが発生しました。')
     return render_template('labo_defect.html', error_message=error_message)
 
-#以下は本番環境でハイブリッドアーキテクチャを使用する場合に使用するコード
-import requests  # 自宅PCにHTTPリクエストを送信するために必要
+# 自宅PCのサーバーのURL
 PREDICTION_SERVER_URL = 'http://58.90.145.44:51015/predict'
+
+# S3クライアントの作成
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
+    aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY']
+)
+
+# 画像をS3にアップロードする関数
+def upload_file_to_s3(file, filename, acl="public-read"):
+    try:
+        s3.upload_fileobj(
+            file,
+            app.config['S3_BUCKET_NAME'],
+            filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type
+            }
+        )
+        return f"http://{app.config['S3_BUCKET_NAME']}.s3.amazonaws.com/{filename}"
+
+    except Exception as e:
+        print("S3へのアップロードエラー:", e)
+        return None
+
 
 @data_blueprint.route('/handpicture', methods=['GET', 'POST'])
 @login_required
@@ -310,30 +339,26 @@ def handpicture():
         right_filename = f"{current_user.email}_{dt_string}_right.jpg"
         left_filename = f"{current_user.email}_{dt_string}_left.jpg"
 
-        right_dir = "data/pictures/image_righthand"
-        left_dir = "data/pictures/image_lefthand"
-        os.makedirs(right_dir, exist_ok=True)
-        os.makedirs(left_dir, exist_ok=True)
+        # S3にアップロード
+        right_file_url = upload_file_to_s3(right_hand, right_filename)
+        left_file_url = upload_file_to_s3(left_hand, left_filename)
 
-        right_path = os.path.join(right_dir, right_filename)
-        left_path = os.path.join(left_dir, left_filename)
+        if not right_file_url or not left_file_url:
+            flash('S3へのアップロードに失敗しました。', 'danger')
+            return redirect(url_for('data_blueprint.handpicture'))
 
-        # 画像ファイルの保存
-        right_hand.save(right_path)
-        left_hand.save(left_path)
+        # 自宅PCのサーバーにPOSTリクエストでS3にアップロードされた画像のURLを送信
+        files = {
+            'right_hand_url': right_file_url,
+            'left_hand_url': left_file_url
+        }
 
-        # 自宅PCのサーバーにPOSTリクエストで画像を送信
-        with open(right_path, 'rb') as rf, open(left_path, 'rb') as lf:
-            files = {
-                'right_hand': rf,
-                'left_hand': lf
-            }
-            try:
-                response = requests.post(PREDICTION_SERVER_URL, files=files)
-                response.raise_for_status()  # エラーがあれば例外を発生させる
-            except requests.exceptions.RequestException as e:
-                flash(f'Prediction server error: {e}', 'danger')
-                return redirect(url_for('data_blueprint.handpicture'))
+        try:
+            response = requests.post(PREDICTION_SERVER_URL, json=files)
+            response.raise_for_status()  # エラーがあれば例外を発生させる
+        except requests.exceptions.RequestException as e:
+            flash(f'Prediction server error: {e}', 'danger')
+            return redirect(url_for('data_blueprint.handpicture'))
 
         # 自宅PCからの推論結果を取得
         results = response.json()
@@ -341,13 +366,14 @@ def handpicture():
         left_hand_result = results.get('left_hand_result')
         result = results.get('result')
 
+        # データベースに保存
         hand_data = HandPicData(
             user_id=current_user.id,
             pt_id=pt_id,
             visit_number=session.get('visit_number'),
             datetime=now,
-            right_hand_path=right_path,
-            left_hand_path=left_path,
+            right_hand_path=right_file_url,
+            left_hand_path=left_file_url,
             right_hand_result=right_hand_result,
             left_hand_result=left_hand_result,
             result=result
@@ -538,3 +564,4 @@ def scoring():
 @login_required
 def finished():
     return render_template('finished.html')
+     
