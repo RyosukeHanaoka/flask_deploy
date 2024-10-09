@@ -10,14 +10,15 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # セキュリティ強化のためのシークレットキー
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-for-development' """os.urandom(24)"""
+    SECRET_KEY = os.environ.get('SECRET_KEY') 
 
     # 管理者のユーザー名とパスワードを設定
-    USERNAME = os.environ.get('username') 
-    PASSWORD = os.environ.get('password') 
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/pictures')
-
-    MAIL_SERVER = 'smtp.gmail.com'
+    USERNAME = os.environ.get('USERNAME') 
+    PASSWORD = os.environ.get('PASSWORD') 
+    #UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/pictures')
+    
+    # メールサーバーの設定
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') 
