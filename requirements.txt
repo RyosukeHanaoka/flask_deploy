@@ -209,5 +209,5 @@ tzdata==2023.3
 urllib3==1.26.16
 wcwidth==0.2.6
 Werkzeug==2.3.6
-setuptools>=65.5.0
+setuptools>=68.0.0
 
