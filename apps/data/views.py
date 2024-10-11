@@ -7,7 +7,7 @@ import requests  # 自宅PCにHTTPリクエストを送信するために必要
 import boto3  # S3へのアップロードに使用
 import os
 from apps.settings import Config
-from apps.app import app  # Import the Flask app instance
+from flask import current_app  # Import the Flask app instance
 from .models import HandPicData, RightHandData, LeftHandData, LargeJointData, FootJointData
 from .models import Symptom, LabData, ScoreData
 from .vit import Vit
@@ -296,26 +296,28 @@ def labo_defect():
 # 自宅PCのサーバーのURL
 PREDICTION_SERVER_URL = 'http://58.90.145.44:51015/predict'
 
-# S3クライアントの作成
-s3 = boto3.client(
-    "s3",
-    aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
-    aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY']
-)
+from flask import current_app
 
-# 画像をS3にアップロードする関数
+# S3にアップロードする関数
 def upload_file_to_s3(file, filename, acl="public-read"):
+    # current_appを使って設定を取得
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=current_app.config['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key=current_app.config['AWS_SECRET_ACCESS_KEY']
+    )
+
     try:
         s3.upload_fileobj(
             file,
-            app.config['S3_BUCKET_NAME'],
+            current_app.config['S3_BUCKET_NAME'],
             filename,
             ExtraArgs={
                 "ACL": acl,
                 "ContentType": file.content_type
             }
         )
-        return f"http://{app.config['S3_BUCKET_NAME']}.s3.amazonaws.com/{filename}"
+        return f"http://{current_app.config['S3_BUCKET_NAME']}.s3.amazonaws.com/{filename}"
 
     except Exception as e:
         print("S3へのアップロードエラー:", e)
